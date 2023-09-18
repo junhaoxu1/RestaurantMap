@@ -14,6 +14,7 @@ const RestaurantPage = () => {
 
     const { data: restaurant, loading } = useGetDocument<Restaurant>(restaurantsCol, documentId)
 
+    
     if (!restaurant || loading) {
         return <p>Loading...</p>
     }
@@ -22,6 +23,10 @@ const RestaurantPage = () => {
         <Container>
             <h1>{restaurant.name}</h1>
 
+            <div>
+                <p>Lat: {restaurant.geolocation?.lat ?? "N/A"}</p>
+                <p>Long: {restaurant.geolocation?.lng ?? "N/A"}</p>
+            </div>
             <p>{restaurant.address}</p>
             <p>{restaurant.city}</p>
 

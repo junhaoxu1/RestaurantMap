@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app"
 import { CollectionReference, DocumentData, collection, getFirestore } from "firebase/firestore"
-import { Restaurant } from "../types/restaurants.types"
 import { getAuth } from "firebase/auth"
+import { Restaurant, RestaurantFormData } from "../types/restaurants.types"
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -25,7 +25,8 @@ const createCollection = <T = DocumentData>(collectionName: string) => {
     return collection(db, collectionName) as CollectionReference<T>
 }
 
-// collection reference for getting the `restaurants` collection in db
+// collection references for getting the `restaurants` collection in db and setting new document
 export const restaurantsCol = createCollection<Restaurant>("restaurants")
+export const newRestaurantCol = createCollection<RestaurantFormData>("restaurants")
 
 export default app

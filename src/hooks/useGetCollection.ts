@@ -4,22 +4,29 @@ import { useCallback, useEffect, useState } from 'react'
 const useGetCollection = <T>(colRef: CollectionReference<T>) => {
     const [data, setData] = useState<T[] | null>(null)
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string|null>(null)
 
     const getData = useCallback(async () => {
         setLoading(true)
+        setError(null)
 
-        // get query snapshot of collection
-        const snapshot = await getDocs(colRef)
+        try {
+            // get query snapshot of collection
+            const snapshot = await getDocs(colRef)
+    
+            // loop over all docs
+            const data: T[] = snapshot.docs.map(doc => {
+                return {
+                    ...doc.data(),
+                    _id: doc.id,
+                }
+            })
+            setData(data)
+            
+        } catch (err: any) {
+            setError(err.message)
+        }
 
-        // loop over all docs
-        const data: T[] = snapshot.docs.map(doc => {
-            return {
-                ...doc.data(),
-                _id: doc.id,
-            }
-        })
-
-        setData(data)
         setLoading(false)
     }, [colRef])
 
@@ -32,6 +39,7 @@ const useGetCollection = <T>(colRef: CollectionReference<T>) => {
     return {
         getData,
         data,
+        error,
         loading
     }
 }
