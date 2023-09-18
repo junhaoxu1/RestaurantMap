@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import MapPage from './pages/MapPage'
 import Navigation from './pages/partials/Navigation'
+import SignupPage from './pages/SignupPage'
 
 const App = () => {
 
@@ -14,6 +15,7 @@ const App = () => {
 				<Routes>
 					<Route path="/" element={<HomePage />} />
 					<Route path="/food-map" element={<MapPage />} />
+					<Route path="/signup" element={<SignupPage />} />
 				</Routes>
 			</Container>
 		</div>
