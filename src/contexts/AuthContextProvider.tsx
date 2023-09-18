@@ -56,7 +56,7 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 
     const setEmail = (email: string) => {
         if (!currentUser) { throw new Error("User is null")}
-        return updateEmail(currentUser, "Testing@gmail.com")
+        return updateEmail(currentUser, email)
     }
 
     const setDisplayName = (displayName: string) => {
