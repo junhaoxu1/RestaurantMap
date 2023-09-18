@@ -7,6 +7,7 @@ import Navigation from './pages/partials/Navigation'
 import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
 import LogoutPage from './pages/LogoutPage'
+import UpdatePage from './pages/UpdateUserPage'
 
 const App = () => {
 
@@ -20,6 +21,7 @@ const App = () => {
 					<Route path="/signup" element={<SignupPage />} />
 					<Route path="/login" element={<LoginPage />} />
 					<Route path="/logout" element={<LogoutPage />} />
+					<Route path="/update-user" element={<UpdatePage />} />
 				</Routes>
 			</Container>
 		</div>

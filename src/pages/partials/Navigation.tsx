@@ -19,17 +19,18 @@ const Navigation = () => {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="ms-auto">
-                    <NavDropdown
-                        title={(userEmail ?? "")}
-                    >
-                        <NavDropdown.Item as={NavLink} to="/update">Update Profile</NavDropdown.Item>
-						<NavDropdown.Divider />
-						<NavDropdown.Item as={NavLink} to="/logout">Logout</NavDropdown.Item>
+                    {currentUser ? (<>
+                        <NavDropdown
+                            title={(userEmail ?? "")}
+                        >
+                            <NavDropdown.Item as={NavLink} to="/update-user">Update Profile</NavDropdown.Item>
+						    <NavDropdown.Divider />
+						    <NavDropdown.Item as={NavLink} to="/logout">Logout</NavDropdown.Item>
                     </NavDropdown>
-
-
-                    <Nav.Link as={NavLink} end to="/login">Login</Nav.Link>
-                    <Nav.Link as={NavLink} end to="/signup">Signup</Nav.Link>
+                    </>) : (<>
+                            <Nav.Link as={NavLink} end to="/login">Login</Nav.Link>
+                            <Nav.Link as={NavLink} end to="/signup">Signup</Nav.Link>
+                        </>)}
                 </Nav>
             </Navbar.Collapse>
         </Container>
