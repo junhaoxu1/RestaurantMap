@@ -7,19 +7,14 @@ const Navigation = () => {
   return (
     <Navbar>
         <Container>
-            <Navbar.Brand as={Link} to ="/">
-                Restaurants
-            </Navbar.Brand>
+            <Navbar.Brand as={Link} to ="/">Restaurants</Navbar.Brand>
 
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="ms-auto">
-                    <Nav.Link as={NavLink} end to="/">
-                        Login
-                    </Nav.Link>
-                    <Nav.Link as={NavLink} end to="/">
-                        Sign Up
-                    </Nav.Link>
+                    <Nav.Link as={NavLink} end to="/">Login</Nav.Link>
+                    <Nav.Link as={NavLink} end to="/">Sign Up</Nav.Link>
+                    <Nav.Link as={NavLink} end to="/">Log out</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Container>

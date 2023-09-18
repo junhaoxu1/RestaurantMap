@@ -3,7 +3,7 @@ import './assets/scss/App.scss'
 import { Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import MapPage from './pages/MapPage'
-import Navigation from './components/Navigation'
+import Navigation from './pages/partials/Navigation'
 
 const App = () => {
 
