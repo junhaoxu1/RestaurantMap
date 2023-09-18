@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage'
 import MapPage from './pages/MapPage'
 import Navigation from './pages/partials/Navigation'
 import SignupPage from './pages/SignupPage'
+import LoginPage from './pages/LoginPage'
 
 const App = () => {
 
@@ -16,6 +17,7 @@ const App = () => {
 					<Route path="/" element={<HomePage />} />
 					<Route path="/food-map" element={<MapPage />} />
 					<Route path="/signup" element={<SignupPage />} />
+					<Route path="/login" element={<LoginPage />} />
 				</Routes>
 			</Container>
 		</div>

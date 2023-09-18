@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react'
 import { FirebaseError } from 'firebase/app'
+import { useState } from 'react'
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
@@ -10,30 +10,26 @@ import Row from 'react-bootstrap/Row'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
-import { SignUpCreds } from '../types/User.types'
+import { LoginCreds } from '../types/User.types'
 
-const SignupPage = () => {
+const LoginPage = () => {
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
-    const { handleSubmit, register, watch, formState: { errors }} = useForm<SignUpCreds>()
+    const { handleSubmit, register, formState: { errors } } = useForm<LoginCreds>()
+    const { login } = useAuth()
+	const navigate = useNavigate()
 
-    const { signup } = useAuth()
-
-    const passwordRef = useRef("")
-    passwordRef.current = watch('password')
-
-    const onSignup: SubmitHandler<SignUpCreds> = async (data) => {
+    const onLogin: SubmitHandler<LoginCreds> = async (data) => {
         setError(null)
 
         try {
             setLoading(true)
-            await signup(data.email, data.password)
+            await login(data.email, data.password)
 
+			navigate("/")
         } catch (error) {
-            if (error instanceof FirebaseError) {
+            if(error instanceof FirebaseError) {
                 setError(error.message)
-            } else {
-                setError("Something Went Wrong")
             }
         }
         setLoading(false)
@@ -45,18 +41,18 @@ const SignupPage = () => {
 				<Col md={{ span: 6, offset: 3 }}>
 					<Card>
 						<Card.Body>
-							<Card.Title className="mb-3">Sign Up</Card.Title>
+							<Card.Title className="mb-3">Login</Card.Title>
 
 							{error && (<Alert variant="danger">{error}</Alert>)}
 
-							<Form onSubmit={handleSubmit(onSignup)}>
+							<Form onSubmit={handleSubmit(onLogin)}>
 								<Form.Group controlId="email" className="mb-3">
 									<Form.Label>Email</Form.Label>
 									<Form.Control
 										placeholder="abc@gmail.com"
 										type="email"
 										{...register('email', {
-											required: "You have to enter an email",
+											required: "You have to enter your email",
 										})}
 									/>
 									{errors.email && <p className="invalid">{errors.email.message ?? "Invalid value"}</p>}
@@ -68,26 +64,10 @@ const SignupPage = () => {
 										type="password"
 										autoComplete="new-password"
 										{...register('password', {
-											required: "Enter a password",
+											required: "Enter Password",
 										})}
 									/>
 									{errors.password && <p className="invalid">{errors.password.message ?? "Invalid value"}</p>}
-									<Form.Text>At least 6 characters</Form.Text>
-								</Form.Group>
-
-								<Form.Group controlId="confirmPassword" className="mb-3">
-									<Form.Label>Confirm Password</Form.Label>
-									<Form.Control
-										type="password"
-										autoComplete="off"
-										{...register('passwordConfirm', {
-											required: "Please enter your password",
-											validate: (value) => {
-												return value === passwordRef.current || "The passwords does not match 🤦🏼‍♂️"
-											}
-										})}
-									/>
-									{errors.passwordConfirm && <p className="invalid">{errors.passwordConfirm.message ?? "Invalid value"}</p>}
 								</Form.Group>
 
 								<Button
@@ -96,15 +76,19 @@ const SignupPage = () => {
 									type="submit"
 								>
 									{loading
-										? "Creating account..."
-										: "Create Account"}
+										? "Logging in..."
+										: "Log In"}
 								</Button>
 							</Form>
+
+							<div className="text-center">
+								<Link to="/forgot-password">Forgot Password?</Link>
+							</div>
 						</Card.Body>
 					</Card>
 
 					<div className="text-center mt-3">
-						Already have an account? <Link to="/">Log In</Link>
+						Need an account? <Link to="/signup">Sign Up</Link>
 					</div>
 				</Col>
 			</Row>
@@ -112,4 +96,4 @@ const SignupPage = () => {
   )
 }
 
-export default SignupPage
+export default LoginPage

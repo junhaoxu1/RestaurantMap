@@ -3,8 +3,14 @@ import Navbar from 'react-bootstrap/Navbar'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Nav from 'react-bootstrap/Nav'
 import { NavLink, Link } from 'react-router-dom'
+import useAuth from '../../hooks/useAuth'
 
 const Navigation = () => {
+    const {
+		currentUser,
+		userEmail,
+		userName,
+	} = useAuth()
   return (
     <Navbar>
         <Container>
@@ -14,7 +20,7 @@ const Navigation = () => {
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="ms-auto">
                     <NavDropdown
-                        title="Instert User"
+                        title={(userEmail ?? "")}
                     >
                         <NavDropdown.Item as={NavLink} to="/update">Update Profile</NavDropdown.Item>
 						<NavDropdown.Divider />
