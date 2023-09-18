@@ -13,8 +13,6 @@ const useGetCollection = <T>(colRef: CollectionReference<T>) => {
 
         // loop over all docs
         const data: T[] = snapshot.docs.map(doc => {
-            console.log("doc:", doc.data())
-
             return {
                 ...doc.data(),
                 _id: doc.id,
@@ -25,12 +23,10 @@ const useGetCollection = <T>(colRef: CollectionReference<T>) => {
         setLoading(false)
     }, [colRef])
 
-
     // Get data on component mount
     useEffect(() => {
         getData()
     }, [getData])
-
 
     // return getData function and states
     return {
@@ -38,7 +34,6 @@ const useGetCollection = <T>(colRef: CollectionReference<T>) => {
         data,
         loading
     }
-
 }
 
 export default useGetCollection

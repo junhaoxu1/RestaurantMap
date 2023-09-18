@@ -5,11 +5,14 @@ import HomePage from './pages/HomePage'
 import MapPage from './pages/MapPage'
 import RestaurantsPage from './pages/RestaurantsPage'
 import RestaurantPage from './pages/RestaurantPage'
+import Navigation from './pages/partials/Navigation'
+import SignupPage from './pages/SignupPage'
 
 const App = () => {
 
 	return (
 		<div id='App'>
+			<Navigation />
 			<Container>
 				<Routes>
 					<Route path="/" element={<HomePage />} />
@@ -17,6 +20,7 @@ const App = () => {
 
 					<Route path='/restaurants' element={<RestaurantsPage />} />
 					<Route path='/restaurants/:id' element={<RestaurantPage />} />
+					<Route path="/signup" element={<SignupPage />} />
 				</Routes>
 			</Container>
 		</div>

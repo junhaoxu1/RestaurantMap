@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app"
 import { CollectionReference, DocumentData, collection, getFirestore } from "firebase/firestore"
 import { Restaurant } from "../types/restaurants.types"
+import { getAuth } from "firebase/auth"
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -11,12 +12,13 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID
 }
 
-
 // Initialize Firebase App
 const app = initializeApp(firebaseConfig)
 
 // Get Firestore Instance
 export const db = getFirestore(app)
+
+export const auth = getAuth(app)
 
 // returns collection with specified type
 const createCollection = <T = DocumentData>(collectionName: string) => {
@@ -27,4 +29,3 @@ const createCollection = <T = DocumentData>(collectionName: string) => {
 export const restaurantsCol = createCollection<Restaurant>("restaurants")
 
 export default app
-

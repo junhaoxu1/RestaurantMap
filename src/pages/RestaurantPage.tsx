@@ -2,7 +2,6 @@ import useGetDocument from '../hooks/useGetDocument'
 import { Restaurant } from '../types/restaurants.types'
 import { restaurantsCol } from '../services/firebase'
 import { useParams } from 'react-router-dom'
-import ListGroup from 'react-bootstrap/ListGroup'
 import Container from 'react-bootstrap/Container'
 
 const RestaurantPage = () => {
