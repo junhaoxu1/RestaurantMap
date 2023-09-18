@@ -1,0 +1,7 @@
+{
+    "editorconfig": true,
+    "semi": false,
+    "jsxSingleQuote": false,
+    "tabWidth": 4,
+    "printWidth": 150
+}
