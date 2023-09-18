@@ -1,9 +1,9 @@
 import React from 'react'
 
-const UpdatePage = () => {
+const UpdateUserPage = () => {
   return (
     <div>UpdatePage</div>
   )
 }
 
-export default UpdatePage
+export default UpdateUserPage
