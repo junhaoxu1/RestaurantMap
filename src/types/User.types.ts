@@ -8,3 +8,11 @@ export type SignUpCreds = {
     password: string
     passwordConfirm: string
 }
+
+export type UpdateUserFormData = {
+    name: string
+    photoFile: FileList
+    email: string
+    password: string
+    passwordConfirm: string
+}

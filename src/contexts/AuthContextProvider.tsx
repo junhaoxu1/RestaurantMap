@@ -4,6 +4,9 @@ import {
 	createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
 	onAuthStateChanged,
+    updateEmail,
+    updatePassword,
+    updateProfile,
 	User,
     signOut,
 } from 'firebase/auth'
@@ -17,8 +20,13 @@ type AuthContextType = {
     login: (email: string, password: string) => Promise<UserCredential>
     logout: () => Promise<void>
     reloadUser: () => Promise<boolean>
+    setEmail: (email: string) => Promise<void>
+	setDisplayName: (displayName: string) => Promise<void>
+	setPassword: (password: string) => Promise<void>
+	setPhotoUrl: (photoURL: string) => Promise<void>
 	userEmail: string | null
 	userName: string | null
+    userPhotoUrl: string | null
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null)
@@ -32,6 +40,7 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 	const [loading, setLoading] = useState(true)
 	const [userEmail, setUserEmail] = useState<string | null>(null)
 	const [userName, setUserName] = useState<string | null>(null)
+    const [userPhotoUrl, setUserPhotoUrl] = useState<string | null>(null)
 
 	const signup = (email: string, password: string) => {
 		return createUserWithEmailAndPassword(auth, email, password)
@@ -45,11 +54,34 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
         return signOut(auth)
     }
 
+    const setEmail = (email: string) => {
+        if (!currentUser) { throw new Error("User is null")}
+        return updateEmail(currentUser, "Testing@gmail.com")
+    }
+
+    const setDisplayName = (displayName: string) => {
+        if (!currentUser) { throw new Error("User is null")}
+        return updateProfile(currentUser, { displayName })
+    }
+
+    const setPassword = (password: string) => {
+        if (!currentUser) { throw new Error("User is null")}
+        return updatePassword(currentUser, password)
+    }
+
+    const setPhotoUrl = (photoURL: string) => {
+        if (!currentUser) { throw new Error("User is null")}
+        setUserPhotoUrl(photoURL)
+        return updateProfile(currentUser, { photoURL })
+    }
+
     const reloadUser = async () => {
 		if (!auth.currentUser) {
 			return false
 		}
 		setUserEmail(auth.currentUser.email)
+        setUserName(auth.currentUser.displayName)
+        setUserPhotoUrl(auth.currentUser.photoURL)
 
 		return true
 	}
@@ -61,9 +93,11 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 			if (user) {
 				setUserEmail(user.email)
 				setUserName(user.displayName)
+                setUserPhotoUrl(user.photoURL)
 			} else {
 				setUserEmail(null)
 				setUserName(null)
+                setUserPhotoUrl(null)
 			}
 			setLoading(false)
 		})
@@ -78,8 +112,13 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
             login,
             logout,
             reloadUser,
+            setDisplayName,
+            setEmail,
+            setPassword,
+            setPhotoUrl,
 			userEmail,
 			userName,
+            userPhotoUrl
 		}}>
 			{loading ? (
 				<div id="initial-loader">
