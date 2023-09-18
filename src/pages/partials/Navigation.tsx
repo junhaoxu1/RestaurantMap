@@ -8,7 +8,7 @@ const Navigation = () => {
     return (
         <Navbar>
             <Container>
-                <Navbar.Brand style={{ fontSize: "16px" }} as={Link} to="/">
+                <Navbar.Brand as={Link} to="/">
                     Restaurant Map🗺️
                 </Navbar.Brand>
 
