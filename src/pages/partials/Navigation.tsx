@@ -8,7 +8,7 @@ const Navigation = () => {
   return (
     <Navbar>
         <Container>
-            <Navbar.Brand as={Link} to ="/">Restaurants</Navbar.Brand>
+            <Navbar.Brand as={Link} to ="/">Restaurant Map🗺️</Navbar.Brand>
 
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
