@@ -1,5 +1,6 @@
 import Container from 'react-bootstrap/Container'
 import Navbar from 'react-bootstrap/Navbar'
+import NavDropdown from 'react-bootstrap/NavDropdown'
 import Nav from 'react-bootstrap/Nav'
 import { NavLink, Link } from 'react-router-dom'
 
@@ -12,9 +13,17 @@ const Navigation = () => {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="ms-auto">
+                    <NavDropdown
+                        title="Instert User"
+                    >
+                        <NavDropdown.Item as={NavLink} to="/update">Update Profile</NavDropdown.Item>
+						<NavDropdown.Divider />
+						<NavDropdown.Item as={NavLink} to="/logout">Logout</NavDropdown.Item>
+                    </NavDropdown>
+
+
                     <Nav.Link as={NavLink} end to="/">Login</Nav.Link>
-                    <Nav.Link as={NavLink} end to="/">Sign Up</Nav.Link>
-                    <Nav.Link as={NavLink} end to="/">Log out</Nav.Link>
+                    <Nav.Link as={NavLink} end to="/">Signup</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Container>
