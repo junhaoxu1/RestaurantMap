@@ -16,6 +16,7 @@ import { storage } from "../services/firebase"
 import { UpdateUserFormData } from "../types/User.types"
 const UpdateUserPage = () => {
 	const [error, setError] = useState<string | null>(null)
+	const [uploadProgress, setUploadProgress] = useState<number | null>(null)
 	const [loading, setLoading] = useState(false)
 	const { currentUser, reloadUser, setDisplayName, setEmail, setPassword, setPhotoUrl, userPhotoUrl } = useAuth()
 	const {
@@ -67,6 +68,9 @@ const UpdateUserPage = () => {
 
 				uploadTask.on(
 					"state_changed",
+					(snapshot) => {
+						setUploadProgress(Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 1000) / 10)
+					},
 					(err) => {
 						setError("Upload failed: " + err)
 					},
@@ -155,7 +159,7 @@ const UpdateUserPage = () => {
                   placeholder={currentUser.email || ""}
                   type="email"
                   {...register('email', {
-                    required: "*Enter email"
+                    required: "Enter an email"
                   })}
                 />
                 {errors.email && <p className="invalid">{errors.email.message ?? "Invalid value"}</p>}
