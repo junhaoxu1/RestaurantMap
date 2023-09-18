@@ -5,6 +5,7 @@ import {
     signInWithEmailAndPassword,
 	onAuthStateChanged,
 	User,
+    signOut,
 } from 'firebase/auth'
 import { createContext, useEffect, useState } from 'react'
 import SyncLoader from 'react-spinners/SyncLoader'
@@ -14,6 +15,8 @@ type AuthContextType = {
 	currentUser: User | null
 	signup: (email: string, password: string) => Promise<UserCredential>
     login: (email: string, password: string) => Promise<UserCredential>
+    logout: () => Promise<void>
+    reloadUser: () => Promise<boolean>
 	userEmail: string | null
 	userName: string | null
 }
@@ -38,6 +41,19 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
         return signInWithEmailAndPassword(auth, email, password)
     }
 
+    const logout = () => {
+        return signOut(auth)
+    }
+
+    const reloadUser = async () => {
+		if (!auth.currentUser) {
+			return false
+		}
+		setUserEmail(auth.currentUser.email)
+
+		return true
+	}
+
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
 			setCurrentUser(user)
@@ -60,6 +76,8 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 			currentUser,
 			signup,
             login,
+            logout,
+            reloadUser,
 			userEmail,
 			userName,
 		}}>

@@ -6,6 +6,7 @@ import MapPage from './pages/MapPage'
 import Navigation from './pages/partials/Navigation'
 import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
+import LogoutPage from './pages/LogoutPage'
 
 const App = () => {
 
@@ -18,6 +19,7 @@ const App = () => {
 					<Route path="/food-map" element={<MapPage />} />
 					<Route path="/signup" element={<SignupPage />} />
 					<Route path="/login" element={<LoginPage />} />
+					<Route path="/logout" element={<LogoutPage />} />
 				</Routes>
 			</Container>
 		</div>

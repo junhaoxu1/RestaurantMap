@@ -1,53 +1,60 @@
-import { useRef, useState } from 'react'
-import { FirebaseError } from 'firebase/app'
-import Alert from 'react-bootstrap/Alert'
-import Button from 'react-bootstrap/Button'
-import Card from 'react-bootstrap/Card'
-import Col from 'react-bootstrap/Col'
+import { useRef, useState } from "react"
+import { FirebaseError } from "firebase/app"
+import Alert from "react-bootstrap/Alert"
+import Button from "react-bootstrap/Button"
+import Card from "react-bootstrap/Card"
+import Col from "react-bootstrap/Col"
 import Container from "react-bootstrap/Container"
-import Form from 'react-bootstrap/Form'
-import Row from 'react-bootstrap/Row'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
-import useAuth from '../hooks/useAuth'
-import { SignUpCreds } from '../types/User.types'
+import Form from "react-bootstrap/Form"
+import Row from "react-bootstrap/Row"
+import { useForm, SubmitHandler } from "react-hook-form"
+import { Link, useNavigate } from "react-router-dom"
+import useAuth from "../hooks/useAuth"
+import { SignUpCreds } from "../types/User.types"
 
 const SignupPage = () => {
-    const [error, setError] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false)
-    const { handleSubmit, register, watch, formState: { errors }} = useForm<SignUpCreds>()
+	const [error, setError] = useState<string | null>(null)
+	const [loading, setLoading] = useState(false)
+	const {
+		handleSubmit,
+		register,
+		watch,
+		formState: { errors },
+	} = useForm<SignUpCreds>()
+    const navigate = useNavigate()
 
-    const { signup } = useAuth()
+	const { signup } = useAuth()
 
-    const passwordRef = useRef("")
-    passwordRef.current = watch('password')
+	const passwordRef = useRef("")
+	passwordRef.current = watch("password")
 
-    const onSignup: SubmitHandler<SignUpCreds> = async (data) => {
-        setError(null)
+	const onSignup: SubmitHandler<SignUpCreds> = async (data) => {
+		setError(null)
 
-        try {
-            setLoading(true)
-            await signup(data.email, data.password)
+		try {
+			setLoading(true)
+			await signup(data.email, data.password)
 
-        } catch (error) {
-            if (error instanceof FirebaseError) {
-                setError(error.message)
-            } else {
-                setError("Something Went Wrong")
-            }
-        }
-        setLoading(false)
-    }
+            navigate("/login")
+		} catch (error) {
+			if (error instanceof FirebaseError) {
+				setError(error.message)
+			} else {
+				setError("Something Went Wrong")
+			}
+		}
+		setLoading(false)
+	}
 
-  return (
-    <Container className="py-3 center-y">
+	return (
+		<Container className="py-3 center-y">
 			<Row>
 				<Col md={{ span: 6, offset: 3 }}>
 					<Card>
 						<Card.Body>
 							<Card.Title className="mb-3">Sign Up</Card.Title>
 
-							{error && (<Alert variant="danger">{error}</Alert>)}
+							{error && <Alert variant="danger">{error}</Alert>}
 
 							<Form onSubmit={handleSubmit(onSignup)}>
 								<Form.Group controlId="email" className="mb-3">
@@ -55,7 +62,7 @@ const SignupPage = () => {
 									<Form.Control
 										placeholder="abc@gmail.com"
 										type="email"
-										{...register('email', {
+										{...register("email", {
 											required: "You have to enter an email",
 										})}
 									/>
@@ -67,7 +74,7 @@ const SignupPage = () => {
 									<Form.Control
 										type="password"
 										autoComplete="new-password"
-										{...register('password', {
+										{...register("password", {
 											required: "Enter a password",
 										})}
 									/>
@@ -80,24 +87,18 @@ const SignupPage = () => {
 									<Form.Control
 										type="password"
 										autoComplete="off"
-										{...register('passwordConfirm', {
+										{...register("passwordConfirm", {
 											required: "Please enter your password",
 											validate: (value) => {
 												return value === passwordRef.current || "The passwords does not match 🤦🏼‍♂️"
-											}
+											},
 										})}
 									/>
 									{errors.passwordConfirm && <p className="invalid">{errors.passwordConfirm.message ?? "Invalid value"}</p>}
 								</Form.Group>
 
-								<Button
-									disabled={loading}
-									variant="primary"
-									type="submit"
-								>
-									{loading
-										? "Creating account..."
-										: "Create Account"}
+								<Button disabled={loading} variant="primary" type="submit">
+									{loading ? "Creating account..." : "Create Account"}
 								</Button>
 							</Form>
 						</Card.Body>
@@ -109,7 +110,7 @@ const SignupPage = () => {
 				</Col>
 			</Row>
 		</Container>
-  )
+	)
 }
 
 export default SignupPage
