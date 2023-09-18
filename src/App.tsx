@@ -7,6 +7,7 @@ import RestaurantsPage from './pages/RestaurantsPage'
 import RestaurantPage from './pages/RestaurantPage'
 import Navigation from './pages/partials/Navigation'
 import SignupPage from './pages/SignupPage'
+import { ToastContainer } from 'react-toastify'
 
 const App = () => {
 
@@ -22,6 +23,11 @@ const App = () => {
 					<Route path='/restaurants/:id' element={<RestaurantPage />} />
 					<Route path="/signup" element={<SignupPage />} />
 				</Routes>
+			<ToastContainer
+				theme='colored'
+				position='top-right'
+				autoClose={1500}
+			/>
 			</Container>
 		</div>
 	)
