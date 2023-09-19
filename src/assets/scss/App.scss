@@ -1,7 +1,6 @@
 @import "bootstrap/scss/bootstrap";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-@import 'react-toastify/dist/ReactToastify.css';
-
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap");
+@import "react-toastify/dist/ReactToastify.css";
 
 // Css resets
 * {
@@ -12,7 +11,9 @@
 
 body {
     min-height: 100vh;
-    font-family: 'Inter', sans-serif;
+    max-width: 1320px;
+    margin: 0 auto;
+    font-family: "Inter", sans-serif;
 }
 
 img,
@@ -21,22 +22,38 @@ svg {
 }
 
 #App {
-	min-height: 100vh;
+    min-height: 100vh;
     min-width: 100%;
 
-	.map-page {
-		.cBox {
-			height: 100vh;
+    .map-page {
+        .cBox {
+            height: 100vh;
 
-			.map {
-				width: 100%;
-				height: 100vh;
-				.map-container {
-					width: 100vh;
-					height: 100vh;
-				}
-			}
-		}
-	}
+            .map {
+                width: 100%;
+                height: 100vh;
+                .map-container {
+                    width: 100vh;
+                    height: 100vh;
+                }
+            }
+        }
+    }
 
+    .form-container {
+        width: 80%;
+        margin: 1rem auto;
+        padding: 2rem;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        max-width: 768px;
+
+        .form-label {
+            margin: 0;
+        }
+
+        .input-error {
+            color: rgb(192, 0, 38);
+            font-size: 0.85rem;
+        }
+    }
 }
