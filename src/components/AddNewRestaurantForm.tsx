@@ -95,8 +95,8 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant }) => {
                             message: "Description has to be at least 5 characters long",
                         },
                         maxLength: {
-                            value: 50,
-                            message: "Description has to be less than 50 characters",
+                            value: 200,
+                            message: "Description has to be less than 200 characters",
                         },
                     })}
                 />

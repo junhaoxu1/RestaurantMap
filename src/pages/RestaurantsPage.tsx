@@ -1,12 +1,11 @@
-import { Link } from "react-router-dom"
 import useGetCollection from "../hooks/useGetCollection"
 import { newRestaurantCol, restaurantsCol } from "../services/firebase"
 import { Restaurant, RestaurantFormData } from "../types/restaurants.types"
-import ListGroup from "react-bootstrap/ListGroup"
 import AddNewRestaurantForm from "../components/AddNewRestaurantForm"
 import { doc, setDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
 import { getGeocode } from "../services/Geocode"
+import RestaurantCard from "../components/RestaurantCard"
 
 const RestaurantsPage = () => {
     const { data: restaurants, error, loading } = useGetCollection<Restaurant>(restaurantsCol)
@@ -42,17 +41,10 @@ const RestaurantsPage = () => {
     return (
         <div>
             {loading && <p>Loading restaurants...</p>}
-            <ListGroup>
-                {restaurants.map((restaurant) => (
-                    <ListGroup.Item key={restaurant.name} action as={Link} to={`/restaurants/${restaurant._id}`}>
-                        <p>{restaurant.name}</p>
-                    </ListGroup.Item>
-                ))}
-            </ListGroup>
 
-            {/* <AddNewRestaurantForm 
-                onAddRestaurant={addNewRestaurant}
-            /> */}
+            <RestaurantCard restaurants={restaurants} />
+
+            {/* <AddNewRestaurantForm onAddRestaurant={addNewRestaurant} /> */}
 
             {error && <p>Something went wrong: {error}</p>}
         </div>

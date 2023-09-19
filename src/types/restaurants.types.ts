@@ -12,9 +12,10 @@ export type Restaurant = {
     supply: string
     webpage: string
     geolocation: {
-        lat: number,
+        lat: number
         lng: number
     }
+    cover_photo?: string
 }
 
 export type Restaurants = Restaurant[]
