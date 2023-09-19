@@ -15,7 +15,10 @@ const Navigation = () => {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ms-auto">
-                        <NavDropdown title="User">
+                        <Nav.Link as={NavLink} end to="/restaurants">
+                            All Restaurants
+                        </Nav.Link>
+                        <NavDropdown title="Instert User">
                             <NavDropdown.Item as={NavLink} to="/update">
                                 Update Profile
                             </NavDropdown.Item>
