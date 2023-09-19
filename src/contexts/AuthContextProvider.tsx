@@ -1,18 +1,20 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import {
 	UserCredential,
 	createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+	verifyBeforeUpdateEmail,
 	onAuthStateChanged,
-    updateEmail,
     updatePassword,
     updateProfile,
+	updateEmail,
 	User,
     signOut,
 } from 'firebase/auth'
 import { createContext, useEffect, useState } from 'react'
 import SyncLoader from 'react-spinners/SyncLoader'
 import { auth } from '../services/firebase'
+
+
 
 type AuthContextType = {
 	currentUser: User | null
@@ -42,13 +44,13 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 	const [userName, setUserName] = useState<string | null>(null)
     const [userPhotoUrl, setUserPhotoUrl] = useState<string | null>(null)
 
+	const login = (email: string, password: string) => {
+        return signInWithEmailAndPassword(auth, email, password)
+    }
+
 	const signup = (email: string, password: string) => {
 		return createUserWithEmailAndPassword(auth, email, password)
 	}
-
-    const login = (email: string, password: string) => {
-        return signInWithEmailAndPassword(auth, email, password)
-    }
 
     const logout = () => {
         return signOut(auth)
@@ -56,7 +58,8 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 
     const setEmail = (email: string) => {
         if (!currentUser) { throw new Error("User is null")}
-        return updateEmail(currentUser, email)
+		
+        return verifyBeforeUpdateEmail(currentUser, email)
     }
 
     const setDisplayName = (displayName: string) => {

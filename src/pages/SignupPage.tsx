@@ -35,7 +35,7 @@ const SignupPage = () => {
 			setLoading(true)
 			await signup(data.email, data.password)
 
-            navigate("/login")
+            navigate("/")
 		} catch (error) {
 			if (error instanceof FirebaseError) {
 				setError(error.message)

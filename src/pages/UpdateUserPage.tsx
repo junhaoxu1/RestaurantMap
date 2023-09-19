@@ -14,9 +14,10 @@ import { toast } from "react-toastify"
 import useAuth from "../hooks/useAuth"
 import { storage } from "../services/firebase"
 import { UpdateUserFormData } from "../types/User.types"
+
+
 const UpdateUserPage = () => {
 	const [error, setError] = useState<string | null>(null)
-	const [uploadProgress, setUploadProgress] = useState<number | null>(null)
 	const [loading, setLoading] = useState(false)
 	const { currentUser, reloadUser, setDisplayName, setEmail, setPassword, setPhotoUrl, userPhotoUrl } = useAuth()
 	const {
@@ -69,7 +70,7 @@ const UpdateUserPage = () => {
 				uploadTask.on(
 					"state_changed",
 					(snapshot) => {
-						setUploadProgress(Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 1000) / 10)
+						Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 1000) / 10
 					},
 					(err) => {
 						setError("Upload failed: " + err)
@@ -85,7 +86,13 @@ const UpdateUserPage = () => {
 			await reloadUser()
 
 			setLoading(false)
-		} catch (error) {}
+		} catch (error) {
+			if (error instanceof FirebaseError) {
+				setError(error.message)
+			} else {
+				setError("Failed")
+			}
+		}
 	}
 
   const handleDeletePhoto = async () => {
