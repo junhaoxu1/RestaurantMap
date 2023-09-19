@@ -42,7 +42,7 @@ svg {
 
     .form-container {
         width: 80%;
-        margin: 1rem auto;
+        margin: 2rem auto;
         padding: 2rem;
         box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
         max-width: 768px;
@@ -54,6 +54,13 @@ svg {
         .input-error {
             color: rgb(192, 0, 38);
             font-size: 0.85rem;
+        }
+
+        .line {
+            border-bottom: 4px solid crimson;
+            border-radius: 16px;
+            width: 250px;
+            margin: 1rem auto;
         }
     }
 
