@@ -18,7 +18,7 @@ const RestaurantDetails: React.FC<Props> = ({ restaurant }) => {
             </div>
 
             <Container className="restaurant-content mx-auto">
-                <div className="card-wrapper">
+                <div className="card-wrapper mb-5">
                     <Card className="mt-3 shadow">
                         <Card.Body>
                             <Card.Title className="card-heading">Information</Card.Title>
