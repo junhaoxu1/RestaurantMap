@@ -13,7 +13,7 @@ const placeholderImage =
 const RestaurantCard: React.FC<Props> = ({ restaurants }) => {
     return (
         <>
-            <ul className="d-flex gap-3 flex-wrap justify-content-center mt-3">
+            <ul className="d-flex gap-3 flex-wrap mt-3 px-0 justify-content-center">
                 {restaurants.map((restaurant) => (
                     <Card className="mt-3 shadow text-center" style={{ width: "18rem", border: "none" }}>
                         <Card.Img variant="top" src={restaurant.cover_photo ?? placeholderImage} className="img-fluid" />
