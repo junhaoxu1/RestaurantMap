@@ -10,7 +10,7 @@ const AddNewRestaurantPage = () => {
     const addNewRestaurant = async (data: RestaurantFormData) => {
         try {
             // get geo code for the submitted address
-            const res = await getGeocode(data.address)
+            const res = await getGeocode(data.address, data.city)
 
             // add new document to `restaurants` collection in db
             const docRef = doc(newRestaurantCol)

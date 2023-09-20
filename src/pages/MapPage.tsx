@@ -1,10 +1,9 @@
 import { useLoadScript } from "@react-google-maps/api"
 import Map from "../components/Map"
-import RestaurantListItem from "../components/RestaurantListItem"
 import useGetCollection from "../hooks/useGetCollection"
 import { Restaurant } from "../types/restaurants.types"
 import { restaurantsCol } from "../services/firebase"
-const MYMAPSKEY: string = import.meta.env.VITE_APP_GOOGLE_KEY
+const MYMAPSKEY = import.meta.env.VITE_APP_GOOGLE_KEY
 
 const MapPage = () => {
     const { data: restaurants, error, loading } = useGetCollection<Restaurant>(restaurantsCol)
@@ -25,10 +24,11 @@ const MapPage = () => {
         return <p>Loading</p>
     }
 
+    console.log("restaurant:", restaurants)
+
     return (
         <>
             <div className="d-flex">
-                <RestaurantListItem restaurants={restaurants} />
                 <section className="map-page">
                     <Map restaurants={restaurants} />
                 </section>
