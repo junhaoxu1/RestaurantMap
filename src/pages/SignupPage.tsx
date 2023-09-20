@@ -11,11 +11,10 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 import { SignUpCreds, UserFormData } from '../types/User.types'
-import { doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc, getDocs } from 'firebase/firestore'
 import { usersCol } from '../services/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../services/firebase'
-import useGetUser from '../hooks/useGetUser'
 
 
 const SignupPage = () => {
@@ -26,23 +25,29 @@ const SignupPage = () => {
 
     const { signup } = useAuth()
 	const { currentUser} = useAuth()
-
-	const {
-		data: Users,
-	} = useGetUser(`${currentUser?.uid}`)
-
+	
     const passwordRef = useRef("")
     passwordRef.current = watch("password")
 
 	const onAddUser = async (data: UserFormData) => {
 		const docRef = doc(usersCol)
 
+		const querySnapshot = await getDocs(usersCol)
+		const userCount = querySnapshot.size
 
-		await setDoc(docRef, {
-			...data,
-			admin: false,
-			uid: data.uid
-		})
+		if (userCount === 0) {
+			await setDoc(docRef, {
+				...data,
+				admin: true,
+				uid: data.uid
+			})
+		} else {
+			await setDoc(docRef, {
+				...data,
+				admin: false,
+				uid: data.uid
+			})
+		}
 	}
 
 	useEffect(() => {
