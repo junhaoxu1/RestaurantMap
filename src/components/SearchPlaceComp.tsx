@@ -22,7 +22,7 @@ const SearchPlaceComp: React.FC<ISearchPlaceProps> = ({ onSearchPlace }) => {
         <Form id="form" className="sForm d-flex" onSubmit={handlePlaceFormSubmit}>
             <Form.Group>
                 <Form.Control
-                    style={{ width: "100%", textAlign: "center" }}
+                    style={{ width: "40vh", textAlign: "center" }}
                     onChange={(e) => setPlaceInput(e.target.value)}
                     type="text"
                     placeholder="Track Places"
@@ -30,13 +30,7 @@ const SearchPlaceComp: React.FC<ISearchPlaceProps> = ({ onSearchPlace }) => {
                     value={sPlaceInput}
                 />
             </Form.Group>
-            <Button
-                style={{ background: "black" }}
-                variant="success"
-                type="submit"
-                className="submit-btn"
-                disabled={!sPlaceInput.trim().length}
-            >
+            <Button style={{ background: "black" }} variant="success" type="submit" className="submit-btn" disabled={!sPlaceInput.trim().length}>
                 Track
             </Button>
         </Form>

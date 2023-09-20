@@ -6,7 +6,7 @@ import { NavLink, Link } from "react-router-dom"
 
 const Navigation = () => {
     return (
-        <Navbar>
+        <Navbar expand="md">
             <Container>
                 <Navbar.Brand as={Link} to="/">
                     Restaurant Map🗺️
