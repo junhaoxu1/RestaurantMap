@@ -22,7 +22,7 @@ const MapPage = () => {
     }
 
     if (!restaurants || loading) {
-        return
+        return <p>Loading</p>
     }
 
     return (
@@ -30,9 +30,11 @@ const MapPage = () => {
             <div className="d-flex">
                 <RestaurantListItem restaurants={restaurants} />
                 <section className="map-page">
-                    <Map />
+                    <Map restaurants={restaurants} />
                 </section>
             </div>
+
+            {error && <p>Something went wrong: {error}</p>}
         </>
     )
 }
