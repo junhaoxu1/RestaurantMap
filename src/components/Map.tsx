@@ -1,10 +1,10 @@
 import { useMemo } from "react"
-import { GoogleMap, Marker } from "@react-google-maps/api"
+import { GoogleMap, InfoWindow, Marker } from "@react-google-maps/api"
 import { Button } from "react-bootstrap"
 import SearchPlaceComp from "./SearchPlaceComp"
 import { useSearchParams } from "react-router-dom"
 import React from "react"
-import { Restaurant, Restaurants } from "../types/restaurants.types"
+import { RestaurantFormData, Restaurants } from "../types/restaurants.types"
 import RestaurantIcon from "../assets/images/restauranticon.webp"
 
 type MapOptions = google.maps.MapOptions
@@ -19,7 +19,7 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
 
     const [gCurrentPos, setGCurrentPos] = React.useState<google.maps.LatLngLiteral>({} as google.maps.LatLngLiteral)
     const [_disabled, setDisabled] = React.useState(false)
-    const [_selectedClickMarker, setSelectedClickMarker] = React.useState<Restaurant>({} as Restaurant)
+    const [selectedClickMarker, setSelectedClickMarker] = React.useState<RestaurantFormData>({} as RestaurantFormData)
 
     //removing googleMaps zoom in&out button and other button inside MapOptions.
     const options = useMemo<MapOptions>(
@@ -66,10 +66,10 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
             return
         }
         setGCurrentPos({ lat: e.latLng.lat(), lng: e.latLng.lng() })
-        setSelectedClickMarker({} as Restaurant)
+        setSelectedClickMarker({} as RestaurantFormData)
     }
 
-    const ShowMarkerClick = (marker: Restaurant) => setSelectedClickMarker(marker)
+    const ShowMarkerClick = (marker: RestaurantFormData) => setSelectedClickMarker(marker)
 
     return (
         <div className="cBox">
@@ -100,8 +100,7 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
                     onUnmount={onUnMount}
                 >
                     {gCurrentPos.lat ? <Marker position={gCurrentPos} /> : null}
-
-                    {restaurants.map((marker) => (
+                    {gCurrentPos.lat ? restaurants.map((marker) => (
                         <Marker
                             key={marker._id}
                             position={marker.geolocation}
@@ -112,8 +111,19 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
                                 anchor: new window.google.maps.Point(15, 15),
                                 scaledSize: new window.google.maps.Size(45, 45),
                             }}
-                        />
-                    ))}
+                        >
+						</Marker>
+                    )): null}
+
+					{selectedClickMarker.geolocation && (
+						<InfoWindow position={selectedClickMarker.geolocation} onCloseClick={() => setSelectedClickMarker({} as RestaurantFormData)}>
+							<div>
+								<h4>{selectedClickMarker.name}</h4>
+								<p>{selectedClickMarker.city} {selectedClickMarker.address}</p>
+								<p>{selectedClickMarker.description}</p>
+							</div>
+						</InfoWindow>
+					)}
                 </GoogleMap>
                 <SearchPlaceComp onSearchPlace={handlePlaceForm} />
 
