@@ -3,6 +3,7 @@ import { CollectionReference, DocumentData, collection, getFirestore } from "fir
 import { getAuth } from "firebase/auth"
 import { Restaurant, RestaurantFormData } from "../types/restaurants.types"
 import { getStorage } from "firebase/storage"
+import { UserInformation } from "../types/User.types"
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -21,6 +22,8 @@ export const db = getFirestore(app)
 
 export const auth = getAuth(app)
 
+export const storage = getStorage(app)
+
 // returns collection with specified type
 const createCollection = <T = DocumentData>(collectionName: string) => {
     return collection(db, collectionName) as CollectionReference<T>
@@ -29,6 +32,8 @@ const createCollection = <T = DocumentData>(collectionName: string) => {
 // collection references for getting the `restaurants` collection in db and setting new document
 export const restaurantsCol = createCollection<Restaurant>("restaurants")
 export const newRestaurantCol = createCollection<RestaurantFormData>("restaurants")
+
+export const usersCol = createCollection<UserInformation>("users")
 
 export default app
 

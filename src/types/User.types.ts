@@ -16,3 +16,13 @@ export type UpdateUserFormData = {
     password: string
     passwordConfirm: string
 }
+
+export type UserInformation = {
+    uid: string
+    email: string
+    admin: boolean
+}
+
+export type Users = UserInformation[]
+
+export type UserFormData = Omit<UserInformation, "_id">
