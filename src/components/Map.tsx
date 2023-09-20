@@ -1,18 +1,25 @@
 import { useMemo } from "react"
-import { GoogleMap } from "@react-google-maps/api"
+import { GoogleMap, Marker } from "@react-google-maps/api"
 import { Button } from "react-bootstrap"
 import SearchPlaceComp from "./SearchPlaceComp"
 import { useSearchParams } from "react-router-dom"
 import React from "react"
+import { Restaurant, Restaurants } from "../types/restaurants.types"
+import RestaurantIcon from "../assets/images/restauranticon.webp"
 
 type MapOptions = google.maps.MapOptions
 
-const Map = () => {
+type MarkerLocationProps = {
+    restaurants: Restaurants
+}
+
+const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
     // it remember to locationen by setting latitude and longitude
     const center = useMemo(() => ({ lat: 55.6053, lng: 13.0041 }), [])
 
-    const [_gCurrentPos, setGCurrentPos] = React.useState<google.maps.LatLngLiteral>({} as google.maps.LatLngLiteral)
+    const [gCurrentPos, setGCurrentPos] = React.useState<google.maps.LatLngLiteral>({} as google.maps.LatLngLiteral)
     const [_disabled, setDisabled] = React.useState(false)
+    const [_selectedClickMarker, setSelectedClickMarker] = React.useState<Restaurant>({} as Restaurant)
 
     //removing googleMaps zoom in&out button and other button inside MapOptions.
     const options = useMemo<MapOptions>(
@@ -39,7 +46,7 @@ const Map = () => {
     const gCurrentPosition = (position: google.maps.LatLngLiteral) => {
         if (mapReference.current) {
             mapReference.current.panTo({ lat: position.lat, lng: position.lng })
-            mapReference.current.setZoom(12)
+            mapReference.current.setZoom(18)
             setGCurrentPos(position)
         }
     }
@@ -48,6 +55,21 @@ const Map = () => {
     const onMapLoadInstance = (map: google.maps.Map): void => {
         mapReference.current = map
     }
+
+    const onUnMount = (): void => {
+        mapReference.current = null
+    }
+
+	// show location where you click on the map
+    const ShowMapClick = (e: google.maps.MapMouseEvent) => {
+        if (!e.latLng) {
+            return
+        }
+        setGCurrentPos({ lat: e.latLng.lat(), lng: e.latLng.lng() })
+        setSelectedClickMarker({} as Restaurant)
+    }
+
+    const ShowMarkerClick = (marker: Restaurant) => setSelectedClickMarker(marker)
 
     return (
         <div className="cBox">
@@ -68,8 +90,33 @@ const Map = () => {
                 <i className="fa-solid fa-location-crosshairs"></i>
             </Button>
             <div className="map">
-                <GoogleMap zoom={12} center={center} mapContainerClassName="map-container" options={options} onLoad={onMapLoadInstance}></GoogleMap>
+                <GoogleMap
+                    zoom={12}
+                    center={center}
+                    mapContainerClassName="map-container"
+                    options={options}
+                    onLoad={onMapLoadInstance}
+                    onClick={ShowMapClick}
+                    onUnmount={onUnMount}
+                >
+                    {gCurrentPos.lat ? <Marker position={gCurrentPos} /> : null}
+
+                    {restaurants.map((marker) => (
+                        <Marker
+                            key={marker._id}
+                            position={marker.geolocation}
+                            onClick={() => ShowMarkerClick(marker)}
+                            icon={{
+                                url: RestaurantIcon,
+                                origin: new window.google.maps.Point(0, 0),
+                                anchor: new window.google.maps.Point(15, 15),
+                                scaledSize: new window.google.maps.Size(45, 45),
+                            }}
+                        />
+                    ))}
+                </GoogleMap>
                 <SearchPlaceComp onSearchPlace={handlePlaceForm} />
+
             </div>
         </div>
     )
