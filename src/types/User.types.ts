@@ -1,6 +1,7 @@
 export type LoginCreds = {
     email: string
     password: string
+    admin: boolean
 }
 
 export type SignUpCreds = {
@@ -18,9 +19,9 @@ export type UpdateUserFormData = {
 }
 
 export type UserInformation = {
-    uid: string
     email: string
     admin: boolean
+    uid: string
 }
 
 export type Users = UserInformation[]

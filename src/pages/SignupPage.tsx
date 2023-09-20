@@ -13,7 +13,10 @@ import useAuth from '../hooks/useAuth'
 import { SignUpCreds, UserFormData } from '../types/User.types'
 import { doc, setDoc } from 'firebase/firestore'
 import { usersCol } from '../services/firebase'
-import useGetUsers from '../hooks/useGetUsers'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from '../services/firebase'
+import useGetUser from '../hooks/useGetUser'
+
 
 const SignupPage = () => {
 	const [error, setError] = useState<string | null>(null)
@@ -22,6 +25,11 @@ const SignupPage = () => {
     const navigate = useNavigate()
 
     const { signup } = useAuth()
+	const { currentUser} = useAuth()
+
+	const {
+		data: Users,
+	} = useGetUser(`${currentUser?.uid}`)
 
     const passwordRef = useRef("")
     passwordRef.current = watch("password")
@@ -29,35 +37,76 @@ const SignupPage = () => {
 	const onAddUser = async (data: UserFormData) => {
 		const docRef = doc(usersCol)
 
+
 		await setDoc(docRef, {
 			...data,
-			admin: false
+			admin: false,
+			uid: data.uid
 		})
 	}
 
-    const onSignup: SubmitHandler<SignUpCreds> = async (data) => {
-        setError(null)
+	useEffect(() => {
+		const unsubscribe = onAuthStateChanged(auth, async (user) => {
+			if (!currentUser) {
 
-		try {
-			setLoading(true)
-			await signup(data.email, data.password)
+				return;
+			  }
+		  if (user) {
 			const userData: UserFormData = {
-				uid: "",
-				email: data.email,
-				admin: false
+			email: currentUser?.email || '',
+			  admin: false,
+			  uid: ""
+			};
+	  
+			try {
+			  await onAddUser(userData);
+			  navigate("/");
+			} catch (error) {
+			  if (error instanceof FirebaseError) {
+				setError(error.message);
+			  } else {
+				setError("Something Went Wrong");
+			  }
+			} finally {
+			  setLoading(false);
 			}
-			
-			onAddUser(userData)
-            navigate("/")
+		  }
+		});
+	  
+		return unsubscribe;
+	  }, []);
+
+	  const onSignup: SubmitHandler<SignUpCreds> = async (data) => {
+		setError(null);
+	  
+		try {
+		  setLoading(true);
+		  await signup(data.email, data.password);
+	  
+		  const currentUser = auth.currentUser; // Get the current user after signup
+	  
+		  if (currentUser) {
+			const userData: UserFormData = {
+			  email: currentUser.email || '', // Use the email from currentUser (if available)
+			  admin: false,
+			  uid: currentUser.uid || '', // Use the UID from currentUser (if available)
+			};
+	  
+			onAddUser(userData);
+			navigate("/");
+		  } else {
+			// Handle the case where currentUser is not available
+			setError("User not found after signup.");
+		  }
 		} catch (error) {
-			if (error instanceof FirebaseError) {
-				setError(error.message)
-			} else {
-				setError("Something Went Wrong")
-			}
+		  if (error instanceof FirebaseError) {
+			setError(error.message);
+		  } else {
+			setError("Something Went Wrong");
+		  }
 		}
-		setLoading(false)
-	}
+		setLoading(false);
+	  };
 
 	return (
 		<Container className="py-3 center-y">

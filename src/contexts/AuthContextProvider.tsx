@@ -29,6 +29,7 @@ type AuthContextType = {
 	userEmail: string | null
 	userName: string | null
     userPhotoUrl: string | null
+
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null)
@@ -49,7 +50,9 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
     }
 
 	const signup = (email: string, password: string) => {
-		return createUserWithEmailAndPassword(auth, email, password)
+		const createUser =  createUserWithEmailAndPassword(auth, email, password)
+		const uid = currentUser?.uid
+		return createUser
 	}
 
     const logout = () => {

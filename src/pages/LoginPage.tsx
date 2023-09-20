@@ -24,6 +24,7 @@ const LoginPage = () => {
 
         try {
             setLoading(true)
+
             await login(data.email, data.password)
 
 			navigate("/")
