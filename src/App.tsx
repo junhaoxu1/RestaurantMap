@@ -12,6 +12,7 @@ import LoginPage from './pages/LoginPage'
 import LogoutPage from './pages/LogoutPage'
 import UpdatePage from './pages/UpdateUserPage'
 import AdminPage from "./pages/AdminPage"
+import AdminUpdatePage from "./pages/AdminUpdatePage"
 
 const App = () => {
     return (
@@ -30,7 +31,8 @@ const App = () => {
 					<Route path="/logout" element={<LogoutPage />} />
 					<Route path="/update-user" element={<UpdatePage />} />
 
-                    <Route path ="/admin" element={<AdminPage />} />
+                    <Route path="/admin" element={<AdminPage />} />
+                    <Route path="/admin/:id" element={<AdminUpdatePage />} />
                 </Routes>
                 <ToastContainer theme="colored" position="top-right" autoClose={1500} />
             </>

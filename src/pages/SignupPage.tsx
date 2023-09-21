@@ -11,10 +11,10 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 import { SignUpCreds, UserFormData } from '../types/User.types'
-import { doc, setDoc, getDocs } from 'firebase/firestore'
+import { doc, setDoc, getDocs, collection } from 'firebase/firestore'
 import { usersCol } from '../services/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from '../services/firebase'
+import { auth, db } from '../services/firebase'
 
 
 const SignupPage = () => {
@@ -22,6 +22,8 @@ const SignupPage = () => {
 	const [loading, setLoading] = useState(false)
 	const {handleSubmit, register, watch,formState: { errors }} = useForm<SignUpCreds>()
     const navigate = useNavigate()
+
+	const newDocRef = doc(collection(db, "users"));
 
     const { signup, currentUser } = useAuth()
 
@@ -38,13 +40,18 @@ const SignupPage = () => {
 			await setDoc(docRef, {
 				...data,
 				admin: true,
-				uid: data.uid
+				uid: data.uid,
+				name: "",
+				_id: newDocRef.id
 			})
 		} else {
 			await setDoc(docRef, {
 				...data,
 				admin: false,
-				uid: data.uid
+				uid: data.uid,
+				name: "",
+				_id: newDocRef.id
+
 			})
 		}
 	}
@@ -59,7 +66,8 @@ const SignupPage = () => {
 			const userData: UserFormData = {
 			email: currentUser?.email || '',
 			  admin: false,
-			  uid: ""
+			  uid: "",
+			  name: ""
 			};
 	  
 			try {
@@ -87,19 +95,20 @@ const SignupPage = () => {
 		  setLoading(true);
 		  await signup(data.email, data.password);
 	  
-		  const currentUser = auth.currentUser; // Get the current user after signup
+		  const currentUser = auth.currentUser; 
 	  
 		  if (currentUser) {
 			const userData: UserFormData = {
-			  email: currentUser.email || '', // Use the email from currentUser (if available)
+			  email: currentUser.email || '', 
 			  admin: false,
-			  uid: currentUser.uid || '', // Use the UID from currentUser (if available)
+			  uid: currentUser.uid || '', 
+			  name: currentUser.displayName || '',
+
 			};
 	  
 			onAddUser(userData);
 			navigate("/");
 		  } else {
-			// Handle the case where currentUser is not available
 			setError("User not found after signup.");
 		  }
 		} catch (error) {

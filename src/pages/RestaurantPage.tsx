@@ -13,6 +13,8 @@ const RestaurantPage = () => {
 
     const { data: restaurant, loading } = useGetDocument<Restaurant>(restaurantsCol, documentId)
 
+    console.log("Test:" , restaurant)
+
     if (!restaurant || loading) {
         return <p>Loading...</p>
     }

@@ -22,6 +22,8 @@ export type UserInformation = {
     email: string
     admin: boolean
     uid: string
+    name: string
+    _id: string
 }
 
 export type Users = UserInformation[]

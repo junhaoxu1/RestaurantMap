@@ -11,8 +11,10 @@ const useGetCollection = <T>(colRef: CollectionReference<T>) => {
         setError(null)
 
         try {
+            // get query snapshot of collection
             const snapshot = await getDocs(colRef)
     
+            // loop over all docs
             const data: T[] = snapshot.docs.map(doc => {
                 return {
                     ...doc.data(),
@@ -28,10 +30,12 @@ const useGetCollection = <T>(colRef: CollectionReference<T>) => {
         setLoading(false)
     }, [colRef])
 
+    // Get data on component mount
     useEffect(() => {
         getData()
     }, [getData])
 
+    // return getData function and states
     return {
         getData,
         data,
