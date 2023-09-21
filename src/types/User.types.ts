@@ -23,7 +23,6 @@ export type UserInformation = {
     admin: boolean
     uid: string
     name: string
-    _id: string
 }
 
 export type Users = UserInformation[]

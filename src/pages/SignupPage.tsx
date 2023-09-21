@@ -42,7 +42,6 @@ const SignupPage = () => {
 				admin: true,
 				uid: data.uid,
 				name: "",
-				_id: newDocRef.id
 			})
 		} else {
 			await setDoc(docRef, {
@@ -50,7 +49,6 @@ const SignupPage = () => {
 				admin: false,
 				uid: data.uid,
 				name: "",
-				_id: newDocRef.id
 
 			})
 		}
@@ -67,7 +65,7 @@ const SignupPage = () => {
 			email: currentUser?.email || '',
 			  admin: false,
 			  uid: "",
-			  name: ""
+			  name: "",
 			};
 	  
 			try {
