@@ -2,20 +2,23 @@ import useGetDocument from "../hooks/useGetDocument"
 import { UserInformation } from "../types/User.types"
 import { usersCol } from "../services/firebase"
 import { useParams } from "react-router-dom"
+import useGetUsers from "../hooks/useGetUsers"
+import useAuth from "../hooks/useAuth"
 
 
 const AdminUpdatePage = () => {
     const { id } = useParams();
 
-    const documentId = String(id);
+	const { currentUser } = useAuth()
+	const documentId = id as string
 
     if (!documentId) return <p>User Doesn't Exist</p>;
 
-    const { data: user, loading } = useGetDocument<UserInformation>(usersCol, documentId);
+    const { data: user, loading } = useGetUsers(documentId)
 
-    console.log("Document ID:", documentId); 
+    console.log("Document ID:", documentId);
 
-    const firestoreDocumentId = user?._id;
+    const firestoreDocumentId = documentId;
 
     console.log(firestoreDocumentId)
 
@@ -26,7 +29,7 @@ const AdminUpdatePage = () => {
     return (
         <>
             <h1>{firestoreDocumentId}</h1>
-           <h1>{user?.email}</h1>
+           <h1>{currentUser?.email}</h1>
         </>
     );
 }

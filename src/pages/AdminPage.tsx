@@ -5,6 +5,7 @@ import { UserFormData } from "../types/User.types"
 import useAuth from "../hooks/useAuth"
 import useGetCollection from "../hooks/useGetCollection"
 import { Link } from "react-router-dom"
+import { Button } from "react-bootstrap"
 
 const AdminPage = () => {
 	const { data: users, loading } = useGetCollection<UserFormData>(usersCol)
@@ -21,13 +22,14 @@ const AdminPage = () => {
 				admins?.some((admin) => admin.email === currentUser.email) ? (
 					<ListGroup className="userlist">
 						{users.sort(sortByAdmin).map((user) => (
-								<ListGroup.Item 
-                                key={user.uid} 
-                                as={Link} 
+								<ListGroup.Item
+                                key={user.uid}
+                                as={Link}
                                 to={`/admin/${user.uid}`}
                                 >
 									<p>Email: {user.email}</p>
                                     <p>Role: {user.admin ? "Admin" : "Visitor"}</p>
+									<Button onClick={() => user.admin ? "Vistor" : "Admin"}>Change Role {user.admin ? "Vistor" : "Admin"} </Button>
 								</ListGroup.Item>
 						))}
 					</ListGroup>
