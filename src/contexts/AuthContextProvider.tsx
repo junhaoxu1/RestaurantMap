@@ -6,7 +6,6 @@ import {
 	onAuthStateChanged,
     updatePassword,
     updateProfile,
-	updateEmail,
 	User,
     signOut,
 } from 'firebase/auth'
@@ -51,7 +50,6 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 
 	const signup = (email: string, password: string) => {
 		const createUser =  createUserWithEmailAndPassword(auth, email, password)
-		const uid = currentUser?.uid
 		return createUser
 	}
 
