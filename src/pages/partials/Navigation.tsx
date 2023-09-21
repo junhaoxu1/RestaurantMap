@@ -20,6 +20,9 @@ const Navigation = () => {
 						{currentUser ? (
 							<>
 								<NavDropdown title={(userName || userEmail) ?? ""}>
+									<NavDropdown.Item as={NavLink} to="/admin">
+										Admin
+									</NavDropdown.Item>
 									<NavDropdown.Item as={NavLink} to="/update-user">
 										Update Profile
 									</NavDropdown.Item>

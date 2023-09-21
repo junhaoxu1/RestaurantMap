@@ -11,6 +11,7 @@ import AddNewRestaurantPage from "./pages/AddNewRestaurantPage"
 import LoginPage from './pages/LoginPage'
 import LogoutPage from './pages/LogoutPage'
 import UpdatePage from './pages/UpdateUserPage'
+import AdminPage from "./pages/AdminPage"
 
 const App = () => {
     return (
@@ -28,6 +29,8 @@ const App = () => {
 					<Route path="/login" element={<LoginPage />} />
 					<Route path="/logout" element={<LogoutPage />} />
 					<Route path="/update-user" element={<UpdatePage />} />
+
+                    <Route path ="/admin" element={<AdminPage />} />
                 </Routes>
                 <ToastContainer theme="colored" position="top-right" autoClose={1500} />
             </>

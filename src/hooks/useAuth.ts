@@ -8,7 +8,7 @@ const useAuth = () => {
 		throw new Error("Trying to use AuthContext outside of AuthContextProvider")
 	}
 
-	return authContext
+	return authContext 
 }
 
 export default useAuth

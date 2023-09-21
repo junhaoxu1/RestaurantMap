@@ -23,9 +23,8 @@ const SignupPage = () => {
 	const {handleSubmit, register, watch,formState: { errors }} = useForm<SignUpCreds>()
     const navigate = useNavigate()
 
-    const { signup } = useAuth()
-	const { currentUser} = useAuth()
-	
+    const { signup, currentUser } = useAuth()
+
     const passwordRef = useRef("")
     passwordRef.current = watch("password")
 
