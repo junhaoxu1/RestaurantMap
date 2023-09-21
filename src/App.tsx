@@ -32,7 +32,7 @@ const App = () => {
 					<Route path="/update-user" element={<UpdatePage />} />
 
                     <Route path="/admin" element={<AdminPage />} />
-                    <Route path="/admin/:id" element={<AdminUpdatePage />} />
+                    <Route path="/admin/:documentId" element={<AdminUpdatePage />} />
                 </Routes>
                 <ToastContainer theme="colored" position="top-right" autoClose={1500} />
             </>
