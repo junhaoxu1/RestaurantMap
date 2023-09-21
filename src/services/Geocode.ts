@@ -16,3 +16,16 @@ export const getGeocode = async (location: string, city: string) => {
 
     return geoLocation
 }
+
+// get longitute and latitute from a place id
+export const getGeocodeFromPlaceId = async (place_id: string) => {
+    const response = await axios.get<GeoCodingResponse>("https://maps.googleapis.com/maps/api/place/details/json", {
+        params: {
+            placeid: place_id,
+            key: API_KEY,
+        },
+    })
+
+    const address = response.data.results[0].formatted_address
+    return address
+}

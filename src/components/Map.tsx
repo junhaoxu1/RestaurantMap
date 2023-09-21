@@ -7,6 +7,8 @@ import React from "react"
 import { Restaurant, Restaurants } from "../types/restaurants.types"
 import RestaurantIcon from "../assets/images/restauranticon.webp"
 import RestaurantListItem from "./RestaurantListItem"
+import PlacesAutoComplete from "./PlacesAutoComplete"
+import { LatLng } from "use-places-autocomplete"
 
 type MapOptions = google.maps.MapOptions
 
@@ -21,6 +23,7 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
     const [gCurrentPos, setGCurrentPos] = useState<google.maps.LatLngLiteral>({} as google.maps.LatLngLiteral)
     const [_disabled, setDisabled] = useState(false)
     const [selectedClickMarker, setSelectedClickMarker] = useState<Restaurant>({} as Restaurant)
+    const [place, setPlace] = useState<LatLng | null>(null)
 
     //removing googleMaps zoom in&out button and other button inside MapOptions.
     const options = useMemo<MapOptions>(
@@ -114,7 +117,7 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
             <div className="d-flex">
                 <RestaurantListItem restaurants={restaurants} displayOnMap={(e) => ShowMarkerClick(e)} />
                 <div className="cBox">
-                    <Button
+                    {/* <Button
                         onClick={() => {
                             navigator.geolocation.getCurrentPosition((position) => {
                                 // Click the button when geolocation has finished loaded
@@ -126,10 +129,17 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
                                 })
                             })
                         }}
-                        style={{ color: "grey", background: "black", position: "absolute", zIndex: "2", left: "0" }}
+                        style={{ color: "grey", background: "black", position: "absolute", zIndex: "2", left: "0", top: "50px" }}
                     >
                         <i className="fa-solid fa-location-crosshairs"></i>
-                    </Button>
+                    </Button> */}
+
+                    <PlacesAutoComplete
+                        setPlace={(place) => {
+                            setPlace(place), mapReference.current?.panTo(place)
+                        }}
+                    />
+
                     <div className="map">
                         <GoogleMap
                             zoom={12}
@@ -140,6 +150,7 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
                             onClick={ShowMapClick}
                             onUnmount={onUnMount}
                         >
+                            {place && <Marker position={place} />}
                             {gCurrentPos.lat && <Marker position={gCurrentPos} />}
                             {gCurrentPos.lat &&
                                 restaurants.map((restaurant) => (
@@ -177,7 +188,6 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
                                 </InfoWindow>
                             )}
                         </GoogleMap>
-                        <SearchPlaceComp onSearchPlace={handlePlaceForm} />
                     </div>
                 </div>
             </div>
