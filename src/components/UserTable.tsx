@@ -24,6 +24,7 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle }) =>
         accessor: "admin",
         Cell: ({ row }) => (
           <button
+            className="btn btn-primary"
             onClick={() => {
               const documentId = row.original.documentId;
               const newAdminStatus = !row.original.admin;
