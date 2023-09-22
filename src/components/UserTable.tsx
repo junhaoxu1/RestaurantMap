@@ -12,6 +12,7 @@ interface AdminTableProps {
   onAdminStatusToggle: (documentId: string, newAdminStatus: boolean) => void;
 }
 
+//Lägg till kolumner inne i table
 const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle }) => {
   const columns: Column<RowData>[] = React.useMemo(
     () => [
@@ -39,6 +40,7 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle }) =>
     []
   );
 
+  //useTable från react-table innehåller dessa variablar för att kunna rendera ut en table
   const {
     getTableProps,
     getTableBodyProps,
