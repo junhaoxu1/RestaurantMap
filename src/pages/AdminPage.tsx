@@ -15,17 +15,18 @@ const AdminPage = () => {
 
 	const getCol = collection(db, "users");
 
-	const [documentData, setDocumentData] = useState<{ documentId: string; admin: boolean; email: string }[]>([]);
+	const [documentData, setDocumentData] = useState<{ documentId: string; admin: boolean; email: string, name: string | "Missing name" }[]>([]);
 
 	const getData = async () => {
 		const querySnapshot = await getDocs(getCol);
-		const newDocumentData: { documentId: string; admin: boolean; email: string }[] = [];
+		const newDocumentData: { documentId: string; admin: boolean; email: string, name: string | "Missing name" }[] = [];
 	  
 		querySnapshot.forEach((doc) => {
 		  const documentId: string = doc.id;
 		  const email: string = doc.data().email;
 		  const admin: boolean = doc.data().admin
-		  newDocumentData.push({ documentId, email, admin });
+		  const name: string = doc.data().name
+		  newDocumentData.push({ documentId, email, admin, name });
 		});
 	  
 		setDocumentData(newDocumentData);

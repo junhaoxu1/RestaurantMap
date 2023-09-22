@@ -12,8 +12,9 @@ import Row from "react-bootstrap/Row"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { toast } from "react-toastify"
 import useAuth from "../hooks/useAuth"
-import { storage } from "../services/firebase"
+import { storage, usersCol } from "../services/firebase"
 import { UpdateUserFormData } from "../types/User.types"
+import { getDocs, doc, setDoc } from "firebase/firestore"
 
 
 const UpdateUserPage = () => {
@@ -44,6 +45,16 @@ const UpdateUserPage = () => {
 
 	const onUpdateProfile: SubmitHandler<UpdateUserFormData> = async (data) => {
 		setError(null)
+		const docRef = doc(usersCol)
+
+		const querySnapshot = await getDocs(usersCol)
+
+		// await setDoc(docRef, {
+		// 	...data,
+		// 	name: data.name,
+		// 	email: data.email,
+		// 	photo
+		// })
 
 		try {
 			setLoading(true)

@@ -4,9 +4,17 @@ import NavDropdown from "react-bootstrap/NavDropdown"
 import Nav from "react-bootstrap/Nav"
 import { NavLink, Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
+import useGetCollection from "../../hooks/useGetCollection"
+import { UserFormData } from "../../types/User.types"
+import { usersCol } from "../../services/firebase"
 
 const Navigation = () => {
 	const { currentUser, userEmail, userName } = useAuth()
+	const { data: users, loading } = useGetCollection<UserFormData>(usersCol)
+
+	const admins = users?.filter((user) => user.admin === true)
+
+
 	return (
 		<Navbar>
 			<Container>
