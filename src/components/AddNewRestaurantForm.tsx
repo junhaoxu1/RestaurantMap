@@ -108,13 +108,14 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant }) => {
                     <Form.Group className="mt-3">
                         <Form.Label>Categories</Form.Label>
                         <Form.Select
+                            defaultValue="Select category"
                             aria-label="Select categories"
                             required
                             {...register("category", {
                                 required: "Please select an option",
                             })}
                         >
-                            <option value="" selected hidden>
+                            <option value="" hidden>
                                 Select an option
                             </option>
                             <option value="café">Café</option>
@@ -129,12 +130,13 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant }) => {
                     <Form.Group className="mt-3">
                         <Form.Label>Supply</Form.Label>
                         <Form.Select
+                            defaultValue="Select supply"
                             aria-label="Select Supply"
                             {...register("supply", {
                                 required: "Please select an option",
                             })}
                         >
-                            <option value="" selected hidden>
+                            <option value="" hidden>
                                 Select an option
                             </option>
                             <option value="lunch">Lunch</option>

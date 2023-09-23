@@ -15,17 +15,19 @@ const RestaurantCard: React.FC<Props> = ({ restaurants }) => {
         <>
             <ul className="d-flex gap-3 flex-wrap mt-3 px-0 justify-content-center">
                 {restaurants.map((restaurant) => (
-                    <Card className="mt-3 shadow text-center" style={{ width: "18rem", border: "none" }}>
-                        <Card.Img variant="top" src={restaurant.cover_photo ?? placeholderImage} className="img-fluid" />
-                        <Card.Body>
-                            <Card.Title className="card-heading">{restaurant.name}</Card.Title>
-                            <div className="line"></div>
-                            <Card.Text className="card-text">{restaurant.description}</Card.Text>
-                        </Card.Body>
-                        <Link to={`/restaurants/${restaurant._id}`} key={restaurant._id} className="link">
-                            Discover more
-                        </Link>
-                    </Card>
+                    <li key={restaurant._id} style={{ listStyle: "none" }}>
+                        <Card className="mt-3 shadow text-center" style={{ width: "18rem", border: "none" }}>
+                            <Card.Img variant="top" src={restaurant.cover_photo ?? placeholderImage} className="img-fluid" />
+                            <Card.Body>
+                                <Card.Title className="card-heading">{restaurant.name}</Card.Title>
+                                <div className="line"></div>
+                                <Card.Text className="card-text">{restaurant.description}</Card.Text>
+                            </Card.Body>
+                            <Link to={`/restaurants/${restaurant._id}`} className="link">
+                                Discover more
+                            </Link>
+                        </Card>
+                    </li>
                 ))}
             </ul>
         </>

@@ -1,23 +1,22 @@
 import React from "react"
-import { Restaurants } from "../types/restaurants.types"
-import Card from "react-bootstrap/Card"
+import { Restaurant, Restaurants } from "../types/restaurants.types"
 import Image from "react-bootstrap/Image"
-import ListGroup from "react-bootstrap/ListGroup"
 
 type Props = {
     restaurants: Restaurants
+    displayOnMap: (restaurant: Restaurant) => void
 }
 
 const placeholderImage =
     "https://images.unsplash.com/photo-1477506252414-b2954dbdacf3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDd8fHBsYWNlaG9sZGVyJTIwcGhvdG8lMjBmb29kfGVufDB8MHwwfHx8Mg%3D%3D&auto=format&fit=crop&w=500&q=60"
 
-const RestaurantListItem: React.FC<Props> = ({ restaurants }) => {
+const RestaurantListItem: React.FC<Props> = ({ restaurants, displayOnMap }) => {
     return (
         <>
             <ul className="px-0 w-100 list-group">
                 {restaurants.map((restaurant) => (
-                    <li className="d-flex w-100 gap-2 mt-1 list-item">
-                        <Image src={restaurant.cover_photo ?? placeholderImage} style={{ width: "9rem", objectFit: "cover" }} />
+                    <li className="d-flex w-100 gap-2 mt-1 list-item" onClick={() => displayOnMap(restaurant)} key={restaurant._id}>
+                        <Image src={restaurant.cover_photo ?? placeholderImage} style={{ width: "7rem", objectFit: "cover" }} />
 
                         <div className="line"></div>
 
