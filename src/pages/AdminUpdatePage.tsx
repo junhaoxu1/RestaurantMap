@@ -3,7 +3,6 @@ import useGetUsers from "../hooks/useGetUsers";
 import { UserInformation } from "../types/User.types";
 import { usersCol } from "../services/firebase";
 import useGetDocument from "../hooks/useGetDocument";
-import UserInfoDetails from "../components/UserInfoDetails";
 import useAuth from "../hooks/useAuth";
 
 const AdminUpdatePage = () => {
