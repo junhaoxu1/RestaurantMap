@@ -7,10 +7,11 @@ import { getDocs, collection, doc, updateDoc } from "firebase/firestore"
 import { useState, useEffect } from 'react'
 import AdminTable from "../components/AdminTable"
 import { FirebaseError } from "firebase/app"
+import { updateProfile } from "firebase/auth"
 
 const AdminPage = () => {
 	const { data: users, loading } = useGetCollection<UserFormData>(usersCol)
-	const { currentUser, reloadUser, setDisplayName, userPhotoUrl } = useAuth()
+	const { currentUser, reloadUser, setDisplayName } = useAuth()
 	const [ error, setError ] = useState<string | null>(null)
 	const [ load, setLoad ] = useState(Boolean)
 
@@ -64,6 +65,8 @@ const AdminPage = () => {
 
 		  const userRef = doc(db, "users", documentId);
 		  await updateDoc(userRef, { name: newName });
+
+		  await setDisplayName(newName)
 	  
 		  await reloadUser();
 	  
