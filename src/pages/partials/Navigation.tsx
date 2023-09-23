@@ -38,6 +38,10 @@ const Navigation = () => {
 										Update Profile
 									</NavDropdown.Item>
 									<NavDropdown.Divider />
+									<NavDropdown.Item as={NavLink} to="/suggest">
+										Suggest Restaurant
+									</NavDropdown.Item>
+									<NavDropdown.Divider />
 									<NavDropdown.Item as={NavLink} to="/logout">
 										Logout
 									</NavDropdown.Item>

@@ -14,6 +14,7 @@ import UpdateUserPage from './pages/UpdateUserPage'
 import AdminPage from "./pages/AdminPage"
 import AdminUpdatePage from "./pages/AdminUpdatePage"
 import NotFoundPage from "./pages/NotFoundPage"
+import RestaurantSuggestion from "./pages/RestaurantSuggestionPage"
 
 const App = () => {
     return (
@@ -28,6 +29,7 @@ const App = () => {
                     <Route path="/restaurants" element={<RestaurantsPage />} />
                     <Route path="/restaurants/:id" element={<RestaurantPage />} />
                     <Route path="/restaurants/add" element={<AddNewRestaurantPage />} />
+                    <Route path="/suggest" element={<RestaurantSuggestion />} />
                     <Route path="/signup" element={<SignupPage />} />
 					<Route path="/login" element={<LoginPage />} />
 					<Route path="/logout" element={<LogoutPage />} />
