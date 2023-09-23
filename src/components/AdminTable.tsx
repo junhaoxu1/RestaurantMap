@@ -3,10 +3,7 @@ import Form from "react-bootstrap/esm/Form";
 import { useTable, Column } from "react-table";
 import useAuth from "../hooks/useAuth";
 import { UpdateUserFormData } from "../types/User.types";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { FirebaseError } from "firebase/app";
-import { doc, getDocs, updateDoc } from "firebase/firestore";
-import { usersCol } from "../services/firebase";
+import { useForm } from "react-hook-form";
 import { Button, Image } from "react-bootstrap";
 
 interface RowData {
@@ -20,17 +17,13 @@ interface RowData {
 interface AdminTableProps {
   data: RowData[];
   onAdminStatusToggle: (documentId: string, newAdminStatus: boolean) => void;
-//   onAdminNameToggle: (documentId: String, newName: string) => void;
+  onAdminNameToggle: (documentId: string, newName: string) => void;
 }
 
 //Lägg till kolumner inne i table
-const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle }) => {
-	const [error, setError] = useState<string | null>(null)
-	const [loading, setLoading] = useState(false)
-	const { currentUser, reloadUser, setDisplayName, userPhotoUrl } = useAuth()
+const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle, onAdminNameToggle }) => {
+	const { currentUser } = useAuth()
 	const {
-		handleSubmit,
-		register,
 		formState: { errors },
 	} = useForm<UpdateUserFormData>({
 		defaultValues: {
@@ -41,44 +34,6 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle }) =>
 
 	if (!currentUser) {
 		return <p>Failed</p>
-	}
-
-	const onAdminUpdateName: SubmitHandler<UpdateUserFormData> = async (data) => {
-		setError(null)
-
-		try {
-			setLoading(true)
-
-			const querySnapshot = await getDocs(usersCol)
-			querySnapshot.forEach(async (info) => {
-				const userData = info.data()
-				if (userData.uid === currentUser.uid) {
-					const updatedData = {
-						...userData,
-						name: data.name,
-					}
-
-					const userDocRef = doc(usersCol, info.id)
-					await updateDoc(userDocRef, updatedData)
-				}
-			})
-
-			if (data.name !== (currentUser.displayName ?? "")) {
-				await setDisplayName(data.name)
-			}
-
-			await reloadUser()
-
-			setLoading(false)
-
-
-		} catch (error) {
-			if (error instanceof FirebaseError) {
-				setError(error.message)
-			} else {
-				setError("Failed")
-			}
-		}
 	}
 
   const columns: Column<RowData>[] = React.useMemo(
@@ -103,12 +58,22 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle }) =>
 						style={{width: "50%"}}
 						placeholder={row.original.name ? `${row.original.name}`: "null"}
 						defaultValue={row.original.name || ""}
-						// {...register('name')}
+						onChange={(e) => {
+							const newName = e.target.value
+							row.original.name = newName
+						}}
 					/>
 					{errors.name && <p className="invalid">{errors.name.message ?? "Invalid value"}</p>}
 				</Form.Group>
-				<Button variant="primary" type="submit">
-					{row.original.name || "null"}
+				<Button 
+					variant="primary" 
+					onClick={() => {
+						const documentId = row.original.documentId;
+						const newUsername = row.original.name
+						onAdminNameToggle(documentId, newUsername)
+					}}
+					>
+						Update 
 				</Button>
 			</Form>
         ),
