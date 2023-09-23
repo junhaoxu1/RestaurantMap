@@ -1,74 +1,73 @@
 export type GeoCodingResponse = {
-    "results": [
+    results: [
         {
-            "address_components": [
+            address_components: [
                 {
-                    "long_name": string,
-                    "short_name": string,
-                    "types": string[]
+                    long_name: string
+                    short_name: string
+                    types: string[]
                 },
                 {
-                    "long_name": string,
-                    "short_name": string,
-                    "types": string[]
+                    long_name: string
+                    short_name: string
+                    types: string[]
                 },
                 {
-                    "long_name": string,
-                    "short_name": string,
-                    "types": string[]
+                    long_name: string
+                    short_name: string
+                    types: string[]
                 },
                 {
-                    "long_name": string,
-                    "short_name": string,
-                    "types": string[]
+                    long_name: string
+                    short_name: string
+                    types: string[]
                 },
                 {
-                    "long_name": string,
-                    "short_name": string,
-                    "types": string[]
+                    long_name: string
+                    short_name: string
+                    types: string[]
                 },
                 {
-                    "long_name": string,
-                    "short_name": string,
-                    "types": string
+                    long_name: string
+                    short_name: string
+                    types: string
                 },
                 {
-                    "long_name": string,
-                    "short_name": string,
-                    "types": string[]
+                    long_name: string
+                    short_name: string
+                    types: string[]
                 }
-            ],
-            "formatted_address": string,
-            "geometry": {
-                "location": {
-                    "lat": number,
-                    "lng": number
-                },
-                "location_type": string,
-                "viewport": {
-                    "northeast": {
-                        "lat": number,
-                        "lng": number
-                    },
-                    "southwest": {
-                        "lat": number,
-                        "lng": number
+            ]
+            formatted_address: string
+            geometry: {
+                location: {
+                    lat: number
+                    lng: number
+                }
+                location_type: string
+                viewport: {
+                    northeast: {
+                        lat: number
+                        lng: number
+                    }
+                    southwest: {
+                        lat: number
+                        lng: number
                     }
                 }
-            },
-            "place_id": string,
-            "plus_code": {
-                "compound_code": string,
-                "global_code": string
-            },
-            "types": string[]
+            }
+            place_id: string
+            plus_code: {
+                compound_code: string
+                global_code: string
+            }
+            types: string[]
         }
-    ],
-    "status": string
+    ]
+    status: string
 }
 
 export type GeoLocation = {
-    lat: number,
+    lat: number
     lng: number
 }
-    

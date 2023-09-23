@@ -43,15 +43,15 @@ const RestaurantDetails: React.FC<Props> = ({ restaurant }) => {
                             <Card.Text className="card-text mt-3">
                                 <span className="details-subheading">Email:</span> <br /> {restaurant.email || "N/A"}
                             </Card.Text>
-                            <Card.Text className="card-text mt-3">
+                            <div className="card-text mt-3">
                                 <span className="details-subheading">Website:</span> <br />{" "}
                                 <a href={`https://${restaurant.webpage}`} target="_blank">
                                     {restaurant.webpage || "N/A"}
                                 </a>
-                            </Card.Text>
-                            <Card.Text className="card-text mt-3">
+                            </div>
+                            <div className="card-text mt-3">
                                 <span className="details-subheading">Social Media:</span> <br />
-                                <div className="social-media-container d-flex gap-2">
+                                <span className="social-media-container d-flex gap-2">
                                     {!restaurant.email && !restaurant.facebook && !restaurant.instagram && <p>Data missing</p>}
                                     {restaurant.facebook !== "" && (
                                         <a href={restaurant.facebook} className="fa-icon">
@@ -63,8 +63,8 @@ const RestaurantDetails: React.FC<Props> = ({ restaurant }) => {
                                             <FaInstagram />
                                         </a>
                                     )}
-                                </div>
-                            </Card.Text>
+                                </span>
+                            </div>
                         </Card.Body>
                     </Card>
                 </div>
