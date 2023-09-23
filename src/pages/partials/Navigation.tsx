@@ -27,6 +27,9 @@ const Navigation = () => {
 					<Nav className="ms-auto">
 						{currentUser ? (
 							<>
+								<Nav.Link as={NavLink} end to="/restaurants">
+                            		All Restaurants
+                        		</Nav.Link>
 								<NavDropdown title={(userName || userEmail) ?? ""}>
 									<NavDropdown.Item as={NavLink} to="/admin">
 										Admin
