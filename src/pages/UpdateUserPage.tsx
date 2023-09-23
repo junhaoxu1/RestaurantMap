@@ -1,6 +1,6 @@
 import { FirebaseError } from "firebase/app"
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage"
-import { useRef, useState, useEffect } from "react"
+import { useRef, useState } from "react"
 import Alert from "react-bootstrap/Alert"
 import Button from "react-bootstrap/Button"
 import Card from "react-bootstrap/Card"
@@ -12,9 +12,9 @@ import Row from "react-bootstrap/Row"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { toast } from "react-toastify"
 import useAuth from "../hooks/useAuth"
-import { storage, usersCol, db } from "../services/firebase"
+import { storage, usersCol } from "../services/firebase"
 import { UpdateUserFormData } from "../types/User.types"
-import { getDocs, doc, updateDoc, collection } from "firebase/firestore"
+import { getDocs, doc, updateDoc} from "firebase/firestore"
 
 const UpdateUserPage = () => {
 	const [error, setError] = useState<string | null>(null)
@@ -60,6 +60,31 @@ const UpdateUserPage = () => {
 
 					const userDocRef = doc(usersCol, info.id)
 					await updateDoc(userDocRef, updatedData)
+
+					if (data.photoFile.length) {
+						const photo = data.photoFile[0]
+
+						const fileRef = ref(storage, `photos/${currentUser.uid}/${photo.name}`)
+
+						const uploadTask = uploadBytesResumable(fileRef, photo)
+
+						uploadTask.on(
+							"state_changed",
+							(snapshot) => {
+								Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 1000) / 10
+							},
+							(err) => {
+								setError("Upload failed: " + err)
+							},
+							async () => {
+								const photoUrl = await getDownloadURL(fileRef)
+								updatedData.photoFile = photoUrl
+								const userDocRef = doc(usersCol, info.id)
+								await updateDoc(userDocRef, updatedData)
+								await setPhotoUrl(photoUrl)
+							}
+						)
+					}
 				}
 			})
 
@@ -73,29 +98,6 @@ const UpdateUserPage = () => {
 
 			if (data.password) {
 				await setPassword(data.password)
-			}
-
-			if (data.photoFile.length) {
-				const photo = data.photoFile[0]
-
-				const fileRef = ref(storage, `photos/${currentUser.uid}/${photo.name}`)
-
-				const uploadTask = uploadBytesResumable(fileRef, photo)
-
-				uploadTask.on(
-					"state_changed",
-					(snapshot) => {
-						Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 1000) / 10
-					},
-					(err) => {
-						setError("Upload failed: " + err)
-					},
-					async () => {
-						const photoUrl = await getDownloadURL(fileRef)
-
-						await setPhotoUrl(photoUrl)
-					}
-				)
 			}
 
 			await reloadUser()

@@ -65,7 +65,7 @@ const SignupPage = () => {
 			  uid: "",
 			  name: "",
 			};
-	  
+
 			try {
 			  await onAddUser(userData);
 			  navigate("/");
@@ -80,28 +80,28 @@ const SignupPage = () => {
 			}
 		  }
 		});
-	  
+
 		return unsubscribe;
 	  }, []);
 
 	  const onSignup: SubmitHandler<SignUpCreds> = async (data) => {
 		setError(null);
-	  
+
 		try {
 		  setLoading(true);
 		  await signup(data.email, data.password);
-	  
-		  const currentUser = auth.currentUser; 
-	  
+
+		  const currentUser = auth.currentUser;
+
 		  if (currentUser) {
 			const userData: UserFormData = {
-			  email: currentUser.email || '', 
+			  email: currentUser.email || '',
 			  admin: false,
-			  uid: currentUser.uid || '', 
+			  uid: currentUser.uid || '',
 			  name:  '',
 
 			};
-	  
+
 			onAddUser(userData);
 			navigate("/");
 		  } else {
