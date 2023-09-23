@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { GoogleMap, InfoWindow, Marker } from "@react-google-maps/api"
-import { Button } from "react-bootstrap"
-import SearchPlaceComp from "./SearchPlaceComp"
 import { Link, useSearchParams } from "react-router-dom"
 import React from "react"
 import { Restaurant, Restaurants } from "../types/restaurants.types"

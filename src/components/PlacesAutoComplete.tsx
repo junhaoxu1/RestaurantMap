@@ -1,6 +1,9 @@
 import { Marker } from "@react-google-maps/api"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import usePlaceAutoComplete, { LatLng, getGeocode, getLatLng } from "use-places-autocomplete"
+import { FaSearch } from "react-icons/fa"
+import Button from "react-bootstrap/Button"
+import { ListGroup } from "react-bootstrap"
 
 type Props = {
     setPlace: (latLng: LatLng) => void
@@ -8,6 +11,7 @@ type Props = {
 
 const PlacesAutoComplete: React.FC<Props> = ({ setPlace }) => {
     const [selected, setSelected] = useState<{ lat: number; lng: number } | null>(null)
+    const [notFound, setNotFound] = useState(false)
 
     const { ready, value, setValue, suggestions, clearSuggestions } = usePlaceAutoComplete()
 
@@ -16,7 +20,7 @@ const PlacesAutoComplete: React.FC<Props> = ({ setPlace }) => {
         clearSuggestions()
 
         const results = await getGeocode({ placeId: place_id })
-        const { lat, lng } = await getLatLng(results[0])
+        const { lat, lng } = getLatLng(results[0])
         setSelected({ lat, lng })
         setPlace({ lat, lng })
 
@@ -25,26 +29,64 @@ const PlacesAutoComplete: React.FC<Props> = ({ setPlace }) => {
         console.log(results)
     }
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setNotFound(false)
+
+        try {
+            const results = await getGeocode({ address: value })
+            const { lat, lng } = getLatLng(results[0])
+
+            setSelected({ lat, lng })
+            setPlace({ lat, lng })
+        } catch (err) {
+            setNotFound(true)
+        }
+        // clear list of suggestions once submitted
+        clearSuggestions()
+    }
+
     return (
         <>
             {/* Input field for searching places */}
-            <div>
-                <input value={value} onChange={(e) => setValue(e.target.value)} disabled={!ready} placeholder="Search Address" />
+            <div className="search-form-container">
+                <form className="search-form" onSubmit={handleSubmit}>
+                    <input
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                        disabled={!ready}
+                        placeholder="Search Address"
+                        className="search-input px-2"
+                    />
+                    <button className="search-form-submit">
+                        <FaSearch />
+                    </button>
+                </form>
 
                 {selected && <Marker position={selected} />}
 
-                <ul className="suggestions-list">
-                    {suggestions.status === "OK" &&
-                        suggestions.data.map((suggestion) => (
+                {suggestions.status === "OK" && (
+                    <ul className="suggestions-list px-2 mt-1">
+                        {suggestions.data.slice(0, 5).map((suggestion) => (
                             <li
+                                style={{ listStyle: "none" }}
+                                className="mb-1"
                                 key={suggestion.place_id}
                                 value={suggestion.description}
                                 onClick={() => handleSelect(suggestion.place_id, suggestion.description)}
                             >
                                 {suggestion.description}
+                                <hr className="my-1" />
                             </li>
                         ))}
-                </ul>
+                    </ul>
+                )}
+
+                {notFound && (
+                    <p style={{ fontSize: ".75rem", color: "crimson", textAlign: "center" }} className="my-2">
+                        No matching results found for "{value}"
+                    </p>
+                )}
             </div>
         </>
     )
