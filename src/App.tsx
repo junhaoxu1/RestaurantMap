@@ -13,6 +13,7 @@ import LogoutPage from './pages/LogoutPage'
 import UpdateUserPage from './pages/UpdateUserPage'
 import AdminPage from "./pages/AdminPage"
 import AdminUpdatePage from "./pages/AdminUpdatePage"
+import NotFoundPage from "./pages/NotFoundPage"
 
 const App = () => {
     return (
@@ -20,6 +21,7 @@ const App = () => {
             <Navigation />
             <>
                 <Routes>
+                    <Route path="*" element={<NotFoundPage />} />
                     <Route path="/" element={<HomePage />} />
                     <Route path="/food-map" element={<MapPage />} />
 
