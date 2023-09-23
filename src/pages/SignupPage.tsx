@@ -11,10 +11,10 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 import { SignUpCreds, UserFormData } from '../types/User.types'
-import { doc, setDoc, getDocs, collection } from 'firebase/firestore'
+import { doc, setDoc, getDocs } from 'firebase/firestore'
 import { usersCol } from '../services/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
-import { auth, db } from '../services/firebase'
+import { auth } from '../services/firebase'
 
 
 const SignupPage = () => {
