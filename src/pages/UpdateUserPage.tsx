@@ -1,6 +1,6 @@
 import { FirebaseError } from "firebase/app"
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage"
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import Alert from "react-bootstrap/Alert"
 import Button from "react-bootstrap/Button"
 import Card from "react-bootstrap/Card"
@@ -12,9 +12,9 @@ import Row from "react-bootstrap/Row"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { toast } from "react-toastify"
 import useAuth from "../hooks/useAuth"
-import { storage, usersCol } from "../services/firebase"
+import { storage, usersCol, db } from "../services/firebase"
 import { UpdateUserFormData } from "../types/User.types"
-import { getDocs, doc, setDoc } from "firebase/firestore"
+import { getDocs, doc, updateDoc, collection, documentId } from "firebase/firestore"
 
 
 const UpdateUserPage = () => {
@@ -43,21 +43,35 @@ const UpdateUserPage = () => {
 		return <p>Failed</p>
 	}
 
+
 	const onUpdateProfile: SubmitHandler<UpdateUserFormData> = async (data) => {
 		setError(null)
-		const docRef = doc(usersCol)
 
-		const querySnapshot = await getDocs(usersCol)
-
-		// await setDoc(docRef, {
-		// 	...data,
-		// 	name: data.name,
-		// 	email: data.email,
-		// 	photo
-		// })
+		const getCol = collection(db, "users");
 
 		try {
 			setLoading(true)
+	
+			const getCol = collection(db, "users")
+			const querySnapshot = await getDocs(getCol);
+			const documentData: { documentId: string, email: string, name: string }[] = [];
+		  
+			querySnapshot.forEach((doc) => {
+			  const documentId: string = doc.id;
+			  const email: string = doc.data().email;
+			  const name: string = doc.data().name
+			  documentData.push({ documentId, email, name });
+			});
+		  
+			for (const userData of documentData) {
+				const docRef = doc(usersCol, userData.documentId);
+				const updatedData = {
+				  name: data.name || "",
+				  email: data.email || ""
+				};
+				await updateDoc(docRef, updatedData);
+			  }
+
 
 			if (data.name !== (currentUser.displayName ?? "")) {
 				await setDisplayName(data.name)

@@ -16,6 +16,8 @@ export type UpdateUserFormData = {
     email: string
     password: string
     passwordConfirm: string
+    uid: string
+    admin: boolean
 }
 
 export type UserInformation = {
@@ -23,6 +25,7 @@ export type UserInformation = {
     admin: boolean
     uid: string
     name: string
+    photoFile?: string
 }
 
 export type Users = UserInformation[]
