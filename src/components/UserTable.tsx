@@ -38,12 +38,22 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle }) =>
 	  {
 		Header: "Name",
 		accessor: "name",
+		Cell: ({ row }) => (
+			<Form>
+			<Form.Label>{row.original.name}</Form.Label>
+				<Form.Control
+					style={{width: "50%"}}
+					placeholder={row.original.name ? `${row.original.name}`: "null"}
+					{...register('name')}
+				/>
+				{errors.name && <p className="invalid">{errors.name.message ?? "Invalid value"}</p>}
+			</Form>
+        ),
 	  },
       {
         Header: "Role",
         accessor: "admin",
         Cell: ({ row }) => (
-          <>
 		  <button
 				onClick={() => {
 					const documentId = row.original.documentId;
@@ -53,15 +63,6 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle }) =>
 			>
 				{row.original.admin ? "Admin" : "Visitor"}
 			</button>
-			<Form>
-			<Form.Label>Name</Form.Label>
-				<Form.Control
-					placeholder={row.original.documentId ? `${row.original.documentId}`: "null"}
-					{...register('name')}
-				/>
-				{errors.name && <p className="invalid">{errors.name.message ?? "Invalid value"}</p>}
-			</Form>
-			</>
         ),
       },
     ],
