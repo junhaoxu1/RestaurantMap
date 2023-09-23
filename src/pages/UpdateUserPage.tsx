@@ -116,11 +116,11 @@ const UpdateUserPage = () => {
 
 							<div className="profile-photo-wrapper text-center my-3">
 								<div className="d-flex justify-content-center mb-2">
-									<Image 
-                    src={userPhotoUrl || "https://via.placeholder.com/225"} 
-                    fluid 
+									<Image
+                    src={userPhotoUrl || "https://via.placeholder.com/225"}
+                    fluid
                     rounded
-                    className="img-square w-50" 
+                    className="img-square w-50"
                   />
 								</div>
                 <Button
@@ -162,7 +162,7 @@ const UpdateUserPage = () => {
 
               <Form.Group>
                 <Form.Label>Email</Form.Label>
-                <Form.Control 
+                <Form.Control
                   placeholder={currentUser.email || ""}
                   type="email"
                   {...register('email', {
@@ -174,7 +174,7 @@ const UpdateUserPage = () => {
 
               <Form.Group>
                 <Form.Label>Password</Form.Label>
-                <Form.Control 
+                <Form.Control
                   type="password"
                   autoComplete="new-password"
                   {...register('password', {

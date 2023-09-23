@@ -1,10 +1,15 @@
 import React from "react";
+import Form from "react-bootstrap/esm/Form";
 import { useTable, Column } from "react-table";
+import useAuth from "../hooks/useAuth";
+import { UpdateUserFormData } from "../types/User.types";
+import { useForm } from "react-hook-form";
 
 interface RowData {
   documentId: string;
-  email: string; 
+  email: string;
   admin: boolean;
+  name: string;
 }
 
 interface AdminTableProps {
@@ -13,25 +18,50 @@ interface AdminTableProps {
 }
 
 const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle }) => {
+	const { currentUser } = useAuth()
+	const {
+		register,
+		formState: { errors },
+	} = useForm<UpdateUserFormData>({
+		defaultValues: {
+			email: currentUser?.email ?? "",
+			name: currentUser?.displayName ?? "",
+		},
+	})
+
   const columns: Column<RowData>[] = React.useMemo(
     () => [
       {
         Header: "User",
-        accessor: "email", 
+        accessor: "email",
       },
+	  {
+		Header: "Name",
+		accessor: "name",
+	  },
       {
         Header: "Role",
         accessor: "admin",
         Cell: ({ row }) => (
-          <button
-            onClick={() => {
-              const documentId = row.original.documentId;
-              const newAdminStatus = !row.original.admin;
-              onAdminStatusToggle(documentId, newAdminStatus);
-            }}
-          >
-            {row.original.admin ? "Admin" : "Visitor"}
-          </button>
+          <>
+		  <button
+				onClick={() => {
+					const documentId = row.original.documentId;
+					const newAdminStatus = !row.original.admin;
+					onAdminStatusToggle(documentId, newAdminStatus);
+				} }
+			>
+				{row.original.admin ? "Admin" : "Visitor"}
+			</button>
+			<Form>
+			<Form.Label>Name</Form.Label>
+				<Form.Control
+					placeholder={row.original.documentId ? `${row.original.documentId}`: "null"}
+					{...register('name')}
+				/>
+				{errors.name && <p className="invalid">{errors.name.message ?? "Invalid value"}</p>}
+			</Form>
+			</>
         ),
       },
     ],
@@ -72,6 +102,8 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle }) =>
           );
         })}
       </tbody>
+	  <tbody>
+	  </tbody>
     </table>
   );
 };
