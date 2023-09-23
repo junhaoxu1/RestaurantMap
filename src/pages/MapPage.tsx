@@ -24,8 +24,6 @@ const MapPage = () => {
         return <p>Loading</p>
     }
 
-    console.log("restaurant:", restaurants)
-
     return (
         <>
             <div className="d-flex">

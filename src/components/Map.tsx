@@ -7,6 +7,7 @@ import RestaurantIcon from "../assets/images/restauranticon.webp"
 import RestaurantListItem from "./RestaurantListItem"
 import PlacesAutoComplete from "./PlacesAutoComplete"
 import { LatLng } from "use-places-autocomplete"
+import { getDistanceFromLatLngInKm } from "../helpers/getDistance"
 
 type MapOptions = google.maps.MapOptions
 
@@ -18,10 +19,18 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
     // it remember to locationen by setting latitude and longitude
     const center = useMemo(() => ({ lat: 55.6053, lng: 13.0041 }), [])
 
-    const [gCurrentPos, setGCurrentPos] = useState<google.maps.LatLngLiteral>({} as google.maps.LatLngLiteral)
+    const [currentPosition, setCurrentPosition] = useState<LatLng>({} as LatLng)
     const [_disabled, setDisabled] = useState(false)
     const [selectedClickMarker, setSelectedClickMarker] = useState<Restaurant>({} as Restaurant)
     const [place, setPlace] = useState<LatLng | null>(null)
+    const [searchParams, setSearchParams] = useSearchParams({
+        lat: "",
+        lng: "",
+    })
+
+    // grab the current lat and long from url
+    const selectedLat = searchParams.get("lat")
+    const selectedLng = searchParams.get("lng")
 
     //removing googleMaps zoom in&out button and other button inside MapOptions.
     const options = useMemo<MapOptions>(
@@ -32,41 +41,18 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
         []
     )
 
-    const [_searchParams, setSearchParams] = useSearchParams({
-        query: "",
-    })
-
-    // calculate distance in km between coordinates
-    function getDistanceFromLatLngInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
-        var R = 6371 // Radius of the earth in km
-        var dLat = deg2rad(lat2 - lat1) // deg2rad below
-        var dLon = deg2rad(lon2 - lon1)
-        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-        var d = R * c // Distance in km
-
-        console.log("distance in km", d)
-        return d.toFixed(2)
-    }
-
-    function deg2rad(deg: any) {
-        return deg * (Math.PI / 180)
-    }
-
-    const handlePlaceForm = async (query: string) => {
-        //set input value as query in searchParams and while getting result
-        setSearchParams({ query })
-    }
-
     // mapReference can either be reference to google maps or null
     const mapReference = useRef<google.maps.Map | null>(null)
 
     // getting current position on the google maps by updating state variable getCurrentPos while clicking the icon button
-    const gCurrentPosition = (position: google.maps.LatLngLiteral) => {
+    const getUsersPosition = async (position: google.maps.LatLngLiteral) => {
         if (mapReference.current) {
             mapReference.current.panTo({ lat: position.lat, lng: position.lng })
             mapReference.current.setZoom(14)
-            setGCurrentPos(position)
+            setCurrentPosition(position)
+
+            // update url with user's position
+            setSearchParams({ lat: String(position.lat), lng: String(position.lng) })
         }
     }
 
@@ -80,22 +66,25 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
     }
 
     // show location where you click on the map
-    const ShowMapClick = (e: google.maps.MapMouseEvent) => {
+    const ShowMapClick = async (e: google.maps.MapMouseEvent) => {
         if (!e.latLng) {
             return
         }
-        setGCurrentPos({ lat: e.latLng.lat(), lng: e.latLng.lng() })
+        setCurrentPosition({ lat: e.latLng.lat(), lng: e.latLng.lng() })
         setSelectedClickMarker({} as Restaurant)
+
+        // update url with current position
+        setSearchParams({ lat: String(e.latLng.lat()), lng: String(e.latLng.lng()) })
     }
 
     const ShowMarkerClick = (marker: Restaurant) => setSelectedClickMarker(marker)
 
     useEffect(() => {
         // sets a default position on initial map render
-        setGCurrentPos({
-            lat: 55.60697,
-            lng: 13.02106,
-        })
+        // setCurrentPosition({
+        //     lat: 55.60697,
+        //     lng: 13.02106,
+        // })
 
         // ask for user's location
         navigator.geolocation.getCurrentPosition((position) => {
@@ -103,38 +92,30 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
             setDisabled(false)
 
             // calls on function that updated position, and adjusts map
-            gCurrentPosition({
+            getUsersPosition({
                 lat: position.coords.latitude,
                 lng: position.coords.longitude,
             })
         })
     }, [])
 
+    useEffect(() => {
+        if (!mapReference.current) {
+            return
+        }
+
+        mapReference.current.panTo({ lat: Number(selectedLat), lng: Number(selectedLng) })
+        setCurrentPosition({ lat: Number(selectedLat), lng: Number(selectedLng) })
+    }, [selectedLat, selectedLat])
+
     return (
         <>
             <div className="d-flex">
                 <RestaurantListItem restaurants={restaurants} displayOnMap={(e) => ShowMarkerClick(e)} />
                 <div className="cBox">
-                    {/* <Button
-                        onClick={() => {
-                            navigator.geolocation.getCurrentPosition((position) => {
-                                // Click the button when geolocation has finished loaded
-                                setDisabled(false)
-                                // get the callback function for your position
-                                gCurrentPosition({
-                                    lat: position.coords.latitude,
-                                    lng: position.coords.longitude,
-                                })
-                            })
-                        }}
-                        style={{ color: "grey", background: "black", position: "absolute", zIndex: "2", left: "0", top: "50px" }}
-                    >
-                        <i className="fa-solid fa-location-crosshairs"></i>
-                    </Button> */}
-
                     <PlacesAutoComplete
                         setPlace={(place) => {
-                            setPlace(place), mapReference.current?.panTo(place)
+                            setPlace(place), mapReference.current?.panTo(place), setCurrentPosition(place)
                         }}
                     />
 
@@ -149,8 +130,8 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
                             onUnmount={onUnMount}
                         >
                             {place && <Marker position={place} />}
-                            {gCurrentPos.lat && <Marker position={gCurrentPos} />}
-                            {gCurrentPos.lat &&
+                            {currentPosition.lat && <Marker position={currentPosition} />}
+                            {currentPosition.lat &&
                                 restaurants.map((restaurant) => (
                                     <Marker
                                         key={restaurant._id}
@@ -172,8 +153,8 @@ const Map: React.FC<MarkerLocationProps> = ({ restaurants }) => {
                                         <p>
                                             {selectedClickMarker.address}, {selectedClickMarker.city} (
                                             {getDistanceFromLatLngInKm(
-                                                gCurrentPos.lat,
-                                                gCurrentPos.lng,
+                                                currentPosition.lat,
+                                                currentPosition.lng,
                                                 selectedClickMarker.geolocation.lat,
                                                 selectedClickMarker.geolocation.lng
                                             )}{" "}

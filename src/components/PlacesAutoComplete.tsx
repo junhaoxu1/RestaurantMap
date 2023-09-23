@@ -1,9 +1,8 @@
 import { Marker } from "@react-google-maps/api"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import usePlaceAutoComplete, { LatLng, getGeocode, getLatLng } from "use-places-autocomplete"
 import { FaSearch } from "react-icons/fa"
-import Button from "react-bootstrap/Button"
-import { ListGroup } from "react-bootstrap"
+import { useSearchParams } from "react-router-dom"
 
 type Props = {
     setPlace: (latLng: LatLng) => void
@@ -12,6 +11,10 @@ type Props = {
 const PlacesAutoComplete: React.FC<Props> = ({ setPlace }) => {
     const [selected, setSelected] = useState<{ lat: number; lng: number } | null>(null)
     const [notFound, setNotFound] = useState(false)
+    const [_searchParams, setSearchParams] = useSearchParams({
+        lat: "",
+        lng: "",
+    })
 
     const { ready, value, setValue, suggestions, clearSuggestions } = usePlaceAutoComplete()
 
@@ -24,9 +27,7 @@ const PlacesAutoComplete: React.FC<Props> = ({ setPlace }) => {
         setSelected({ lat, lng })
         setPlace({ lat, lng })
 
-        console.log(suggestions.data)
-
-        console.log(results)
+        setSearchParams({ lat: String(lat), lng: String(lng) })
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -39,8 +40,11 @@ const PlacesAutoComplete: React.FC<Props> = ({ setPlace }) => {
 
             setSelected({ lat, lng })
             setPlace({ lat, lng })
+
+            setSearchParams({ lat: String(lat), lng: String(lng) })
         } catch (err) {
             setNotFound(true)
+            setSearchParams({ lat: "", lng: "" })
         }
         // clear list of suggestions once submitted
         clearSuggestions()
