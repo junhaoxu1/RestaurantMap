@@ -17,6 +17,7 @@ interface AdminTableProps {
   onAdminStatusToggle: (documentId: string, newAdminStatus: boolean) => void;
 }
 
+//Lägg till kolumner inne i table
 const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle }) => {
 	const { currentUser } = useAuth()
 	const {
@@ -54,21 +55,23 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle }) =>
         Header: "Role",
         accessor: "admin",
         Cell: ({ row }) => (
-		  <button
-				onClick={() => {
-					const documentId = row.original.documentId;
-					const newAdminStatus = !row.original.admin;
-					onAdminStatusToggle(documentId, newAdminStatus);
-				} }
-			>
-				{row.original.admin ? "Admin" : "Visitor"}
-			</button>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              const documentId = row.original.documentId;
+              const newAdminStatus = !row.original.admin;
+              onAdminStatusToggle(documentId, newAdminStatus);
+            }}
+          >
+            {row.original.admin ? "Admin" : "Visitor"}
+          </button>
         ),
       },
     ],
     []
   );
 
+  //useTable från react-table innehåller dessa variablar för att kunna rendera ut en table
   const {
     getTableProps,
     getTableBodyProps,

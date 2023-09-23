@@ -23,8 +23,6 @@ const SignupPage = () => {
 	const {handleSubmit, register, watch,formState: { errors }} = useForm<SignUpCreds>()
     const navigate = useNavigate()
 
-	const newDocRef = doc(collection(db, "users"));
-
     const { signup, currentUser } = useAuth()
 
     const passwordRef = useRef("")
@@ -100,7 +98,7 @@ const SignupPage = () => {
 			  email: currentUser.email || '', 
 			  admin: false,
 			  uid: currentUser.uid || '', 
-			  name: currentUser.displayName || '',
+			  name:  '',
 
 			};
 	  

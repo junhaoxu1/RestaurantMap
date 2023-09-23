@@ -27,6 +27,8 @@ const AdminPage = () => {
 		  const admin: boolean = doc.data().admin
 		  const name: string = doc.data().name
 		  newDocumentData.push({ documentId, email, admin, name });
+		  const name: string = doc.data().name
+		  newDocumentData.push({ documentId, email, admin, name });
 		});
 
 		setDocumentData(newDocumentData);
