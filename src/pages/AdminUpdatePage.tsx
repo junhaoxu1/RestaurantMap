@@ -1,4 +1,4 @@
-import { doc, deleteDoc } from 'firebase/firestore'
+import { doc, deleteDoc, setDoc } from 'firebase/firestore'
 import { useState } from "react"
 import Button from "react-bootstrap/Button"
 import Container from "react-bootstrap/Container"
@@ -8,10 +8,12 @@ import { toast } from 'react-toastify'
 import Confirmation from "../components/Confirmation"
 import useAuth from '../hooks/useAuth'
 import useGetRequest from "../hooks/useGetRequest"
-import { restaurantRequestCol } from '../services/firebase'
+import { restaurantRequestCol, newRestaurantCol } from '../services/firebase'
+import { RestaurantFormData } from '../types/restaurants.types'
 
 const RestaurantRequestPage = () => {
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false)
+    const [showConfirmApprove, setShowConfirmApprove ] = useState(false)
 	const navigate = useNavigate()
 	const { id } = useParams()
 	const { currentUser } = useAuth()
@@ -23,7 +25,25 @@ const RestaurantRequestPage = () => {
 		loading
 	} = useGetRequest(documentId)
 
-	const deleteRequest= async () => {
+    const approveRequest = async () => {
+		const firstDocRef = doc(restaurantRequestCol, documentId)
+        const secondDocRef = doc(newRestaurantCol, documentId)
+
+        await deleteDoc(firstDocRef)
+
+        const restaurantData = {
+            ...restaurant,
+          };
+
+
+		await setDoc(secondDocRef, restaurantData)
+
+        toast.success(`${restaurant?.name} has been approved`)
+
+        navigate('/users-request')
+    }
+
+	const deleteRequest = async () => {
 		const docRef = doc(restaurantRequestCol, documentId)
 
 		await deleteDoc(docRef)
@@ -36,7 +56,7 @@ const RestaurantRequestPage = () => {
 	}
 
 	if (loading || !restaurant) {
-		return <p>Loading todo...</p>
+		return <p>Loading...</p>
 	}
 
 	return (
@@ -44,6 +64,23 @@ const RestaurantRequestPage = () => {
 			<div className="d-flex justify-content-between align-items-start">
 				<h1>{restaurant.name}</h1>
 			</div>
+
+            <div className="buttons mb-3">
+				<Button
+					variant="success"
+					onClick={() => setShowConfirmApprove(true)}
+				>
+					Approve
+				</Button>
+			</div>
+
+            <Confirmation
+				show={showConfirmApprove}
+				onCancel={() => setShowConfirmDelete(false)}
+				onConfirm={approveRequest}
+			>
+				Do you want to approve {restaurant.name}?
+			</Confirmation>
 
 			<div className="buttons mb-3">
 				<Button
