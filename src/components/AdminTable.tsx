@@ -37,107 +37,107 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle, onAd
 		return <p>Failed</p>
 	}
 
-  const columns: Column<RowData>[] = React.useMemo(
-    () => [
-      {
-        Header: "User",
-        accessor: "email",
-      },
-	  {
-		Header: "Name & ProfileImg",
-		accessor: "name",
-		Cell: ({ row }) => (
-			<Form>
-				<Form.Group>
-				<div className="profile-photo-wrapper text-center my-2">
-					<div className="d-flex">
-						<Image src={row.original.photoFile || "https://via.placeholder.com/225"} fluid rounded className="img-square w-50" />
+	const columns: Column<RowData>[] = React.useMemo(
+		() => [
+		{
+			Header: "User",
+			accessor: "email",
+		},
+		{
+			Header: "Name & ProfileImg",
+			accessor: "name",
+			Cell: ({ row }) => (
+				<Form>
+					<Form.Group>
+					<div className="profile-photo-wrapper text-center my-2">
+						<div className="d-flex">
+							<Image src={row.original.photoFile || "https://via.placeholder.com/225"} fluid rounded className="img-square w-50" />
+						</div>
 					</div>
-				</div>
-				<Form.Label>{row.original.name ? `${row.original.name}` : "(no name)"}</Form.Label>
-					<Form.Control
-						style={{width: "50%"}}
-						placeholder={row.original.name ? `${row.original.name}`: "null"}
-						defaultValue={row.original.name || ""}
-						onChange={(e) => {
-							const newName = e.target.value
-							row.original.name = newName
+					<Form.Label>{row.original.name ? `${row.original.name}` : "(no name)"}</Form.Label>
+						<Form.Control
+							style={{width: "50%"}}
+							placeholder={row.original.name ? `${row.original.name}`: "null"}
+							defaultValue={row.original.name || ""}
+							onChange={(e) => {
+								const newName = e.target.value
+								row.original.name = newName
+							}}
+						/>
+						{errors.name && <p className="invalid">{errors.name.message ?? "Invalid value"}</p>}
+					</Form.Group>
+					<Button
+						variant="primary"
+						onClick={() => {
+							const documentId = row.original.documentId;
+							const newUsername = row.original.name
+							onAdminNameToggle(documentId, newUsername)
 						}}
-					/>
-					{errors.name && <p className="invalid">{errors.name.message ?? "Invalid value"}</p>}
-				</Form.Group>
-				<Button 
-					variant="primary" 
-					onClick={() => {
-						const documentId = row.original.documentId;
-						const newUsername = row.original.name
-						onAdminNameToggle(documentId, newUsername)
-					}}
-					>
-						Update 
-				</Button>
-			</Form>
-        ),
-	  },
-      {
-        Header: "Role",
-        accessor: "admin",
-        Cell: ({ row }) => (
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              const documentId = row.original.documentId;
-              const newAdminStatus = !row.original.admin;
-              onAdminStatusToggle(documentId, newAdminStatus);
-            }}
-          >
-            {row.original.admin ? "Admin" : "Visitor"}
-          </button>
-        ),
-      },
-    ],
-    []
-  );
+						>
+							Update
+					</Button>
+				</Form>
+			),
+		},
+		{
+			Header: "Role",
+			accessor: "admin",
+			Cell: ({ row }) => (
+			<button
+				className="btn btn-primary"
+				onClick={() => {
+				const documentId = row.original.documentId;
+				const newAdminStatus = !row.original.admin;
+				onAdminStatusToggle(documentId, newAdminStatus);
+				}}
+			>
+				{row.original.admin ? "Admin" : "Visitor"}
+			</button>
+			),
+		},
+		],
+		[]
+	);
 
-  //useTable från react-table innehåller dessa variablar för att kunna rendera ut en table
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable({
-    columns,
-    data,
-  });
+	//useTable från react-table innehåller dessa variablar för att kunna rendera ut en table
+	const {
+		getTableProps,
+		getTableBodyProps,
+		headerGroups,
+		rows,
+		prepareRow,
+	} = useTable({
+		columns,
+		data,
+	});
 
-  return (
-    <table {...getTableProps()} className="table">
-      <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-              })}
-            </tr>
-          );
-        })}
-      </tbody>
-	  <tbody>
-	  </tbody>
-    </table>
-  );
+	return (
+		<table {...getTableProps()} className="table">
+		<thead>
+			{headerGroups.map((headerGroup) => (
+			<tr {...headerGroup.getHeaderGroupProps()}>
+				{headerGroup.headers.map((column) => (
+				<th {...column.getHeaderProps()}>{column.render("Header")}</th>
+				))}
+			</tr>
+			))}
+		</thead>
+		<tbody {...getTableBodyProps()}>
+			{rows.map((row) => {
+			prepareRow(row);
+			return (
+				<tr {...row.getRowProps()}>
+				{row.cells.map((cell) => {
+					return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+				})}
+				</tr>
+			);
+			})}
+		</tbody>
+		<tbody>
+		</tbody>
+		</table>
+	);
 };
 
 export default AdminTable;
