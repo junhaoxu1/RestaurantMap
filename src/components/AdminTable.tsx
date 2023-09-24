@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import Form from "react-bootstrap/esm/Form";
 import { useTable, Column } from "react-table";
 import useAuth from "../hooks/useAuth";
 import { UpdateUserFormData } from "../types/User.types";
 import { useForm } from "react-hook-form";
-import { Button, Image } from "react-bootstrap";
+import Button from 'react-bootstrap/Button'
+import Image from 'react-bootstrap/Image'
 
 interface RowData {
   documentId: string;

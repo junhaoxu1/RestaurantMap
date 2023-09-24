@@ -21,9 +21,9 @@ const AddNewRestaurantPage = () => {
           try {
             const usersCollection = collection(db, "users");
     
-            const q = query(usersCollection, where("uid", "==", currentUser.uid));
+            const checkId = query(usersCollection, where("uid", "==", currentUser.uid));
     
-            const querySnapshot = await getDocs(q);
+            const querySnapshot = await getDocs(checkId);
     
             if (querySnapshot.size === 1) {
               const userDoc = querySnapshot.docs[0];

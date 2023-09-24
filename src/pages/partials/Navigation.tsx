@@ -37,10 +37,13 @@ const Navigation = () => {
 									<NavDropdown.Item as={NavLink} to="/users-tips-request">
 										UsersTipsReq
 									</NavDropdown.Item>
+									<NavDropdown.Item as={NavLink} to="/users-request">
+										Restaurant Request
+									</NavDropdown.Item>
+									<NavDropdown.Divider />
 									<NavDropdown.Item as={NavLink} to="/update-user">
 										Update Profile
 									</NavDropdown.Item>
-									<NavDropdown.Divider />
 									<NavDropdown.Item as={NavLink} to="/logout">
 										Logout
 									</NavDropdown.Item>

@@ -16,6 +16,7 @@ import AdminUpdatePage from "./pages/AdminUpdatePage"
 import NotFoundPage from "./pages/NotFoundPage"
 import ForgotPasswordPage from "./pages/ForgotPasswordPage"
 import UsersTipsRequestPage from "./pages/UsersTipsRequestPage"
+import UserRequestsPage from "./pages/UserRequestsPage"
 
 const App = () => {
     return (
@@ -37,6 +38,7 @@ const App = () => {
 
 					<Route path="/update-user" element={<UpdateUserPage />} />
                     <Route path="/users-tips-request" element={<UsersTipsRequestPage />} />
+                    <Route path="/users-request" element={<UserRequestsPage />} />
                     <Route path="/admin" element={<AdminPage />} />
                     <Route path="/admin/:documentId" element={<AdminUpdatePage />} />
                 </Routes>

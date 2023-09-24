@@ -7,7 +7,6 @@ import { getDocs, collection, doc, updateDoc } from "firebase/firestore"
 import { useState, useEffect } from 'react'
 import AdminTable from "../components/AdminTable"
 import { FirebaseError } from "firebase/app"
-import { updateProfile } from "firebase/auth"
 
 const AdminPage = () => {
 	const { data: users, loading } = useGetCollection<UserFormData>(usersCol)
