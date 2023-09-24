@@ -15,6 +15,7 @@ import AdminPage from "./pages/AdminPage"
 import AdminUpdatePage from "./pages/AdminUpdatePage"
 import NotFoundPage from "./pages/NotFoundPage"
 import ForgotPasswordPage from "./pages/ForgotPasswordPage"
+import UsersTipsRequestPage from "./pages/UsersTipsRequestPage"
 
 const App = () => {
     return (
@@ -35,6 +36,7 @@ const App = () => {
 					<Route path="/forgot-password" element={<ForgotPasswordPage />}/>
 
 					<Route path="/update-user" element={<UpdateUserPage />} />
+                    <Route path="/users-tips-request" element={<UsersTipsRequestPage />} />
                     <Route path="/admin" element={<AdminPage />} />
                     <Route path="/admin/:documentId" element={<AdminUpdatePage />} />
                 </Routes>
