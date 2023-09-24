@@ -13,7 +13,7 @@ export const UserRequestsPage = () => {
     const { data: restaurants, loading } = useGetCollection<RestaurantFormData>(restaurantRequestCol);
     const { data: users } = useGetCollection<UserFormData>(usersCol);
 
-    const [documentData, setDocumentData] = useState<{ 
+    const [documentData, setDocumentData] = useState<{
         address: string
         category: string
         city: string

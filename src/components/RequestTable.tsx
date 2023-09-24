@@ -106,38 +106,41 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 	});
 
 	return (
-		<table {...getTableProps()} className="table">
-		<thead>
-			{headerGroups.map((headerGroup) => (
-			<tr {...headerGroup.getHeaderGroupProps()}>
-				{headerGroup.headers.map((column) => (
-				<th {...column.getHeaderProps()}>{column.render("Header")}</th>
-				))}
-			</tr>
-			))}
-		</thead>
-		<tbody {...getTableBodyProps()}>
-			{rows.map((row) => {
-			prepareRow(row);
-			return (
-				<tr {...row.getRowProps()}>
-				{row.cells.map((cell) => (
-					<td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-				))}
-				<td>
-					<Button
-					onClick={() => {
-						console.log("Button clicked for row");
-					}}
-					>
-					Edit
-					</Button>
-				</td>
+		<div className="table-container" style={{ height: "100vh", overflowY: "auto" }}>
+
+			<table {...getTableProps()} className="table">
+			<thead>
+				{headerGroups.map((headerGroup) => (
+				<tr {...headerGroup.getHeaderGroupProps()}>
+					{headerGroup.headers.map((column) => (
+					<th {...column.getHeaderProps()}>{column.render("Header")}</th>
+					))}
 				</tr>
-			);
-			})}
-		</tbody>
-		</table>
+				))}
+			</thead>
+			<tbody {...getTableBodyProps()}>
+				{rows.map((row) => {
+				prepareRow(row);
+				return (
+					<tr {...row.getRowProps()}>
+					{row.cells.map((cell) => (
+						<td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+					))}
+					<td>
+						<Button
+						onClick={() => {
+							console.log("Button clicked for row");
+						}}
+						>
+						Edit
+						</Button>
+					</td>
+					</tr>
+				);
+				})}
+			</tbody>
+			</table>
+		</div>
 	);
 };
 
