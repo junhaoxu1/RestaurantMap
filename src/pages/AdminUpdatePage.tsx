@@ -59,7 +59,7 @@ const RestaurantRequestPage = () => {
 				onCancel={() => setShowConfirmDelete(false)}
 				onConfirm={deleteRequest}
 			>
-				Are you sure?
+				Do you want to delete {restaurant.name}?
 			</Confirmation>
 
 			<Link to="/users-request">
