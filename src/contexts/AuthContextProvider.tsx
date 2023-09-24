@@ -8,6 +8,7 @@ import {
     updateProfile,
 	User,
     signOut,
+	sendPasswordResetEmail,
 } from 'firebase/auth'
 import { createContext, useEffect, useState } from 'react'
 import SyncLoader from 'react-spinners/SyncLoader'
@@ -25,6 +26,7 @@ type AuthContextType = {
 	setDisplayName: (displayName: string) => Promise<void>
 	setPassword: (password: string) => Promise<void>
 	setPhotoUrl: (photoURL: string) => Promise<void>
+	resetUserPassword: (email: string) => Promise<void>
 	userEmail: string | null
 	userName: string | null
     userPhotoUrl: string | null
@@ -59,7 +61,7 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
 
     const setEmail = (email: string) => {
         if (!currentUser) { throw new Error("User is null")}
-		
+
         return verifyBeforeUpdateEmail(currentUser, email)
     }
 
@@ -78,6 +80,12 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
         setUserPhotoUrl(photoURL)
         return updateProfile(currentUser, { photoURL })
     }
+
+	const resetUserPassword = (email: string) => {
+		return sendPasswordResetEmail(auth, email, {
+			url: window.location.origin + "/login",
+		})
+	}
 
     const reloadUser = async () => {
 		if (!auth.currentUser) {
@@ -116,6 +124,7 @@ const AuthContextProvider: React.FC<AuthContextProps> = ({ children }) => {
             login,
             logout,
             reloadUser,
+			resetUserPassword,
             setDisplayName,
             setEmail,
             setPassword,

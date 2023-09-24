@@ -14,6 +14,7 @@ import UpdateUserPage from './pages/UpdateUserPage'
 import AdminPage from "./pages/AdminPage"
 import AdminUpdatePage from "./pages/AdminUpdatePage"
 import NotFoundPage from "./pages/NotFoundPage"
+import ForgotPasswordPage from "./pages/ForgotPasswordPage"
 
 const App = () => {
     return (
@@ -31,8 +32,9 @@ const App = () => {
                     <Route path="/signup" element={<SignupPage />} />
 					<Route path="/login" element={<LoginPage />} />
 					<Route path="/logout" element={<LogoutPage />} />
-					<Route path="/update-user" element={<UpdateUserPage />} />
+					<Route path="/forgot-password" element={<ForgotPasswordPage />}/>
 
+					<Route path="/update-user" element={<UpdateUserPage />} />
                     <Route path="/admin" element={<AdminPage />} />
                     <Route path="/admin/:documentId" element={<AdminUpdatePage />} />
                 </Routes>

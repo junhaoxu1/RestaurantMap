@@ -10,6 +10,10 @@ export type SignUpCreds = {
     passwordConfirm: string
 }
 
+export type ForgotUserPasswordData = {
+	email: string
+}
+
 export type UpdateUserFormData = {
     name: string
     photoFile: FileList
