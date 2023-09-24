@@ -1,8 +1,10 @@
 import React from "react";
 import { useTable, Column } from "react-table";
 import Button from "react-bootstrap/Button";
+import {Link} from "react-router-dom"
 
 interface RowData {
+	_id: string
 	address: string;
 	category: string;
 	city: string;
@@ -127,6 +129,9 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 						<td {...cell.getCellProps()}>{cell.render("Cell")}</td>
 					))}
 					<td>
+						<Link
+							to={`/users-request/${row.original._id}`}
+						>
 						<Button
 						onClick={() => {
 							console.log("Button clicked for row");
@@ -134,6 +139,7 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 						>
 						Edit
 						</Button>
+						</Link>
 					</td>
 					</tr>
 				);

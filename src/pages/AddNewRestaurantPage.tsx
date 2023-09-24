@@ -1,4 +1,4 @@
-import { RestaurantFormData } from "../types/restaurants.types"
+import { RestaurantFormData, Restaurant } from "../types/restaurants.types"
 import { UserFormData } from "../types/User.types"
 import useGetCollection from "../hooks/useGetCollection"
 import { getGeocode } from "../services/Geocode"
@@ -11,9 +11,9 @@ import { useEffect, useState } from 'react'
 import useGetDocument from "../hooks/useGetDocument"
 
 const AddNewRestaurantPage = () => {
-    const { currentUser } = useAuth(); // Replace with your authentication hook
+    const { currentUser } = useAuth();
 
-    const [userDocumentId, setUserDocumentId] = useState<string | null>(null); // Store the user's document ID
+    const [userDocumentId, setUserDocumentId] = useState<string | null>(null); 
     
     useEffect(() => {
       const fetchData = async () => {

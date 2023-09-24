@@ -14,6 +14,7 @@ export const UserRequestsPage = () => {
     const { data: users } = useGetCollection<UserFormData>(usersCol);
 
     const [documentData, setDocumentData] = useState<{
+        _id: string
         address: string
         category: string
         city: string

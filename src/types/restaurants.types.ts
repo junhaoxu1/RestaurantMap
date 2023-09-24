@@ -20,4 +20,4 @@ export type Restaurant = {
 
 export type Restaurants = Restaurant[]
 
-export type RestaurantFormData = Omit<Restaurant, "_id">
+export type RestaurantFormData = Omit<Restaurant, "_id"> & { _id: string }
