@@ -46,10 +46,6 @@ const RestaurantRequestPage = () => {
 			</div>
 
 			<div className="buttons mb-3">
-				<Link to={`/todos/${id}/edit`}>
-					<Button variant="warning">Edit</Button>
-				</Link>
-
 				<Button
 					variant="danger"
 					onClick={() => setShowConfirmDelete(true)}
@@ -67,7 +63,7 @@ const RestaurantRequestPage = () => {
 			</Confirmation>
 
 			<Link to="/users-request">
-				<Button variant="secondary">&laquo; All Requests</Button>
+				<Button variant="secondary">&laquo; Go Back</Button>
 			</Link>
 		</Container>
 	)
