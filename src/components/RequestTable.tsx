@@ -1,7 +1,9 @@
-import React from "react";
-import { useTable, Column } from "react-table";
+import React, { useState } from "react";
+import { useTable, Column, useSortBy} from "react-table";
 import Button from "react-bootstrap/Button";
 import {Link} from "react-router-dom"
+// import { useReactTable, Column, getSortedRowModel } from '@tanstack/react-table'
+
 
 interface RowData {
 	_id: string
@@ -25,8 +27,6 @@ interface RowData {
 
 interface RequestTableProps {
 	data: RowData[];
-	//   onDelete: () => void;
-	//   onSendRequest: (documentId: string, newName: string) => void;
 }
 
 const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
@@ -36,6 +36,7 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 		{
 			Header: "Name",
 			accessor: "name",
+			sortby: true,
 		},
 		{
 			Header: "Address",
@@ -105,7 +106,9 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 	} = useTable({
 		columns,
 		data,
-	});
+	},
+	useSortBy,
+	)
 
 	return (
 		<div className="table-container" style={{ height: "100vh", overflowY: "auto" }}>
@@ -115,7 +118,7 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 				{headerGroups.map((headerGroup) => (
 				<tr {...headerGroup.getHeaderGroupProps()}>
 					{headerGroup.headers.map((column) => (
-					<th {...column.getHeaderProps()}>{column.render("Header")}</th>
+					<th {...column.getHeaderProps(column.getSortByToggleProps())}>{column.render("Header")}</th>
 					))}
 				</tr>
 				))}
