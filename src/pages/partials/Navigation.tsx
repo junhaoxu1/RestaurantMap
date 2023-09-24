@@ -34,9 +34,6 @@ const Navigation = () => {
 									<NavDropdown.Item as={NavLink} to="/admin">
 										Admin
 									</NavDropdown.Item>
-									<NavDropdown.Item as={NavLink} to="/users-tips-request">
-										UsersTipsReq
-									</NavDropdown.Item>
 									<NavDropdown.Item as={NavLink} to="/users-request">
 										Restaurant Request
 									</NavDropdown.Item>
