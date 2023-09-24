@@ -40,7 +40,9 @@ const RestaurantRequestPage = () => {
 
         toast.success(`${restaurant?.name} has been approved`)
 
-        navigate('/users-request')
+        navigate('/users-request', {
+            replace: true
+        })
     }
 
 	const deleteRequest = async () => {
