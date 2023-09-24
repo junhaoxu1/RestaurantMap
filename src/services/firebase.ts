@@ -33,7 +33,7 @@ const createCollection = <T = DocumentData>(collectionName: string) => {
 // collection references for getting the `restaurants` collection in db and setting new document
 export const restaurantsCol = createCollection<Restaurant>("restaurants")
 export const newRestaurantCol = createCollection<RestaurantFormData>("restaurants")
-export const restaurantSuggestCol = createCollection<Restaurant>("suggestions")
+export const restaurantRequestCol = createCollection<RestaurantFormData>("requests")
 
 export const usersCol = createCollection<UserInformation>("users")
 

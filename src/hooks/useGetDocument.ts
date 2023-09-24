@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 const useGetDocument = <T>(colRef: CollectionReference<T>, documentId: string) => {
     const [data, setData] = useState<T | null>(null)
+    const [documentID, setDocumentID] = useState<string | null>(null)
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
 
@@ -11,6 +12,12 @@ const useGetDocument = <T>(colRef: CollectionReference<T>, documentId: string) =
         setError(false)
         setLoading(true)
 
+        if (!colRef || !documentId) {
+            setError(true);
+            setLoading(false);
+            return;
+        }
+
         // get a ref to a single document in `restaurants` collection
         const docRef = doc(colRef, documentId)
         const docSnap = await getDoc(docRef)
@@ -18,6 +25,7 @@ const useGetDocument = <T>(colRef: CollectionReference<T>, documentId: string) =
         // if snapshot doesn't exist, update states and return
         if (!docSnap.exists()) {
             setData(null)
+            setDocumentID(null)
             setError(true)
             setLoading(false)
             return
@@ -31,6 +39,7 @@ const useGetDocument = <T>(colRef: CollectionReference<T>, documentId: string) =
 
         // update states once data is constructed
         setData(data)
+        setDocumentID(docSnap.id)
         setLoading(false)
     }, [colRef, documentId])
 
@@ -44,6 +53,7 @@ const useGetDocument = <T>(colRef: CollectionReference<T>, documentId: string) =
         data,
         error,
         getData,
+        documentID,
         loading,
     }
 }
