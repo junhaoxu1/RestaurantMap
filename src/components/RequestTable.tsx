@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { useTable, Column, useSortBy} from "react-table"
+import { useTable, Column } from "react-table"
 import Button from "react-bootstrap/Button"
 import {Link} from "react-router-dom"
 
@@ -111,21 +111,21 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 	)
 
 	const sortRowData = (colId: string) => {
-	const sortRowArray = [...sortedRowArrayD].sort((a: any, b: any) => {
-		const itemValueA = a[colId]
-		const itemValueB = b[colId]
+		const sortRowArray = [...sortedRowArrayD].sort((a: any, b: any) => {
+			const itemValueA = a[colId]
+			const itemValueB = b[colId]
 
-		if (typeof itemValueA === 'string' && typeof itemValueB === 'string') {
-			// Sorting columns by alphabetical order in swedish characters
-			return itemValueA.localeCompare(itemValueB, 'sv', { sensitivity: 'base' })
-		} else if (typeof itemValueA === 'number' && typeof itemValueB === 'number') {
-			// added same with numbers, its working kinda off
-			return itemValueA - itemValueB
-		} else {
-			return 0
-		}
+			if (typeof itemValueA === 'string' && typeof itemValueB === 'string') {
+				// Sorting columns by alphabetical order in swedish characters
+				return itemValueA.localeCompare(itemValueB, 'sv', { sensitivity: 'base' })
+			} else if (typeof itemValueA === 'number' && typeof itemValueB === 'number') {
+				// added same with numbers, its working kinda off
+				return itemValueA - itemValueB
+			} else {
+				return 0
+			}
 
-	})
+		})
 		setSortedRowArrayD(sortRowArray)
 	}
 
