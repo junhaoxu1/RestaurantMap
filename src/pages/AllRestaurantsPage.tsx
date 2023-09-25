@@ -5,7 +5,7 @@ import useAuth from "../hooks/useAuth";
 import useGetCollection from "../hooks/useGetCollection";
 import { useState, useEffect } from 'react';
 import { RestaurantFormData } from "../types/restaurants.types";
-import RequestTable from "../components/RequestTable";
+import AllRestaurantsTable from "../components/AllRestaurantsTable";
 
 export const AllRestaurantsPage = () => {
     const { currentUser } = useAuth();
@@ -48,7 +48,7 @@ export const AllRestaurantsPage = () => {
                 <p>Loading...</p>
             ) : users && currentUser ? (
                 admins?.some((admin) => admin.email === currentUser.email) ? (
-                    <RequestTable data={documentData}/>
+                    <AllRestaurantsTable data={documentData}/>
                 ) : (
                     <p>You do not have permission to view this page.</p>
                 )

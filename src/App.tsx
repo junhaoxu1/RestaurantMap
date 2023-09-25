@@ -12,11 +12,12 @@ import LoginPage from './pages/LoginPage'
 import LogoutPage from './pages/LogoutPage'
 import UpdateUserPage from './pages/UpdateUserPage'
 import AdminPage from "./pages/AdminPage"
-import AdminUpdatePage from "./pages/AdminUpdatePage"
+import AdminUpdatePage from "./pages/EditRequestPage"
 import NotFoundPage from "./pages/NotFoundPage"
 import ForgotPasswordPage from "./pages/ForgotPasswordPage"
 import UserRequestsPage from "./pages/UserRequestsPage"
 import AllRestaurantsPage from "./pages/AllRestaurantsPage"
+import EditRestaurantPage from "./pages/EditRestaurantPage"
 
 const App = () => {
     return (
@@ -42,6 +43,7 @@ const App = () => {
                     <Route path="/admin" element={<AdminPage />} />
                     <Route path="/admin/:documentId" element={<AdminUpdatePage />} />
                     <Route path="/admin-restaurants" element={<AllRestaurantsPage />} />
+                    <Route path="/admin-restaurants/:id" element={<EditRestaurantPage />} />
                 </Routes>
                 <ToastContainer theme="colored" position="top-right" autoClose={1500} />
             </>
