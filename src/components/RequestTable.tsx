@@ -1,7 +1,7 @@
 import React from "react";
 import { useTable, Column } from "react-table";
 import Button from "react-bootstrap/Button";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 
 interface RowData {
 	_id: string
@@ -25,8 +25,6 @@ interface RowData {
 
 interface RequestTableProps {
 	data: RowData[];
-	//   onDelete: () => void;
-	//   onSendRequest: (documentId: string, newName: string) => void;
 }
 
 const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
@@ -108,14 +106,15 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 	});
 
 	return (
-		<div className="table-container" style={{ height: "100vh", overflowY: "auto" }}>
+		<div className="table-responsive" style={{ height: "100vh", overflowY: "auto" }}>
 
 			<table {...getTableProps()} className="table">
 			<thead>
 				{headerGroups.map((headerGroup) => (
 				<tr {...headerGroup.getHeaderGroupProps()}>
 					{headerGroup.headers.map((column) => (
-					<th {...column.getHeaderProps()}>{column.render("Header")}</th>
+					<th {...column.getHeaderProps()} className="col">
+						{column.render("Header")}</th>
 					))}
 				</tr>
 				))}
@@ -126,17 +125,14 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 				return (
 					<tr {...row.getRowProps()}>
 					{row.cells.map((cell) => (
-						<td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+						<td {...cell.getCellProps()} className="col">
+							{cell.render("Cell")}</td>
 					))}
-					<td>
+					<td className="col">
 						<Link
 							to={`/users-request/${row.original._id}`}
 						>
-						<Button
-						onClick={() => {
-							console.log("Button clicked for row");
-						}}
-						>
+						<Button>
 						Edit
 						</Button>
 						</Link>

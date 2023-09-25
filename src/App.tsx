@@ -16,6 +16,7 @@ import AdminUpdatePage from "./pages/AdminUpdatePage"
 import NotFoundPage from "./pages/NotFoundPage"
 import ForgotPasswordPage from "./pages/ForgotPasswordPage"
 import UserRequestsPage from "./pages/UserRequestsPage"
+import AllRestaurantsPage from "./pages/AllRestaurantsPage"
 
 const App = () => {
     return (
@@ -40,6 +41,7 @@ const App = () => {
                     <Route path="/users-request/:id" element={<AdminUpdatePage />} />
                     <Route path="/admin" element={<AdminPage />} />
                     <Route path="/admin/:documentId" element={<AdminUpdatePage />} />
+                    <Route path="/admin-restaurants" element={<AllRestaurantsPage />} />
                 </Routes>
                 <ToastContainer theme="colored" position="top-right" autoClose={1500} />
             </>

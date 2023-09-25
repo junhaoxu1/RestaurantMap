@@ -6,7 +6,6 @@ import Image from "react-bootstrap/Image"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { toast } from 'react-toastify'
 import Confirmation from "../components/Confirmation"
-import useAuth from '../hooks/useAuth'
 import useGetRequest from "../hooks/useGetRequest"
 import { restaurantRequestCol, newRestaurantCol } from '../services/firebase'
 import AddNewRequestForm from '../components/AddNewRequestForm'
@@ -17,7 +16,6 @@ const RestaurantRequestPage = () => {
     const [showConfirmApprove, setShowConfirmApprove ] = useState(false)
 	const navigate = useNavigate()
 	const { id } = useParams()
-	const { currentUser } = useAuth()
 
 	const documentId = id as string
 
