@@ -37,6 +37,9 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle, onAd
 		return <p>Failed</p>
 	}
 
+	const [rowData, setRowData] = useState(data)
+
+
 	const columns: Column<RowData>[] = React.useMemo(
 		() => [
 		{
@@ -88,6 +91,8 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle, onAd
 				onClick={() => {
 				const documentId = row.original.documentId;
 				const newAdminStatus = !row.original.admin;
+				row.original.admin = newAdminStatus
+              	setRowData([...rowData])
 				onAdminStatusToggle(documentId, newAdminStatus);
 				}}
 			>
