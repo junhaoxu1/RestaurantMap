@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useTable, Column } from "react-table"
 import Button from "react-bootstrap/Button"
 import { Link } from "react-router-dom"
@@ -23,11 +23,11 @@ interface RowData {
 	cover_photo?: string
 }
 
-interface RequestTableProps {
+interface RestaurantTableProps {
 	data: RowData[]
 }
 
-const AllRestaurantsTable: React.FC<RequestTableProps> = ({ data }) => {
+const AllRestaurantsTable: React.FC<RestaurantTableProps> = ({ data }) => {
 
 	const columns: Column<RowData>[] = React.useMemo(
 		() => [
@@ -128,6 +128,10 @@ const AllRestaurantsTable: React.FC<RequestTableProps> = ({ data }) => {
 		})
 		setSortedRowArrayD(sortRowArray)
 	}
+
+	useEffect(() => {
+		setSortedRowArrayD(data); // Populate the data when the component mounts
+	  }, [data]);
 
 	return (
 		<div className="table-responsive" style={{ height: "100vh", overflowY: "auto" }}>
