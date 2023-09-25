@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Form from "react-bootstrap/esm/Form";
 import { useTable, Column } from "react-table";
 import useAuth from "../hooks/useAuth";
@@ -99,6 +99,8 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle, onAd
 		[]
 	);
 
+	const [sortedRowArrayD, setSortedRowArrayD] = useState(data)
+
 	//useTable från react-table innehåller dessa variablar för att kunna rendera ut en table
 	const {
 		getTableProps,
@@ -108,8 +110,27 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle, onAd
 		prepareRow,
 	} = useTable({
 		columns,
-		data,
+		data: sortedRowArrayD,
 	});
+
+	const sortRowData = (colId: string) => {
+		const sortRowArray = [...sortedRowArrayD].sort((a: any, b: any) => {
+			const itemValueA = a[colId]
+			const itemValueB = b[colId]
+
+			if (typeof itemValueA === 'string' && typeof itemValueB === 'string') {
+				// Sorting columns by alphabetical order in swedish characters
+				return itemValueA.localeCompare(itemValueB, 'sv', { sensitivity: 'base' })
+			} else if (typeof itemValueA === 'number' && typeof itemValueB === 'number') {
+				// added same with numbers, its working kinda off
+				return itemValueA - itemValueB
+			} else {
+				return 0
+			}
+
+		})
+		setSortedRowArrayD(sortRowArray)
+	}
 
 	return (
 		<table {...getTableProps()} className="table">
@@ -117,7 +138,7 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle, onAd
 			{headerGroups.map((headerGroup) => (
 			<tr {...headerGroup.getHeaderGroupProps()}>
 				{headerGroup.headers.map((column) => (
-				<th {...column.getHeaderProps()}>{column.render("Header")}</th>
+				<th {...column.getHeaderProps()} onClick={() => sortRowData(column.id)}>{column.render("Header")}</th>
 				))}
 			</tr>
 			))}
