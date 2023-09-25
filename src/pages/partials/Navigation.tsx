@@ -31,7 +31,7 @@ const Navigation = () => {
 								<Nav.Link as={NavLink} end to="/restaurants">
                             		All Restaurants
                         		</Nav.Link>
-								<NavDropdown 
+								<NavDropdown
 									title={
 									userPhotoUrl
 									? <Image
@@ -48,7 +48,7 @@ const Navigation = () => {
 										Admin
 									</NavDropdown.Item>
 									<NavDropdown.Item as={NavLink} to="/admin-restaurants">
-										All Restaurants
+										Firebase Restaurants data
 									</NavDropdown.Item>
 									<NavDropdown.Item as={NavLink} to="/users-request">
 										Restaurant Request
