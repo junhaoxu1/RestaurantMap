@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { RestaurantFormData } from "../types/restaurants.types";
 import RequestTable from "../components/RequestTable";
 
-export const UserRequestsPage = () => {
+const UserRequestsPage = () => {
     const { currentUser } = useAuth();
 
     const { data: restaurants, loading } = useGetCollection<RestaurantFormData>(restaurantRequestCol);
