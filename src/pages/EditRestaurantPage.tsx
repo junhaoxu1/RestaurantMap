@@ -1,4 +1,4 @@
-import { doc, deleteDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { doc, deleteDoc, updateDoc } from 'firebase/firestore'
 import { useState } from "react"
 import Button from "react-bootstrap/Button"
 import Container from "react-bootstrap/Container"
@@ -6,66 +6,45 @@ import Image from "react-bootstrap/Image"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { toast } from 'react-toastify'
 import Confirmation from "../components/Confirmation"
-import useAuth from '../hooks/useAuth'
-import useGetRequest from "../hooks/useGetRequest"
-import { restaurantRequestCol, newRestaurantCol } from '../services/firebase'
+import { restaurantsCol } from '../services/firebase'
 import AddNewRequestForm from '../components/AddNewRequestForm'
 import { RestaurantFormData } from '../types/restaurants.types'
+import useGetRestaurant from '../hooks/useGetRestaurant'
 
-const RestaurantRequestPage = () => {
+const EditRestaurantPage = () => {
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false)
-    const [showConfirmApprove, setShowConfirmApprove ] = useState(false)
 	const navigate = useNavigate()
 	const { id } = useParams()
-	const { currentUser } = useAuth()
 
 	const documentId = id as string
 
 	const {
 		data: restaurant,
 		loading
-	} = useGetRequest(documentId)
-
-    const approveRequest = async () => {
-		const firstDocRef = doc(restaurantRequestCol, documentId)
-        const secondDocRef = doc(newRestaurantCol, documentId)
-
-        await deleteDoc(firstDocRef)
-
-        const restaurantData = {
-            ...restaurant,
-          };
-
-
-		await setDoc(secondDocRef, restaurantData)
-
-        toast.success(`${restaurant?.name} has been approved`)
-
-        navigate('/users-request', {
-            replace: true
-        })
-    }
+	} = useGetRestaurant(documentId)
 
 	const deleteRequest = async () => {
-		const docRef = doc(restaurantRequestCol, documentId)
+		const docRef = doc(restaurantsCol, documentId)
 
 		await deleteDoc(docRef)
 
 		toast.success("Request deleted")
 
-		navigate('/users-request', {
+		navigate('/admin-restaurants', {
 			replace: true,
 		})
 	}
 
     const editRequest = async (data: RestaurantFormData) => {
-        const docRef = doc(restaurantRequestCol, documentId)
+        const docRef = doc(restaurantsCol, documentId)
 
         const restuarantData = {
             ...data
         }
 
         await updateDoc(docRef, restuarantData)
+
+        toast.success("Restaurant Updated")
     }
 
 	if (loading || !restaurant) {
@@ -77,23 +56,6 @@ const RestaurantRequestPage = () => {
 			<div className="d-flex justify-content-between align-items-start">
 				<h1>{restaurant.name}</h1>
 			</div>
-
-            <div className="buttons mb-3">
-				<Button
-					variant="success"
-					onClick={() => setShowConfirmApprove(true)}
-				>
-					Approve
-				</Button>
-			</div>
-
-            <Confirmation
-				show={showConfirmApprove}
-				onCancel={() => setShowConfirmApprove(false)}
-				onConfirm={approveRequest}
-			>
-				Do you want to approve {restaurant.name}?
-			</Confirmation>
 
 			<div className="buttons mb-3">
 				<Button
@@ -121,4 +83,4 @@ const RestaurantRequestPage = () => {
 	)
 }
 
-export default RestaurantRequestPage
+export default EditRestaurantPage

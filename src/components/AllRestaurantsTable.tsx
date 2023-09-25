@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useTable, Column } from "react-table"
 import Button from "react-bootstrap/Button"
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 
 interface RowData {
 	_id: string
@@ -23,11 +23,11 @@ interface RowData {
 	cover_photo?: string
 }
 
-interface RequestTableProps {
+interface RestaurantTableProps {
 	data: RowData[]
 }
 
-const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
+const AllRestaurantsTable: React.FC<RestaurantTableProps> = ({ data }) => {
 
 	const columns: Column<RowData>[] = React.useMemo(
 		() => [
@@ -130,9 +130,8 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 	}
 
 	useEffect(() => {
-		setSortedRowArrayD(data); 
+		setSortedRowArrayD(data);
 	  }, [data]);
-
 
 	return (
 		<div className="table-responsive" style={{ height: "100vh", overflowY: "auto" }}>
@@ -158,7 +157,7 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 					))}
 					<td className="col">
 						<Link
-							to={`/users-request/${row.original._id}`}
+							to={`/admin-restaurants/${row.original._id}`}
 						>
 						<Button
 						onClick={() => {
@@ -178,4 +177,4 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 	)
 }
 
-export default RequestTable
+export default AllRestaurantsTable

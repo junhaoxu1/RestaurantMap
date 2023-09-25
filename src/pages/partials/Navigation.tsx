@@ -7,9 +7,10 @@ import useAuth from "../../hooks/useAuth"
 import useGetCollection from "../../hooks/useGetCollection"
 import { UserFormData } from "../../types/User.types"
 import { usersCol } from "../../services/firebase"
+import Image from "react-bootstrap/Image"
 
 const Navigation = () => {
-	const { currentUser, userEmail, userName } = useAuth()
+	const { currentUser, userEmail, userName, userPhotoUrl } = useAuth()
 	const { data: users, loading } = useGetCollection<UserFormData>(usersCol)
 
 	const admins = users?.filter((user) => user.admin === true)
@@ -30,9 +31,24 @@ const Navigation = () => {
 								<Nav.Link as={NavLink} end to="/restaurants">
                             		All Restaurants
                         		</Nav.Link>
-								<NavDropdown title={(userName || userEmail) ?? ""}>
+								<NavDropdown 
+									title={
+									userPhotoUrl
+									? <Image
+										src={userPhotoUrl}
+										height={30}
+										width={30}
+										title={(userName || userEmail) ?? ""}
+										className="img-square"
+										fluid
+										roundedCircle />
+									: userName || userEmail
+								}>
 									<NavDropdown.Item as={NavLink} to="/admin">
 										Admin
+									</NavDropdown.Item>
+									<NavDropdown.Item as={NavLink} to="/admin-restaurants">
+										All Restaurants
 									</NavDropdown.Item>
 									<NavDropdown.Item as={NavLink} to="/users-request">
 										Restaurant Request
