@@ -130,7 +130,7 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 	}
 
 	useEffect(() => {
-		setSortedRowArrayD(data); // Populate the data when the component mounts
+		setSortedRowArrayD(data); 
 	  }, [data]);
 
 
