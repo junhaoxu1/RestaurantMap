@@ -1,4 +1,4 @@
-import { doc, deleteDoc, setDoc } from 'firebase/firestore'
+import { doc, deleteDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { useState } from "react"
 import Button from "react-bootstrap/Button"
 import Container from "react-bootstrap/Container"
@@ -9,6 +9,7 @@ import Confirmation from "../components/Confirmation"
 import useAuth from '../hooks/useAuth'
 import useGetRequest from "../hooks/useGetRequest"
 import { restaurantRequestCol, newRestaurantCol } from '../services/firebase'
+import AddNewRequestForm from '../components/AddNewRequestForm'
 import { RestaurantFormData } from '../types/restaurants.types'
 
 const RestaurantRequestPage = () => {
@@ -57,6 +58,16 @@ const RestaurantRequestPage = () => {
 		})
 	}
 
+    const editRequest = async (data: RestaurantFormData) => {
+        const docRef = doc(restaurantRequestCol, documentId)
+
+        const restuarantData = {
+            ...data
+        }
+
+        await updateDoc(docRef, restuarantData)
+    }
+
 	if (loading || !restaurant) {
 		return <p>Loading...</p>
 	}
@@ -78,7 +89,7 @@ const RestaurantRequestPage = () => {
 
             <Confirmation
 				show={showConfirmApprove}
-				onCancel={() => setShowConfirmDelete(false)}
+				onCancel={() => setShowConfirmApprove(false)}
 				onConfirm={approveRequest}
 			>
 				Do you want to approve {restaurant.name}?
@@ -104,6 +115,8 @@ const RestaurantRequestPage = () => {
 			<Link to="/users-request">
 				<Button variant="secondary">&laquo; Go Back</Button>
 			</Link>
+
+            <AddNewRequestForm onAddRestaurant={editRequest}/>
 		</Container>
 	)
 }
