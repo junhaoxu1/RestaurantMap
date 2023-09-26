@@ -36,6 +36,7 @@ export const newRestaurantCol = createCollection<RestaurantFormData>("restaurant
 export const restaurantRequestCol = createCollection<RestaurantFormData>("requests")
 
 export const usersCol = createCollection<UserInformation>("users")
+export const imagesCol = createCollection<never>("uploadImg")
 
 export default app
 
