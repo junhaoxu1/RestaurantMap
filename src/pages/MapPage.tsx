@@ -10,8 +10,6 @@ import RestaurantsFilter from "../components/RestaurantsFilter"
 import { useSearchParams } from "react-router-dom"
 import { getLocationWithLatLng } from "../services/Geocode"
 import { LatLng } from "use-places-autocomplete"
-import useStreamCollection from "../hooks/useStreamCollection"
-import { where } from "firebase/firestore"
 const MYMAPSKEY = import.meta.env.VITE_APP_GOOGLE_KEY
 
 const MapPage = () => {
@@ -213,6 +211,7 @@ const MapPage = () => {
                             Showing {filter ? <span style={{ fontWeight: "bold" }}>{filter}s</span> : "Showing all restaurants"} in: {currentCity}
                         </p>
                     )}
+                    {data.length > 0 && !filteredData && <p>Showing all restaurants</p>}
                     {filteredData?.length === 0 && <p>No restaurants matching current filter</p>}
                     <RestaurantListItem coordinates={coordinates} displayOnMap={displayOnMap} restaurants={filteredData ?? data} />
                 </div>
