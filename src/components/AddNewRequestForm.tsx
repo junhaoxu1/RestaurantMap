@@ -6,9 +6,10 @@ import Button from "react-bootstrap/Button"
 
 type Props = {
     onAddRestaurant: (data: RestaurantFormData) => Promise<void>
+    currentRestaurant: RestaurantFormData
 }
 
-const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant }) => {
+const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant, currentRestaurant }) => {
     const {
         handleSubmit,
         register,
@@ -46,6 +47,7 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant }) => {
                                     message: "Restaurants name has to be at least 3 characters...",
                                 },
                             })}
+                            placeholder={currentRestaurant.name}
                         />
                         {errors.name && <p className="input-error">{errors.name.message ?? "Invalid value"}</p>}
                     </Form.Group>
@@ -63,6 +65,7 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant }) => {
                                     message: "Address has to be at least 5 characters long",
                                 },
                             })}
+                            placeholder={currentRestaurant.address}
                         />
                         {errors.address && <p className="input-error">{errors.address.message ?? "Invalid value"}</p>}
                     </Form.Group>
@@ -80,6 +83,7 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant }) => {
                                     message: "City has to be at least 3 characters long",
                                 },
                             })}
+                            placeholder={currentRestaurant.city}
                         />
                         {errors.city && <p className="input-error">{errors.city.message ?? "Invalid value"}</p>}
                     </Form.Group>
@@ -102,6 +106,7 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant }) => {
                                     message: "Description has to be less than 200 characters",
                                 },
                             })}
+                            placeholder={currentRestaurant.description}
                         />
                         {errors.description && <p className="input-error">{errors.description.message ?? "Invalid value"}</p>}
                     </Form.Group>
@@ -152,34 +157,34 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant }) => {
                         <Form.Label>
                             Email <span className="text-muted">(optional)</span>
                         </Form.Label>
-                        <Form.Control type="text" className="form-control" aria-label="Email to the restaurant" {...register("email")} />
+                        <Form.Control type="text" className="form-control" aria-label="Email to the restaurant" {...register("email")} placeholder={currentRestaurant.email || "Add Email"} />
                     </Form.Group>
                     <Form.Group className="mt-3">
                         <Form.Label>
                             Phone <span className="text-muted">(optional)</span>
                         </Form.Label>
-                        <Form.Control type="text" className="form-control" aria-label="Phone to the restaurant" {...register("phone")} />
+                        <Form.Control type="text" className="form-control" aria-label="Phone to the restaurant" {...register("phone")} placeholder={currentRestaurant.phone || "Add Phone"}/>
                     </Form.Group>
 
                     <Form.Group className="mt-3">
                         <Form.Label>
                             Website <span className="text-muted">(optional)</span>
                         </Form.Label>
-                        <Form.Control type="text" className="form-control" aria-label="Webpage address" {...register("webpage")} />
+                        <Form.Control type="text" className="form-control" aria-label="Webpage address" {...register("webpage")} placeholder={currentRestaurant.webpage || "Add Website"}/>
                     </Form.Group>
 
                     <Form.Group className="mt-3">
                         <Form.Label>
                             Facebook <span className="text-muted">(optional)</span>
                         </Form.Label>
-                        <Form.Control type="text" className="form-control" aria-label="Facebook" {...register("facebook")} />
+                        <Form.Control type="text" className="form-control" aria-label="Facebook" {...register("facebook")} placeholder={currentRestaurant.facebook || "Add Facebook"}/>
                     </Form.Group>
 
                     <Form.Group className="mt-3">
                         <Form.Label>
                             Instagram <span className="text-muted">(optional)</span>
                         </Form.Label>
-                        <Form.Control type="text" className="form-control" aria-label="Instagram" {...register("instagram")} />
+                        <Form.Control type="text" className="form-control" aria-label="Instagram" {...register("instagram")} placeholder={currentRestaurant.instagram || "Add Instagram"}/>
                     </Form.Group>
                     <Button type="submit" className="mt-3 w-100" style={{ backgroundColor: "crimson", border: "none" }}>
                         Save

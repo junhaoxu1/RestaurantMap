@@ -115,7 +115,7 @@ const RestaurantRequestPage = () => {
 				<Button variant="secondary">&laquo; Go Back</Button>
 			</Link>
 
-            <AddNewRequestForm onAddRestaurant={editRequest}/>
+            <AddNewRequestForm onAddRestaurant={editRequest} currentRestaurant={restaurant}/>
 		</Container>
 	)
 }
