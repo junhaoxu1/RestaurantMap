@@ -18,6 +18,8 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage"
 import UserRequestsPage from "./pages/UserRequestsPage"
 import AllRestaurantsPage from "./pages/AllRestaurantsPage"
 import EditRestaurantPage from "./pages/EditRestaurantPage"
+import PhotoRequestPage from "./pages/PhotoRequestPage"
+import EditPhotoRequestPage from "./pages/EditPhotoRequestPage"
 
 const App = () => {
     return (
@@ -40,6 +42,8 @@ const App = () => {
 					<Route path="/update-user" element={<UpdateUserPage />} />
                     <Route path="/users-request" element={<UserRequestsPage />} />
                     <Route path="/users-request/:id" element={<AdminUpdatePage />} />
+                    <Route path="/photos-request" element={<PhotoRequestPage />} />
+                    <Route path="/photos-request/:id" element={<EditPhotoRequestPage />} />
                     <Route path="/admin" element={<AdminPage />} />
                     <Route path="/admin/:documentId" element={<AdminUpdatePage />} />
                     <Route path="/admin-restaurants" element={<AllRestaurantsPage />} />
