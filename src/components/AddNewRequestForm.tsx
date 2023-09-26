@@ -3,6 +3,7 @@ import Form from "react-bootstrap/Form"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { RestaurantFormData } from "../types/restaurants.types"
 import Button from "react-bootstrap/Button"
+import { Placeholder } from "react-bootstrap"
 
 type Props = {
     onAddRestaurant: (data: RestaurantFormData) => Promise<void>
@@ -37,6 +38,7 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant, currentRestaur
                     <Form.Group className="mt-3">
                         <Form.Label>Restaurant's name</Form.Label>
                         <Form.Control
+                            defaultValue={currentRestaurant.name}
                             type="text"
                             className="form-control"
                             aria-label="The restaurant's name"
@@ -47,7 +49,6 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant, currentRestaur
                                     message: "Restaurants name has to be at least 3 characters...",
                                 },
                             })}
-                            placeholder={currentRestaurant.name}
                         />
                         {errors.name && <p className="input-error">{errors.name.message ?? "Invalid value"}</p>}
                     </Form.Group>
@@ -55,6 +56,7 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant, currentRestaur
                     <Form.Group className="mt-3">
                         <Form.Label>Address</Form.Label>
                         <Form.Control
+                            defaultValue={currentRestaurant.address}
                             type="text"
                             className="form-control"
                             aria-label="The restaurant's address"
@@ -65,7 +67,6 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant, currentRestaur
                                     message: "Address has to be at least 5 characters long",
                                 },
                             })}
-                            placeholder={currentRestaurant.address}
                         />
                         {errors.address && <p className="input-error">{errors.address.message ?? "Invalid value"}</p>}
                     </Form.Group>
@@ -73,6 +74,7 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant, currentRestaur
                     <Form.Group className="mt-3">
                         <Form.Label>City</Form.Label>
                         <Form.Control
+                            defaultValue={currentRestaurant.city}
                             type="text"
                             className="form-control"
                             aria-label="City where restaurant is located"
@@ -83,7 +85,6 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant, currentRestaur
                                     message: "City has to be at least 3 characters long",
                                 },
                             })}
-                            placeholder={currentRestaurant.city}
                         />
                         {errors.city && <p className="input-error">{errors.city.message ?? "Invalid value"}</p>}
                     </Form.Group>
@@ -92,6 +93,7 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant, currentRestaur
                         <Form.Label>Description</Form.Label>
                         <Form.Control
                             as="textarea"
+                            defaultValue={currentRestaurant.description}
                             rows={3}
                             className="form-control"
                             aria-label="Descriptiton of the restaurant"
@@ -106,14 +108,13 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant, currentRestaur
                                     message: "Description has to be less than 200 characters",
                                 },
                             })}
-                            placeholder={currentRestaurant.description}
                         />
                         {errors.description && <p className="input-error">{errors.description.message ?? "Invalid value"}</p>}
                     </Form.Group>
                     <Form.Group className="mt-3">
                         <Form.Label>Categories</Form.Label>
                         <Form.Select
-                            defaultValue="Select category"
+                            defaultValue={currentRestaurant.category}
                             aria-label="Select categories"
                             required
                             {...register("category", {
@@ -135,7 +136,7 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant, currentRestaur
                     <Form.Group className="mt-3">
                         <Form.Label>Supply</Form.Label>
                         <Form.Select
-                            defaultValue="Select supply"
+                            defaultValue={currentRestaurant.supply}
                             aria-label="Select Supply"
                             {...register("supply", {
                                 required: "Please select an option",
@@ -157,34 +158,34 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant, currentRestaur
                         <Form.Label>
                             Email <span className="text-muted">(optional)</span>
                         </Form.Label>
-                        <Form.Control type="text" className="form-control" aria-label="Email to the restaurant" {...register("email")} placeholder={currentRestaurant.email || "Add Email"} />
+                        <Form.Control type="text" className="form-control" aria-label="Email to the restaurant" {...register("email")} defaultValue={currentRestaurant.email} placeholder="Add Email"/>
                     </Form.Group>
                     <Form.Group className="mt-3">
                         <Form.Label>
                             Phone <span className="text-muted">(optional)</span>
                         </Form.Label>
-                        <Form.Control type="text" className="form-control" aria-label="Phone to the restaurant" {...register("phone")} placeholder={currentRestaurant.phone || "Add Phone"}/>
+                        <Form.Control type="text" className="form-control" aria-label="Phone to the restaurant" {...register("phone")} defaultValue={currentRestaurant.phone} placeholder="Add Phone"/>
                     </Form.Group>
 
                     <Form.Group className="mt-3">
                         <Form.Label>
                             Website <span className="text-muted">(optional)</span>
                         </Form.Label>
-                        <Form.Control type="text" className="form-control" aria-label="Webpage address" {...register("webpage")} placeholder={currentRestaurant.webpage || "Add Website"}/>
+                        <Form.Control type="text" className="form-control" aria-label="Webpage address" {...register("webpage")} defaultValue={currentRestaurant.webpage} placeholder="Add Website"/>
                     </Form.Group>
 
                     <Form.Group className="mt-3">
                         <Form.Label>
                             Facebook <span className="text-muted">(optional)</span>
                         </Form.Label>
-                        <Form.Control type="text" className="form-control" aria-label="Facebook" {...register("facebook")} placeholder={currentRestaurant.facebook || "Add Facebook"}/>
+                        <Form.Control type="text" className="form-control" aria-label="Facebook" {...register("facebook")} defaultValue={currentRestaurant.facebook} placeholder="Add Facebook"/>
                     </Form.Group>
 
                     <Form.Group className="mt-3">
                         <Form.Label>
                             Instagram <span className="text-muted">(optional)</span>
                         </Form.Label>
-                        <Form.Control type="text" className="form-control" aria-label="Instagram" {...register("instagram")} placeholder={currentRestaurant.instagram || "Add Instagram"}/>
+                        <Form.Control type="text" className="form-control" aria-label="Instagram" {...register("instagram")} defaultValue={currentRestaurant.instagram} placeholder="Add Instagram"/>
                     </Form.Group>
                     <Button type="submit" className="mt-3 w-100" style={{ backgroundColor: "crimson", border: "none" }}>
                         Save
