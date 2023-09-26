@@ -155,7 +155,7 @@ const AllRestaurantsTable: React.FC<RestaurantTableProps> = ({ data }) => {
 				))}
 				<td className="col">
 					<Link
-						to={`/users-request/${row.original._id}`}
+						to={`/admin-restaurants/${row.original._id}`}
 					>
 					<Button
 					onClick={() => {
