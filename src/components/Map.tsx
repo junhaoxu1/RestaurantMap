@@ -89,7 +89,15 @@ const Map: React.FC<Props> = ({
                                         </p>
                                         <p>{selectedRestautant.description}</p>
 
-                                        <Link to={`/restaurants/${selectedRestautant._id}`}>Read More</Link>
+                                        <div className="d-flex gap-3">
+                                            <Link to={`/restaurants/${selectedRestautant._id}`}>Read More</Link>
+                                            <Link
+                                                to={`https://www.google.com/maps/search/?api=1&query=${selectedRestautant.geolocation.lat},${selectedRestautant.geolocation.lng}`}
+                                                target="_blank"
+                                            >
+                                                Directions
+                                            </Link>
+                                        </div>
                                     </div>
                                 </InfoWindow>
                             )}
