@@ -3,7 +3,6 @@ import Form from "react-bootstrap/Form"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { RestaurantFormData } from "../types/restaurants.types"
 import Button from "react-bootstrap/Button"
-import { Placeholder } from "react-bootstrap"
 
 type Props = {
     onAddRestaurant: (data: RestaurantFormData) => Promise<void>
