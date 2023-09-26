@@ -135,8 +135,6 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 
 
 	return (
-		<div className="table-responsive" style={{ height: "100vh", overflowY: "auto" }}>
-
 			<table {...getTableProps()} className="table">
 			<thead>
 				{headerGroups.map((headerGroup) => (
@@ -174,7 +172,6 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 				})}
 			</tbody>
 			</table>
-		</div>
 	)
 }
 

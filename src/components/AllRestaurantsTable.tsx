@@ -134,46 +134,43 @@ const AllRestaurantsTable: React.FC<RestaurantTableProps> = ({ data }) => {
 	  }, [data]);
 
 	return (
-		<div className="table-responsive" style={{ height: "100vh", overflowY: "auto" }}>
-
-			<table {...getTableProps()} className="table">
-			<thead>
-				{headerGroups.map((headerGroup) => (
-				<tr {...headerGroup.getHeaderGroupProps()}>
-					{headerGroup.headers.map((column) => (
-					<th {...column.getHeaderProps()} onClick={() => sortRowData(column.id)}>{column.render("Header")}</th>
-					))}
-				</tr>
+		<table {...getTableProps()} className="table">
+		<thead>
+			{headerGroups.map((headerGroup) => (
+			<tr {...headerGroup.getHeaderGroupProps()}>
+				{headerGroup.headers.map((column) => (
+				<th {...column.getHeaderProps()} onClick={() => sortRowData(column.id)}>{column.render("Header")}</th>
 				))}
-			</thead>
-			<tbody {...getTableBodyProps()}>
-				{rows.map((row) => {
-				prepareRow(row)
-				return (
-					<tr {...row.getRowProps()}>
-					{row.cells.map((cell) => (
-						<td {...cell.getCellProps()} className="col">
-							{cell.render("Cell")}</td>
-					))}
-					<td className="col">
-						<Link
-							to={`/admin-restaurants/${row.original._id}`}
-						>
-						<Button
-						onClick={() => {
-							console.log("Button clicked for row")
-						}}
-						>
-						Edit
-						</Button>
-						</Link>
-					</td>
-					</tr>
-				)
-				})}
-			</tbody>
-			</table>
-		</div>
+			</tr>
+			))}
+		</thead>
+		<tbody {...getTableBodyProps()}>
+			{rows.map((row) => {
+			prepareRow(row)
+			return (
+				<tr {...row.getRowProps()}>
+				{row.cells.map((cell) => (
+					<td {...cell.getCellProps()} className="col">
+						{cell.render("Cell")}</td>
+				))}
+				<td className="col">
+					<Link
+						to={`/users-request/${row.original._id}`}
+					>
+					<Button
+					onClick={() => {
+						console.log("Button clicked for row")
+					}}
+					>
+					Edit
+					</Button>
+					</Link>
+				</td>
+				</tr>
+			)
+			})}
+		</tbody>
+		</table>
 	)
 }
 
