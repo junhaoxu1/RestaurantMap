@@ -6,6 +6,10 @@ import { restaurantsCol } from "../services/firebase"
 import { useEffect, useMemo, useRef, useState } from "react"
 import RestaurantListItem from "../components/RestaurantListItem"
 import PlacesAutoComplete from "../components/PlacesAutoComplete"
+import RestaurantsFilter from "../components/RestaurantsFilter"
+import { useSearchParams } from "react-router-dom"
+import { getLocationWithLatLng } from "../services/Geocode"
+import { LatLng } from "use-places-autocomplete"
 const MYMAPSKEY = import.meta.env.VITE_APP_GOOGLE_KEY
 
 const MapPage = () => {
@@ -16,9 +20,19 @@ const MapPage = () => {
 
     const { data, error, loading } = useGetCollection<Restaurant>(restaurantsCol)
     const [coordinates, setCoordinates] = useState({} as { lat: number; lng: number })
-    const [type, setType] = useState<string | null>(null)
-    const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+    const [currentCity, setCurrentCity] = useState<string | null>(null)
     const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant>({} as Restaurant)
+    const [filter, setFilter] = useState<string>("")
+    const [filteredData, setFilteredData] = useState<Restaurant[] | null>(null)
+    const [searchParams, setSearchParams] = useSearchParams({
+        lat: "",
+        lng: "",
+    })
+
+    // extract data from url
+    const currentLat = searchParams.get("lat")
+    const currentLng = searchParams.get("lng")
+    const currentTown = searchParams.get("city")
 
     // Loading Google Maps by using useLoadScript hook and libary places,
     // it also used to determine when API is fully loaded.
@@ -36,19 +50,102 @@ const MapPage = () => {
         mapReference.current = null
     }
 
+    // When a marker is clicked, show information about the restaurant
     const showRestaurantsInfo = (marker: Restaurant) => setSelectedRestaurant(marker)
 
+    // Shows information about the restaurant if list item is clicked
     const displayOnMap = (restaurant: Restaurant) => {
         if (!mapReference.current) return
         showRestaurantsInfo(restaurant)
         mapReference.current.panTo({ lat: restaurant.geolocation.lat, lng: restaurant.geolocation.lng })
     }
 
+    // converts coordinates to a town name
+    const setUrlParams = async (coordinates: LatLng, filter: string) => {
+        try {
+            const location = await getLocationWithLatLng(coordinates)
+
+            // find which index has type "postal_town"
+            const index = location.results.map((location) => location.types).findIndex((result) => result.includes("postal_town"))
+
+            const city = location.results[index].address_components[0].long_name
+            setSearchParams({ lat: String(coordinates.lat), lng: String(coordinates.lng), city: city, filter: filter })
+            setCurrentCity(city)
+        } catch (err) {
+            console.log("could not get city")
+            console.log("cords:", coordinates)
+        }
+    }
+
+    const onSearch = (city: string) => {
+        // filter only the restaurants that is located in the selected city
+        const restaurantsInArea = data?.filter((restaurant) => restaurant.city.toLowerCase() === city.toLowerCase())
+        console.log("restaurants in area:", restaurantsInArea)
+
+        // if no restaurants matches filter, return
+        if (!restaurantsInArea) return
+
+        setFilteredData(restaurantsInArea)
+    }
+
+    // function for togglePosition
+    const togglePosition = (city: string) => {
+        if (filter === city) {
+            // if type is already selected, unset filter and show all
+            setFilter("")
+            setFilteredData(null)
+            console.log("shouold not be run on first press")
+            return
+        }
+        // filter only the restaurants that is located in the selected city
+        const restaurantsInArea = data?.filter((restaurant) => restaurant.city.toLowerCase() === city.toLowerCase())
+
+        // if no restaurants matches filter, return
+        if (!restaurantsInArea) return
+
+        setFilter(city)
+        setFilteredData(restaurantsInArea)
+    }
+
+    const toggleCategory = (category: string) => {
+        if (filter === category) {
+            // if filter is already selected, unset filter and show all
+            setFilter("")
+            setFilteredData(null)
+            return
+        }
+
+        // filter only the restaurants that matches the selected filter
+        const filteredRestaurants = data?.filter((restaurant) => restaurant.category.toLowerCase() === category.toLowerCase())
+
+        // if no restautants matches filter, return
+        if (!filteredRestaurants) return
+
+        setFilter(category)
+        setFilteredData(filteredRestaurants)
+    }
+    const toggleSupply = (supply: string) => {
+        if (filter === supply) {
+            // if filter is already selected, unset filter and show all
+            setFilter("")
+            setFilteredData(null)
+            return
+        }
+        // filter only the restaurants that matches the selected filter
+        const filteredRestaurants = data?.filter((restaurant) => restaurant.supply.toLowerCase() === supply.toLowerCase())
+
+        // if no restautants matches filter, return
+        if (!filteredRestaurants) return
+
+        setFilter(supply)
+        setFilteredData(filteredRestaurants)
+    }
+
     // get the users location on render
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
-            console.log({ latitude, longitude })
             setCoordinates({ lat: latitude, lng: longitude })
+            setUrlParams({ lat: latitude, lng: longitude }, filter)
         })
     }, [])
 
@@ -58,8 +155,9 @@ const MapPage = () => {
         }
 
         mapReference.current.panTo(coordinates)
-        console.log("coordinates:", coordinates)
-    }, [coordinates])
+
+        setUrlParams(coordinates, filter)
+    }, [coordinates, filter, filteredData])
 
     if (!data) return
 
@@ -67,9 +165,25 @@ const MapPage = () => {
         <>
             <div className="d-flex">
                 <div className="d-flex flex-column">
-                    <PlacesAutoComplete setCoordinates={setCoordinates} />
+                    {loading && <p>Loading data...</p>}
+                    <PlacesAutoComplete onSearch={onSearch} setCoordinates={setCoordinates} />
 
-                    <RestaurantListItem displayOnMap={displayOnMap} restaurants={data} />
+                    <RestaurantsFilter
+                        filter={filter}
+                        togglePosition={() => {
+                            navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
+                                setCoordinates({ lat: latitude, lng: longitude })
+                            })
+                            togglePosition(currentCity ?? "")
+                        }}
+                        toggleCategory={toggleCategory}
+                        toggleSupply={toggleSupply}
+                    />
+
+                    <p>
+                        Showing {filter ? filter : "restaurants"} in: {currentCity}
+                    </p>
+                    <RestaurantListItem coordinates={coordinates} displayOnMap={displayOnMap} restaurants={filteredData ?? data} />
                 </div>
                 <section className="map-page">
                     <Map
@@ -78,7 +192,7 @@ const MapPage = () => {
                         center={center}
                         coordinates={coordinates}
                         setCoordinates={setCoordinates}
-                        restaurants={data}
+                        restaurants={filteredData ?? data}
                         showRestaurantsInfo={showRestaurantsInfo}
                         selectedRestautant={selectedRestaurant}
                         setSelectedRestaurant={setSelectedRestaurant}

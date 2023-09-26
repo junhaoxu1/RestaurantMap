@@ -1,5 +1,6 @@
 import axios from "axios"
 import { GeoCodingResponse } from "../types/Geocoding.types"
+import { LatLng } from "use-places-autocomplete"
 
 const API_KEY = import.meta.env.VITE_APP_GOOGLE_KEY
 
@@ -28,4 +29,16 @@ export const getGeocodeFromPlaceId = async (place_id: string) => {
 
     const address = response.data.results[0].formatted_address
     return address
+}
+
+// get town name from lat and long
+export const getLocationWithLatLng = async (coordinates: LatLng) => {
+    const response = await axios.get<GeoCodingResponse>("https://maps.googleapis.com/maps/api/geocode/json?", {
+        params: {
+            latlng: `${coordinates.lat}, ${coordinates.lng}`,
+            key: API_KEY,
+        },
+    })
+
+    return response.data
 }

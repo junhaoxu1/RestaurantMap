@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useMemo } from "react"
 import { GoogleMap, InfoWindow, Marker } from "@react-google-maps/api"
 import { Link } from "react-router-dom"
 import React from "react"
@@ -47,14 +47,13 @@ const Map: React.FC<Props> = ({
                 <div className="cBox">
                     <div className="map">
                         <GoogleMap
-                            zoom={12}
+                            zoom={13}
                             center={center}
                             mapContainerClassName="map-container"
                             options={options}
                             onLoad={onMapLoadInstance}
                             onClick={(e) => {
                                 setCoordinates({ lat: e.latLng!.lat(), lng: e.latLng!.lng() })
-                                console.log("new cords after clicking on map:", coordinates)
                             }}
                             onUnmount={onUnMount}
                         >

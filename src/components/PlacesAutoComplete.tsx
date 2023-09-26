@@ -6,9 +6,10 @@ import { useSearchParams } from "react-router-dom"
 
 type Props = {
     setCoordinates: (latLng: LatLng) => void
+    onSearch: (city: string) => void
 }
 
-const PlacesAutoComplete: React.FC<Props> = ({ setCoordinates }) => {
+const PlacesAutoComplete: React.FC<Props> = ({ setCoordinates, onSearch }) => {
     const [selected, setSelected] = useState<{ lat: number; lng: number } | null>(null)
     const [notFound, setNotFound] = useState(false)
     const [_searchParams, setSearchParams] = useSearchParams({
@@ -28,6 +29,7 @@ const PlacesAutoComplete: React.FC<Props> = ({ setCoordinates }) => {
 
             setSelected({ lat, lng })
             setCoordinates({ lat, lng })
+            onSearch(value)
 
             setSearchParams({ lat: String(lat), lng: String(lng) })
         } catch (err) {
@@ -50,7 +52,6 @@ const PlacesAutoComplete: React.FC<Props> = ({ setCoordinates }) => {
                             disabled={!ready}
                             placeholder="Search Address"
                             className="search-input px-2"
-                            // onSelect={(e) => setValue(e.target.value)}
                         />
                         <button className="search-form-submit">
                             <FaSearch />
