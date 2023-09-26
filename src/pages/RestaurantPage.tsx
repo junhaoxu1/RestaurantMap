@@ -4,7 +4,7 @@ import { photoRequestCol, newRestaurantCol, usersCol, db } from "../services/fir
 import { useParams } from "react-router-dom"
 import RestaurantDetails from "../components/RestaurantDetails"
 import AddNewPhoto from "../components/AddNewPhoto"
-import { setDoc, doc, collection, getDocs, query, where } from "firebase/firestore"
+import { setDoc, doc, collection, getDocs, query, where, updateDoc } from "firebase/firestore"
 import { useState, useEffect } from "react"
 import useAuth from "../hooks/useAuth"
 
@@ -59,9 +59,13 @@ const RestaurantPage = () => {
             };
     
             try {
-                const collectionRef = isAdmin ? newRestaurantCol : photoRequestCol;
-                const restaurantDocRef = doc(collectionRef, documentId);
-                await setDoc(restaurantDocRef, updatedRestaurant);
+                if(isAdmin) {
+                    const docRef = doc(newRestaurantCol, documentId)
+                    await updateDoc(docRef, updatedRestaurant)
+                } else {
+                    const docRef = doc(photoRequestCol, documentId)
+                    await setDoc(docRef, updatedRestaurant)
+                }
             } catch (error) {
                 console.error("Error updating restaurant document:", error);
             }
