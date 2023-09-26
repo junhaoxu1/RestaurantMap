@@ -16,6 +16,10 @@ export type Restaurant = {
         lng: number
     }
     cover_photo?: string
+    user_photos?: {
+        id: string
+        photo: string
+    }[]
 }
 
 export type Restaurants = Restaurant[]
