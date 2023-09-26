@@ -10,6 +10,8 @@ import RestaurantsFilter from "../components/RestaurantsFilter"
 import { useSearchParams } from "react-router-dom"
 import { getLocationWithLatLng } from "../services/Geocode"
 import { LatLng } from "use-places-autocomplete"
+import useStreamCollection from "../hooks/useStreamCollection"
+import { where } from "firebase/firestore"
 const MYMAPSKEY = import.meta.env.VITE_APP_GOOGLE_KEY
 
 const MapPage = () => {
@@ -18,7 +20,8 @@ const MapPage = () => {
 
     const mapReference = useRef<google.maps.Map | null>(null)
 
-    const { data, error, loading } = useGetCollection<Restaurant>(restaurantsCol)
+    const { data, error: dataError, loading } = useGetCollection<Restaurant>(restaurantsCol)
+    const [error, setError] = useState<string | null>(null)
     const [coordinates, setCoordinates] = useState({} as { lat: number; lng: number })
     const [currentCity, setCurrentCity] = useState<string | null>(null)
     const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant>({} as Restaurant)
@@ -30,8 +33,8 @@ const MapPage = () => {
     })
 
     // extract data from url
-    const currentLat = searchParams.get("lat")
-    const currentLng = searchParams.get("lng")
+    const lat = Number(searchParams.get("lat"))
+    const lng = Number(searchParams.get("lng"))
     const currentTown = searchParams.get("city")
 
     // Loading Google Maps by using useLoadScript hook and libary places,
@@ -60,8 +63,8 @@ const MapPage = () => {
         mapReference.current.panTo({ lat: restaurant.geolocation.lat, lng: restaurant.geolocation.lng })
     }
 
-    // converts coordinates to a town name
-    const setUrlParams = async (coordinates: LatLng, filter: string) => {
+    const getTownName = async (coordinates: LatLng) => {
+        setError(null)
         try {
             const location = await getLocationWithLatLng(coordinates)
 
@@ -69,45 +72,65 @@ const MapPage = () => {
             const index = location.results.map((location) => location.types).findIndex((result) => result.includes("postal_town"))
 
             const city = location.results[index].address_components[0].long_name
+            return city
+        } catch (err: any) {
+            setError(err.message)
+        }
+    }
+
+    // converts coordinates to a town name
+    const setUrlParams = async (coordinates: LatLng, filter: string) => {
+        setError(null)
+        try {
+            const city = await getTownName(coordinates)
+            if (!city) return
             setSearchParams({ lat: String(coordinates.lat), lng: String(coordinates.lng), city: city, filter: filter })
             setCurrentCity(city)
-        } catch (err) {
-            console.log("could not get city")
-            console.log("cords:", coordinates)
+        } catch (err: any) {
+            setError(err.message)
         }
     }
 
     const onSearch = (city: string) => {
+        setError(null)
+        setFilter("")
         // filter only the restaurants that is located in the selected city
         const restaurantsInArea = data?.filter((restaurant) => restaurant.city.toLowerCase() === city.toLowerCase())
         console.log("restaurants in area:", restaurantsInArea)
 
         // if no restaurants matches filter, return
-        if (!restaurantsInArea) return
+        if (!restaurantsInArea) return setError("Could not find restaurants for searched location")
 
         setFilteredData(restaurantsInArea)
     }
 
     // function for togglePosition
-    const togglePosition = (city: string) => {
-        if (filter === city) {
-            // if type is already selected, unset filter and show all
+    const togglePosition = async (coordinates: LatLng) => {
+        if (filter === "near_me") {
+            // reset states and return
             setFilter("")
+            setError(null)
             setFilteredData(null)
-            console.log("shouold not be run on first press")
             return
         }
-        // filter only the restaurants that is located in the selected city
-        const restaurantsInArea = data?.filter((restaurant) => restaurant.city.toLowerCase() === city.toLowerCase())
 
-        // if no restaurants matches filter, return
-        if (!restaurantsInArea) return
+        // update states, get town name and look for restaurants in the same town
+        setFilter("near_me")
+        setError(null)
+        try {
+            const city = await getTownName(coordinates)
+            if (!city) return
+            const restaurantsInArea = data?.filter((restaurant) => restaurant.city.toLowerCase() === city.toLowerCase())
 
-        setFilter(city)
-        setFilteredData(restaurantsInArea)
+            if (!restaurantsInArea) return
+            setFilteredData(restaurantsInArea)
+        } catch (err: any) {
+            setError(err.message)
+        }
     }
 
-    const toggleCategory = (category: string) => {
+    const toggleCategory = async (category: string) => {
+        setError(null)
         if (filter === category) {
             // if filter is already selected, unset filter and show all
             setFilter("")
@@ -119,12 +142,14 @@ const MapPage = () => {
         const filteredRestaurants = data?.filter((restaurant) => restaurant.category.toLowerCase() === category.toLowerCase())
 
         // if no restautants matches filter, return
-        if (!filteredRestaurants) return
+        if (!filteredRestaurants) return setError("Could not find restaurants for selected filter")
 
         setFilter(category)
         setFilteredData(filteredRestaurants)
     }
+
     const toggleSupply = (supply: string) => {
+        setError(null)
         if (filter === supply) {
             // if filter is already selected, unset filter and show all
             setFilter("")
@@ -135,7 +160,7 @@ const MapPage = () => {
         const filteredRestaurants = data?.filter((restaurant) => restaurant.supply.toLowerCase() === supply.toLowerCase())
 
         // if no restautants matches filter, return
-        if (!filteredRestaurants) return
+        if (!filteredRestaurants) return setError("Could not find restaurants for selected filter")
 
         setFilter(supply)
         setFilteredData(filteredRestaurants)
@@ -173,16 +198,22 @@ const MapPage = () => {
                         togglePosition={() => {
                             navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
                                 setCoordinates({ lat: latitude, lng: longitude })
+                                togglePosition({ lat: latitude, lng: longitude } ?? "")
                             })
-                            togglePosition(currentCity ?? "")
                         }}
                         toggleCategory={toggleCategory}
                         toggleSupply={toggleSupply}
                     />
 
-                    <p>
-                        Showing {filter ? filter : "restaurants"} in: {currentCity}
-                    </p>
+                    {filteredData?.length !== undefined && filteredData?.length > 0 && filter === "near_me" && (
+                        <p>Showing restaurants in your area!</p>
+                    )}
+                    {filteredData?.length !== undefined && filteredData?.length > 0 && filter && filter !== "near_me" && (
+                        <p>
+                            Showing {filter ? <span style={{ fontWeight: "bold" }}>{filter}s</span> : "Showing all restaurants"} in: {currentCity}
+                        </p>
+                    )}
+                    {filteredData?.length === 0 && <p>No restaurants matching current filter</p>}
                     <RestaurantListItem coordinates={coordinates} displayOnMap={displayOnMap} restaurants={filteredData ?? data} />
                 </div>
                 <section className="map-page">
@@ -200,7 +231,8 @@ const MapPage = () => {
                 </section>
             </div>
 
-            {error && <p>Something went wrong: {error}</p>}
+            {dataError && <p>Something went wrong: {dataError}</p>}
+            {error && <p>{error}</p>}
         </>
     )
 }

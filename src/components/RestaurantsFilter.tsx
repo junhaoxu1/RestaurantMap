@@ -15,7 +15,7 @@ const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, to
     return (
         <div className="filter-button-container d-flex gap-1 flex-wrap my-2">
             <div className="filter-position">
-                <button className="button-not-selected" onClick={() => togglePosition(filter)}>
+                <button className={selectedFilter === "near_me" ? "button-selected" : "button-not-selected"} onClick={() => togglePosition(filter)}>
                     Near Me
                 </button>
             </div>
