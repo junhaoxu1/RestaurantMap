@@ -130,7 +130,7 @@ nav.navbar.navbar-expand.navbar-light {
     }
 
     .search-form-container {
-        position: absolute;
+        // position: absolute;
         top: 10px;
         left: 10px;
         z-index: 2;
@@ -140,19 +140,16 @@ nav.navbar.navbar-expand.navbar-light {
         .search-form {
             display: flex;
             border: 1px solid rgb(142, 142, 142);
-            border-radius: 16px;
         }
         .search-input {
             width: 100%;
             border: none;
-            border-radius: 16px;
         }
 
         .search-form-submit {
             background-color: white;
             padding: 0.25rem 1rem;
             border: none;
-            border-radius: 16px;
         }
     }
 
