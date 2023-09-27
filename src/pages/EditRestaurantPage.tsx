@@ -35,6 +35,22 @@ const EditRestaurantPage = () => {
 		})
 	}
 
+    const deleteImage = async (index: number) => {
+		const updatedRestaurant = { ...restaurant };
+	  
+		if (updatedRestaurant.user_photos && index >= 0 && index < updatedRestaurant.user_photos.length) {
+		  updatedRestaurant.user_photos.splice(index, 1);
+	  
+		  const docRef = doc(restaurantsCol, documentId);
+		  const updatedData = {
+			...updatedRestaurant,
+		  };
+	  
+		  await updateDoc(docRef, updatedData);
+		  toast.success("Image deleted successfully");
+		}
+	  };
+
     const editRequest = async (data: RestaurantFormData) => {
         const docRef = doc(restaurantsCol, documentId)
 
@@ -56,7 +72,7 @@ const EditRestaurantPage = () => {
 			<div className="d-flex justify-content-center">
 				<h1>{restaurant.name}</h1>
 			</div>
-            <AddNewRequestForm onAddRestaurant={editRequest} currentRestaurant={restaurant}/>
+            <AddNewRequestForm onAddRestaurant={editRequest} currentRestaurant={restaurant} onDeleteImage={deleteImage}/>
 
 			<div className="d-flex justify-content-center">
             <Link to="/users-request">
