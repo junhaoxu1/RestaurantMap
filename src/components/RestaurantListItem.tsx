@@ -18,12 +18,12 @@ const RestaurantListItem: React.FC<Props> = ({ restaurants, displayOnMap, coordi
             <ul className="px-0 w-100 list-group">
                 {restaurants.map((restaurant) => (
                     <li className="d-flex w-100 gap-2 mt-1 list-item" onClick={() => displayOnMap(restaurant)} key={restaurant._id}>
-                        <Image src={restaurant.cover_photo ?? placeholderImage} style={{ width: "7rem", objectFit: "cover" }} />
+                        <Image src={restaurant.cover_photo ?? placeholderImage} className="list-item-image" />
 
                         <div className="line"></div>
 
-                        <div className="text-wrapper d-flex flex-column justify-content-evenly">
-                            <p className="list-item-text h5">{restaurant.name}</p>
+                        <div className="text-wrapper d-flex flex-column">
+                            <p className="list-item-heading">{restaurant.name}</p>
                             <p className="list-item-text">
                                 {restaurant.address}, {restaurant.city}{" "}
                                 <span className="text-muted" style={{ fontSize: ".75rem" }}>

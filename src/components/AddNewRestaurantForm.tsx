@@ -31,7 +31,7 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant }) => {
         <Form onSubmit={handleSubmit(onFormSubmit)} className="form-container">
             <p className="h2 text-center">Recommend a restaurant</p>
             <div className="line"></div>
-            <div className="flex-wrapper d-flex justify-content-evenly">
+            <div className="form-columns">
                 <div className="form-wrapper">
                     <Form.Group className="mt-3">
                         <Form.Label>Restaurant's name</Form.Label>

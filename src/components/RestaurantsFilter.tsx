@@ -5,13 +5,16 @@ type Props = {
     togglePosition: (city: string) => void
     toggleCategory: (category: string) => void
     toggleSupply: (supply: string) => void
+    toggleSortByName: (sortBy: string) => void
+    toggleSortByDistance: (sortBy: string) => void
     filter: string
 }
 
-const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, toggleSupply, filter }) => {
+const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, toggleSupply, toggleSortByName, toggleSortByDistance, filter }) => {
     //retrieve filter to toggle classnames for buttons dynamically
     const [searchParams, _setSearchParams] = useSearchParams()
     const selectedFilter = searchParams.get("filter")
+    const selectedSort = searchParams.get("sort")
     return (
         <div className="filter-button-container d-flex gap-1 flex-wrap my-2">
             <div className="filter-position">
@@ -70,6 +73,30 @@ const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, to
                         onClick={() => toggleSupply("after work")}
                     >
                         After Work
+                    </button>
+                </div>
+            </div>
+
+            <div className="restaurants-sort">
+                <p className="mb-0">Sort</p>
+                <div className="button-wrapper d-flex gap-1 flex-wrap">
+                    <button
+                        className={selectedSort === "name_dsc" ? "button-selected" : "button-not-selected"}
+                        onClick={() => toggleSortByName("name_dsc")}
+                    >
+                        Sort Descending
+                    </button>
+                    <button
+                        className={selectedSort === "name_asc" ? "button-selected" : "button-not-selected"}
+                        onClick={() => toggleSortByName("name_asc")}
+                    >
+                        Sort Ascending
+                    </button>
+                    <button
+                        className={selectedSort === "distance" ? "button-selected" : "button-not-selected"}
+                        onClick={() => toggleSortByDistance("distance")}
+                    >
+                        Sort By Distance
                     </button>
                 </div>
             </div>
