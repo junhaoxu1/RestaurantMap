@@ -26,7 +26,7 @@ const RestaurantCard: React.FC<Props> = ({ restaurants }) => {
 
 		// updating sortedRestaurang states
 		setSortRestaurang(sortedRShops)
-	}, [sortIdOrder, sortRestaurang])
+	}, [sortIdOrder])
 
 	// updates sorting state order for restaurang in desc or asc while triggering the sorting list.
 	const sortHandlerRShops = (rshop: string) => {
