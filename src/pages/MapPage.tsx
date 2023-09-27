@@ -32,6 +32,9 @@ const MapPage = () => {
         lng: "",
     })
 
+	const lat = searchParams.get("lat")
+	const lng = searchParams.get("lng")
+
     // extract data from url
     // const selectedLatlng = { lat: Number(searchParams.get("lat")), lng: Number(searchParams.get("lng")) }
     // const selectedCity = searchParams.get("city")
@@ -276,7 +279,23 @@ const MapPage = () => {
         console.log("filtered data", filteredData)
 
         setUrlParams(coordinates, filter, sortBy)
-    }, [coordinates, filter, filteredData, sortBy])
+    }, [filter, filteredData, sortBy])
+
+	useEffect(() => {
+        if (mapReference.current) {
+            mapReference.current.panTo(coordinates);
+        }
+    }, [coordinates]);
+
+	useEffect(() => {
+		if (lat && lng) {
+			setCoordinates({
+				lat: Number(lat),
+				lng: Number(lng),
+			})
+		}
+
+	}, [searchParams])
 
     if (!data) return
 
