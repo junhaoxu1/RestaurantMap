@@ -144,7 +144,7 @@ const MapPage = () => {
         if (!filteredRestaurants) return setError("Could not find restaurants for selected filter")
 
         setFilter(category)
-        setFilteredData(filteredRestaurants.sort((a,b) => a.name.localeCompare(b.name)))
+        setFilteredData(filteredRestaurants)
     }
 
     const toggleSupply = (supply: string) => {
@@ -162,7 +162,7 @@ const MapPage = () => {
         if (!filteredRestaurants) return setError("Could not find restaurants for selected filter")
 
         setFilter(supply)
-        setFilteredData(filteredRestaurants.sort((a,b) => a.name.localeCompare(b.name)))
+        setFilteredData(filteredRestaurants)
     }
 
     const toggleSortByName = (sort: string) => {
