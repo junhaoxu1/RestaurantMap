@@ -53,11 +53,15 @@ const EditRestaurantPage = () => {
 
 	return (
 		<Container className="py-3">
-			<div className="d-flex justify-content-between align-items-start">
+			<div className="d-flex justify-content-center">
 				<h1>{restaurant.name}</h1>
 			</div>
+            <AddNewRequestForm onAddRestaurant={editRequest} currentRestaurant={restaurant}/>
 
-			<div className="buttons mb-3">
+			<div className="d-flex justify-content-center">
+            <Link to="/users-request">
+				<Button variant="secondary">&laquo; Go Back</Button>
+			</Link>
 				<Button
 					variant="danger"
 					onClick={() => setShowConfirmDelete(true)}
@@ -74,11 +78,6 @@ const EditRestaurantPage = () => {
 				Do you want to delete {restaurant.name}?
 			</Confirmation>
 
-			<Link to="/users-request">
-				<Button variant="secondary">&laquo; Go Back</Button>
-			</Link>
-
-            <AddNewRequestForm onAddRestaurant={editRequest} currentRestaurant={restaurant}/>
 		</Container>
 	)
 }
