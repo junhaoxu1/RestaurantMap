@@ -142,6 +142,32 @@ const MapPage = () => {
         // filter only the restaurants that matches the selected filter
         const filteredRestaurants = data?.filter((restaurant) => restaurant.category.toLowerCase() === category.toLowerCase())
 
+        if (!filteredRestaurants) return setError("Could not filter restaurants")
+
+        if (sortBy === "distance") {
+            const updatedData = filteredRestaurants.map((restaurant) => {
+                return {
+                    ...restaurant,
+                    distance: getDistanceFromLatLngInKm(restaurant.geolocation.lat, restaurant.geolocation.lng, coordinates.lat, coordinates.lng),
+                }
+            })
+
+            const sortedData = updatedData.sort(function (a, b) {
+                if (a.distance < b.distance) {
+                    return -1
+                }
+                if (a.distance > b.distance) {
+                    return 1
+                }
+                return 0
+            })
+            setFilteredData(sortedData)
+            setFilter(category)
+            return
+        }
+
+        setFilteredData(filteredRestaurants)
+
         console.log("filtered Rest:", filteredRestaurants)
 
         // if no restautants matches filter, return
