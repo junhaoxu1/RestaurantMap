@@ -230,7 +230,7 @@ const AddNewRestaurantForm: React.FC<Props> = ({ onAddRestaurant, currentRestaur
 							currentRestaurant.user_photos.map((photo, index) => (
 								<div key={index} className="mb-2">
 									<img src={photo.photo} style={{ width: "100px", height: "auto" }} />
-                                    <Button onClick={() => onDeleteImage(index)}>Delete</Button>
+                                    <Button variant="danger" onClick={() => onDeleteImage(index)}>Delete</Button>
 								</div>
 							))
 						) : (
