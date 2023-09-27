@@ -166,6 +166,36 @@ const MapPage = () => {
             return
         }
 
+        if (sortBy === "name_asc") {
+            const sortedData = filteredRestaurants.sort(function (a, b) {
+                if (a.name < b.name) {
+                    return -1
+                }
+                if (a.name > b.name) {
+                    return 1
+                }
+                return 0
+            })
+            setFilteredData(sortedData)
+            setFilter(category)
+            return
+        }
+
+        if (sortBy === "name_dsc") {
+            const sortedData = filteredRestaurants.sort(function (a, b) {
+                if (a.name > b.name) {
+                    return -1
+                }
+                if (a.name < b.name) {
+                    return 1
+                }
+                return 0
+            })
+            setFilteredData(sortedData)
+            setFilter(category)
+            return
+        }
+
         setFilteredData(filteredRestaurants)
 
         console.log("filtered Rest:", filteredRestaurants)
