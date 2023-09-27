@@ -294,15 +294,21 @@ const MapPage = () => {
         const updatedData = dataToSort.map((restaurant) => {
             return {
                 ...restaurant,
-                distance: getDistanceFromLatLngInKm(restaurant.geolocation.lat, restaurant.geolocation.lng, coordinates.lat, coordinates.lng),
+                distance: Number(
+                    getDistanceFromLatLngInKm(restaurant.geolocation.lat, restaurant.geolocation.lng, coordinates.lat, coordinates.lng)
+                ).toFixed(2),
             }
         })
 
         const sortedData = updatedData.sort(function (a, b) {
-            if (a.distance < b.distance) {
+            // convert strings to numbers before comparasion
+            const distanceA = parseFloat(a.distance)
+            const distanceB = parseFloat(b.distance)
+
+            if (distanceA < distanceB) {
                 return -1
             }
-            if (a.distance > b.distance) {
+            if (distanceA > distanceB) {
                 return 1
             }
             return 0
