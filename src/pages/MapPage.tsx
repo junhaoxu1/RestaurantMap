@@ -24,6 +24,7 @@ const MapPage = () => {
     const [currentCity, setCurrentCity] = useState<string | null>(null)
     const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant>({} as Restaurant)
     const [filter, setFilter] = useState<string>("")
+    const [sortBy, setSortBy] = useState<string>("")
     const [filteredData, setFilteredData] = useState<Restaurant[] | null>(null)
     const [searchParams, setSearchParams] = useSearchParams({
         lat: "",
@@ -77,12 +78,12 @@ const MapPage = () => {
     }
 
     // converts coordinates to a town name
-    const setUrlParams = async (coordinates: LatLng, filter: string) => {
+    const setUrlParams = async (coordinates: LatLng, filter: string, sort: string = "") => {
         setError(null)
         try {
             const city = await getTownName(coordinates)
             if (!city) return
-            setSearchParams({ lat: String(coordinates.lat), lng: String(coordinates.lng), city: city, filter: filter })
+            setSearchParams({ lat: String(coordinates.lat), lng: String(coordinates.lng), city: city, filter: filter, sort })
             setCurrentCity(city)
         } catch (err: any) {
             setError(err.message)
@@ -164,6 +165,51 @@ const MapPage = () => {
         setFilteredData(filteredRestaurants.sort((a,b) => a.name.localeCompare(b.name)))
     }
 
+    const toggleSortByName = (sort: string) => {
+        setError(null)
+        // decide on which data to sort
+
+        const dataToSort = filteredData ? filteredData : data
+        // return if data is null
+        if (!dataToSort) return setError("Could not sort restaurants by name...")
+
+        if (sortBy === sort) {
+            setSortBy("")
+            setFilteredData(dataToSort)
+            return
+        }
+
+        if (sort === "name_dsc") {
+            const sortedData = dataToSort.sort(function (a, b) {
+                if (a.name > b.name) {
+                    return -1
+                }
+                if (a.name < b.name) {
+                    return 1
+                }
+                return 0
+            })
+            setFilteredData(sortedData)
+            setSortBy("name_dsc")
+            return
+        }
+
+        if (sort === "name_asc") {
+            const sortedData = dataToSort.sort(function (a, b) {
+                if (a.name < b.name) {
+                    return -1
+                }
+                if (a.name > b.name) {
+                    return 1
+                }
+                return 0
+            })
+            setFilteredData(sortedData)
+            setSortBy("name_asc")
+            return
+        }
+    }
+
     // get the users location on render
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
@@ -179,19 +225,21 @@ const MapPage = () => {
 
         mapReference.current.panTo(coordinates)
 
-        setUrlParams(coordinates, filter)
-    }, [coordinates, filter, filteredData])
+        setUrlParams(coordinates, filter, sortBy)
+        console.log("sort by", sortBy)
+    }, [coordinates, filter, filteredData, sortBy])
 
     if (!data) return
 
     return (
         <>
-            <div className="d-flex">
-                <div className="d-flex flex-column">
+            <div className="map-page-container">
+                <div className="mt-3 filter-list-container">
                     {loading && <p>Loading data...</p>}
                     <PlacesAutoComplete onSearch={onSearch} setCoordinates={setCoordinates} />
 
                     <RestaurantsFilter
+                        toggleSort={toggleSortByName}
                         filter={filter}
                         togglePosition={() => {
                             navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
