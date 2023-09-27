@@ -33,10 +33,10 @@ const MapPage = () => {
     })
 
     // extract data from url
-    const selectedLatlng = { lat: Number(searchParams.get("lat")), lng: Number(searchParams.get("lng")) }
-    const selectedCity = searchParams.get("city")
-    const selectedFilter = searchParams.get("filter")
-    const selectedSort = searchParams.get("sort")
+    // const selectedLatlng = { lat: Number(searchParams.get("lat")), lng: Number(searchParams.get("lng")) }
+    // const selectedCity = searchParams.get("city")
+    // const selectedFilter = searchParams.get("filter")
+    // const selectedSort = searchParams.get("sort")
 
     // Loading Google Maps by using useLoadScript hook and libary places,
     // it also used to determine when API is fully loaded.
@@ -142,32 +142,12 @@ const MapPage = () => {
         // filter only the restaurants that matches the selected filter
         const filteredRestaurants = data?.filter((restaurant) => restaurant.category.toLowerCase() === category.toLowerCase())
 
+        console.log("filtered Rest:", filteredRestaurants)
+
         // if no restautants matches filter, return
         if (!filteredRestaurants) return setError("Could not find restaurants for selected filter")
 
-        if (sortBy === "distance") {
-            const updatedData = filteredRestaurants.map((restaurant) => {
-                return {
-                    ...restaurant,
-                    distance: getDistanceFromLatLngInKm(restaurant.geolocation.lat, restaurant.geolocation.lng, coordinates.lat, coordinates.lng),
-                }
-            })
-
-            const sortedData = updatedData.sort(function (a, b) {
-                if (a.distance < b.distance) {
-                    return -1
-                }
-                if (a.distance > b.distance) {
-                    return 1
-                }
-                return 0
-            })
-            setFilteredData(sortedData)
-            setFilter(category)
-            return
-        }
-
-        setFilteredData(filteredData)
+        setFilteredData(filteredRestaurants)
         setFilter(category)
     }
 
@@ -293,10 +273,10 @@ const MapPage = () => {
 
         mapReference.current.panTo(coordinates)
 
+        console.log("filtered data", filteredData)
+
         setUrlParams(coordinates, filter, sortBy)
     }, [coordinates, filter, filteredData, sortBy])
-
-    // [coordinates, filter, filteredData, sortBy]
 
     if (!data) return
 
