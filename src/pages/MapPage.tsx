@@ -277,14 +277,13 @@ const MapPage = () => {
         setSortBy("distance")
         setFilteredData(sortedData)
     }
-
+    // get the users location on render
     useEffect(() => {
         if (mapReference.current) {
             mapReference.current.panTo(coordinates);
         }
     }, [coordinates]);
 
-    // get the users location on render
     useEffect(() => {
         const latParam = searchParams.get("lat");
         const lngParam = searchParams.get("lng");
