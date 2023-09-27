@@ -143,7 +143,7 @@ const MapPage = () => {
         if (!filteredRestaurants) return setError("Could not find restaurants for selected filter")
 
         setFilter(category)
-        setFilteredData(filteredRestaurants)
+        setFilteredData(filteredRestaurants.sort((a,b) => a.name.localeCompare(b.name)))
     }
 
     const toggleSupply = (supply: string) => {
@@ -161,7 +161,7 @@ const MapPage = () => {
         if (!filteredRestaurants) return setError("Could not find restaurants for selected filter")
 
         setFilter(supply)
-        setFilteredData(filteredRestaurants)
+        setFilteredData(filteredRestaurants.sort((a,b) => a.name.localeCompare(b.name)))
     }
 
     // get the users location on render
