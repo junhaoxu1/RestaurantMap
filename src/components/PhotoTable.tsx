@@ -8,7 +8,6 @@ interface RowData {
 	_id: string
 	name: string
 	user_photos?: {
-		id: string
 		photo: string
 	}[]
 }

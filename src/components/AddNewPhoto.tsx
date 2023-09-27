@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button'
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 type AddPhotoProps = {
   onPhotoUpload: (photo: string) => Promise<void>;
@@ -7,6 +9,7 @@ type AddPhotoProps = {
 
 const AddNewPhoto: React.FC<AddPhotoProps> = ({ onPhotoUpload }) => {
     const [image, setImage] = useState("");
+    const navigate = useNavigate()
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -25,6 +28,9 @@ const AddNewPhoto: React.FC<AddPhotoProps> = ({ onPhotoUpload }) => {
         if (image) {
             onPhotoUpload(image);
             setImage('');
+            navigate('/restaurants')
+        } else {
+            toast.error("Failed To Upload Image! Try again")
         }
     };
 

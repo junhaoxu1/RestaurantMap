@@ -52,7 +52,6 @@ const RestaurantPage = () => {
                 user_photos: [
                     ...(restaurant.user_photos || []),
                     {
-                        id: documentId,
                         photo: photoUrl,
                     },
                 ],
