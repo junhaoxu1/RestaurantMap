@@ -27,10 +27,7 @@ const MapPage = () => {
     const [filter, setFilter] = useState<string>("")
     const [sortBy, setSortBy] = useState<string>("")
     const [filteredData, setFilteredData] = useState<Restaurant[] | null>(null)
-    const [searchParams, setSearchParams] = useSearchParams({
-        lat: "",
-        lng: "",
-    })
+    const [searchParams, setSearchParams] = useSearchParams({})
 
     // extract data from url
     // const selectedLatlng = { lat: Number(searchParams.get("lat")), lng: Number(searchParams.get("lng")) }
@@ -325,7 +322,11 @@ const MapPage = () => {
         navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
             setCoordinates({ lat: latitude, lng: longitude })
             setUrlParams({ lat: latitude, lng: longitude }, filter)
+            return
         })
+        // if user doesn't share position, default to school
+        setCoordinates({ lat: 55.606972, lng: 13.02106 })
+        setSearchParams({ lat: String(55.606972), lng: String(13.02106) })
     }, [])
 
     useEffect(() => {
@@ -334,8 +335,6 @@ const MapPage = () => {
         }
 
         mapReference.current.panTo(coordinates)
-
-        console.log("filtered data", filteredData)
 
         setUrlParams(coordinates, filter, sortBy)
     }, [coordinates, filter, filteredData, sortBy])
