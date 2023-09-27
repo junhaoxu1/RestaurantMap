@@ -16,6 +16,7 @@ export type Restaurant = {
         lng: number
     }
     cover_photo?: string
+    distance?: string
 }
 
 export type Restaurants = Restaurant[]
