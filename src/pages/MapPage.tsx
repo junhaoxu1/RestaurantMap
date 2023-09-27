@@ -277,24 +277,27 @@ const MapPage = () => {
         setSortBy("distance")
         setFilteredData(sortedData)
     }
+
+    const avoidLoop = useRef(false);
     // get the users location on render
     useEffect(() => {
         if (mapReference.current) {
             mapReference.current.panTo(coordinates);
         }
-    }, [coordinates]);
-
-    useEffect(() => {
+    
         const latParam = searchParams.get("lat");
         const lngParam = searchParams.get("lng");
-
-        if (latParam && lngParam) {
+    
+        if (latParam && lngParam && !avoidLoop.current) {
+            avoidLoop.current = true;
             setCoordinates({
                 lat: parseFloat(latParam),
                 lng: parseFloat(lngParam),
             });
+        } else {
+            avoidLoop.current = false;
         }
-    }, [searchParams]);
+    }, [coordinates, searchParams]);
 
     // [coordinates, filter, filteredData, sortBy]
 
