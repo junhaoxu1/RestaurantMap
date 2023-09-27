@@ -115,9 +115,6 @@ const AllRestaurantsTable: React.FC<RestaurantTableProps> = ({ data }) => {
 						to={`/admin-restaurants/${row.original._id}`}
 					>
 					<Button
-					onClick={() => {
-						console.log("Button clicked for row")
-					}}
 					>
 					Edit
 					</Button>

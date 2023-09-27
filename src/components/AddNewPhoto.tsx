@@ -8,7 +8,7 @@ type AddPhotoProps = {
 };
 
 const AddNewPhoto: React.FC<AddPhotoProps> = ({ onPhotoUpload }) => {
-    const [image, setImage] = useState("");
+    const [image, setImage] = useState<string | null>(null);
     const navigate = useNavigate()
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +27,7 @@ const AddNewPhoto: React.FC<AddPhotoProps> = ({ onPhotoUpload }) => {
     const handleUpload = () => {
         if (image) {
             onPhotoUpload(image);
-            setImage('');
+            setImage(null);
             navigate('/restaurants')
         } else {
             toast.error("Failed To Upload Image! Try again")

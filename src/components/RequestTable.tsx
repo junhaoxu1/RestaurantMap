@@ -116,9 +116,6 @@ const RequestTable: React.FC<RequestTableProps> = ({ data }) => {
 							to={`/users-request/${row.original._id}`}
 						>
 						<Button
-						onClick={() => {
-							console.log("Button clicked for row")
-						}}
 						>
 						Edit
 						</Button>

@@ -5,8 +5,7 @@ import Container from "react-bootstrap/Container"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
 import Confirmation from "../components/Confirmation"
-import useGetRequest from "../hooks/useGetRequest"
-import { restaurantRequestCol, newRestaurantCol, photoRequestCol } from "../services/firebase"
+import { newRestaurantCol, photoRequestCol } from "../services/firebase"
 import useGetDocument from "../hooks/useGetDocument"
 import Image from "react-bootstrap/Image"
 
@@ -36,9 +35,9 @@ const EditPhotoRequestPage = () => {
 
 		toast.success(`${restaurant?.name} has been approved`)
 
-		navigate("/", {
-			replace: true,
-		})
+			navigate("/photos-request", {
+				replace: true,
+			})
 	}
 
 	const deleteRequest = async () => {
@@ -48,7 +47,7 @@ const EditPhotoRequestPage = () => {
 
 		toast.success("Request deleted")
 
-		navigate("/", {
+		navigate("/photos-request", {
 			replace: true,
 		})
 	}
