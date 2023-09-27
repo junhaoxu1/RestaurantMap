@@ -10,6 +10,7 @@ import RestaurantsFilter from "../components/RestaurantsFilter"
 import { useSearchParams } from "react-router-dom"
 import { getLocationWithLatLng } from "../services/Geocode"
 import { LatLng } from "use-places-autocomplete"
+import { getDistanceFromLatLngInKm } from "../helpers/getDistance"
 const MYMAPSKEY = import.meta.env.VITE_APP_GOOGLE_KEY
 
 const MapPage = () => {
@@ -32,9 +33,10 @@ const MapPage = () => {
     })
 
     // extract data from url
-    const lat = Number(searchParams.get("lat"))
-    const lng = Number(searchParams.get("lng"))
-    const currentTown = searchParams.get("city")
+    const selectedLatlng = { lat: Number(searchParams.get("lat")), lng: Number(searchParams.get("lng")) }
+    const selectedCity = searchParams.get("city")
+    const selectedFilter = searchParams.get("filter")
+    const selectedSort = searchParams.get("sort")
 
     // Loading Google Maps by using useLoadScript hook and libary places,
     // it also used to determine when API is fully loaded.
@@ -143,8 +145,30 @@ const MapPage = () => {
         // if no restautants matches filter, return
         if (!filteredRestaurants) return setError("Could not find restaurants for selected filter")
 
+        if (sortBy === "distance") {
+            const updatedData = filteredRestaurants.map((restaurant) => {
+                return {
+                    ...restaurant,
+                    distance: getDistanceFromLatLngInKm(restaurant.geolocation.lat, restaurant.geolocation.lng, coordinates.lat, coordinates.lng),
+                }
+            })
+
+            const sortedData = updatedData.sort(function (a, b) {
+                if (a.distance < b.distance) {
+                    return -1
+                }
+                if (a.distance > b.distance) {
+                    return 1
+                }
+                return 0
+            })
+            setFilteredData(sortedData)
+            setFilter(category)
+            return
+        }
+
+        setFilteredData(filteredData)
         setFilter(category)
-        setFilteredData(filteredRestaurants)
     }
 
     const toggleSupply = (supply: string) => {
@@ -165,17 +189,22 @@ const MapPage = () => {
         setFilteredData(filteredRestaurants)
     }
 
+    // sorts the data and returns it in the chosen order
     const toggleSortByName = (sort: string) => {
         setError(null)
         // decide on which data to sort
-
         const dataToSort = filteredData ? filteredData : data
         // return if data is null
         if (!dataToSort) return setError("Could not sort restaurants by name...")
 
+        // create a deep copy of the array before being sorted, so when "undoing" the sorting
+        // we can set it back to right as it was
+        const deepCopy = JSON.parse(JSON.stringify(dataToSort))
+
         if (sortBy === sort) {
             setSortBy("")
-            setFilteredData(dataToSort)
+            console.log("supposed to set original array")
+            setFilteredData(deepCopy)
             return
         }
 
@@ -210,6 +239,45 @@ const MapPage = () => {
         }
     }
 
+    const toggleSortByDistance = (sort: string) => {
+        setError(null)
+
+        const dataToSort = filteredData ? filteredData : data
+
+        console.log("sort:", sort)
+        console.log("sortBy:", sortBy)
+
+        if (sortBy === sort) {
+            setSortBy("")
+            setFilteredData(dataToSort)
+            return
+        }
+
+        if (!dataToSort) return setError("Could not filter by distance")
+
+        const updatedData = dataToSort.map((restaurant) => {
+            return {
+                ...restaurant,
+                distance: getDistanceFromLatLngInKm(restaurant.geolocation.lat, restaurant.geolocation.lng, coordinates.lat, coordinates.lng),
+            }
+        })
+
+        const sortedData = updatedData.sort(function (a, b) {
+            if (a.distance < b.distance) {
+                return -1
+            }
+            if (a.distance > b.distance) {
+                return 1
+            }
+            return 0
+        })
+
+        if (!sortedData) return setError("Could not filter by distance")
+
+        setSortBy("distance")
+        setFilteredData(sortedData)
+    }
+
     // get the users location on render
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
@@ -226,8 +294,9 @@ const MapPage = () => {
         mapReference.current.panTo(coordinates)
 
         setUrlParams(coordinates, filter, sortBy)
-        console.log("sort by", sortBy)
     }, [coordinates, filter, filteredData, sortBy])
+
+    // [coordinates, filter, filteredData, sortBy]
 
     if (!data) return
 
@@ -239,7 +308,8 @@ const MapPage = () => {
                     <PlacesAutoComplete onSearch={onSearch} setCoordinates={setCoordinates} />
 
                     <RestaurantsFilter
-                        toggleSort={toggleSortByName}
+                        toggleSortByDistance={toggleSortByDistance}
+                        toggleSortByName={toggleSortByName}
                         filter={filter}
                         togglePosition={() => {
                             navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {

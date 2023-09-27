@@ -5,11 +5,12 @@ type Props = {
     togglePosition: (city: string) => void
     toggleCategory: (category: string) => void
     toggleSupply: (supply: string) => void
-    toggleSort: (sortBy: string) => void
+    toggleSortByName: (sortBy: string) => void
+    toggleSortByDistance: (sortBy: string) => void
     filter: string
 }
 
-const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, toggleSupply, toggleSort, filter }) => {
+const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, toggleSupply, toggleSortByName, toggleSortByDistance, filter }) => {
     //retrieve filter to toggle classnames for buttons dynamically
     const [searchParams, _setSearchParams] = useSearchParams()
     const selectedFilter = searchParams.get("filter")
@@ -81,17 +82,20 @@ const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, to
                 <div className="button-wrapper d-flex gap-1 flex-wrap">
                     <button
                         className={selectedSort === "name_dsc" ? "button-selected" : "button-not-selected"}
-                        onClick={() => toggleSort("name_dsc")}
+                        onClick={() => toggleSortByName("name_dsc")}
                     >
                         Sort Descending
                     </button>
                     <button
                         className={selectedSort === "name_asc" ? "button-selected" : "button-not-selected"}
-                        onClick={() => toggleSort("name_asc")}
+                        onClick={() => toggleSortByName("name_asc")}
                     >
                         Sort Ascending
                     </button>
-                    <button className={selectedSort === "lunch" ? "button-selected" : "button-not-selected"} onClick={() => toggleSort("distance")}>
+                    <button
+                        className={selectedSort === "distance" ? "button-selected" : "button-not-selected"}
+                        onClick={() => toggleSortByDistance("distance")}
+                    >
                         Sort By Distance
                     </button>
                 </div>
