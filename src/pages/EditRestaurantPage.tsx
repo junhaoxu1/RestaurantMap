@@ -75,7 +75,7 @@ const EditRestaurantPage = () => {
             <AddNewRequestForm onAddRestaurant={editRequest} currentRestaurant={restaurant} onDeleteImage={deleteImage}/>
 
 			<div className="d-flex justify-content-center">
-            <Link to="/users-request">
+            <Link to="/admin-restaurants">
 				<Button variant="secondary">&laquo; Go Back</Button>
 			</Link>
 				<Button
