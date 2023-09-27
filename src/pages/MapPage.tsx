@@ -278,23 +278,24 @@ const MapPage = () => {
         setFilteredData(sortedData)
     }
 
+    useEffect(() => {
+        if (mapReference.current) {
+            mapReference.current.panTo(coordinates);
+        }
+    }, [coordinates]);
+
     // get the users location on render
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
-            setCoordinates({ lat: latitude, lng: longitude })
-            setUrlParams({ lat: latitude, lng: longitude }, filter)
-        })
-    }, [])
+        const latParam = searchParams.get("lat");
+        const lngParam = searchParams.get("lng");
 
-    useEffect(() => {
-        if (!mapReference.current) {
-            return
+        if (latParam && lngParam) {
+            setCoordinates({
+                lat: parseFloat(latParam),
+                lng: parseFloat(lngParam),
+            });
         }
-
-        mapReference.current.panTo(coordinates)
-
-        setUrlParams(coordinates, filter, sortBy)
-    }, [coordinates, filter, filteredData, sortBy])
+    }, [searchParams]);
 
     // [coordinates, filter, filteredData, sortBy]
 
