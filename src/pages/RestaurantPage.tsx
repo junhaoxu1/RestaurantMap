@@ -6,6 +6,7 @@ import RestaurantDetails from "../components/RestaurantDetails"
 import AddNewPhoto from "../components/AddNewPhoto"
 import { setDoc, doc, collection, getDocs, query, where, updateDoc } from "firebase/firestore"
 import { useState, useEffect } from "react"
+import { v4 as uuidv4 } from 'uuid'
 import useAuth from "../hooks/useAuth"
 
 const RestaurantPage = () => {
@@ -13,6 +14,7 @@ const RestaurantPage = () => {
     const { id } = useParams();
 
     const documentId = String(id);
+    const uuid = uuidv4()
 
     if (!documentId) return <p>Restaurant doesn't exist</p>;
 
@@ -52,6 +54,7 @@ const RestaurantPage = () => {
                 user_photos: [
                     ...(restaurant.user_photos || []),
                     {
+                        id: uuid,
                         photo: photoUrl,
                     },
                 ],

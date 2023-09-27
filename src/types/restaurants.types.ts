@@ -17,6 +17,7 @@ export type Restaurant = {
     }
     cover_photo?: string
     user_photos?: {
+        id: string
         photo: string
     }[]
 }
