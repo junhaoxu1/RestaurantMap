@@ -22,7 +22,7 @@ const RestaurantListItem: React.FC<Props> = ({ restaurants, displayOnMap, coordi
 
                         <div className="line"></div>
 
-                        <div className="text-wrapper d-flex flex-column justify-content-evenly">
+                        <div className="text-wrapper d-flex flex-column">
                             <p className="list-item-heading">{restaurant.name}</p>
                             <p className="list-item-text">
                                 {restaurant.address}, {restaurant.city}{" "}

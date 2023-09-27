@@ -187,7 +187,35 @@ const MapPage = () => {
     return (
         <>
             <div className="map-page-container">
-                <section className="mt-2">
+                <div className="mt-3 filter-list-container">
+                    {loading && <p>Loading data...</p>}
+                    <PlacesAutoComplete onSearch={onSearch} setCoordinates={setCoordinates} />
+
+                    <RestaurantsFilter
+                        filter={filter}
+                        togglePosition={() => {
+                            navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
+                                setCoordinates({ lat: latitude, lng: longitude })
+                                togglePosition({ lat: latitude, lng: longitude } ?? "")
+                            })
+                        }}
+                        toggleCategory={toggleCategory}
+                        toggleSupply={toggleSupply}
+                    />
+
+                    {filteredData?.length !== undefined && filteredData?.length > 0 && filter === "near_me" && (
+                        <p>Showing restaurants in your area!</p>
+                    )}
+                    {filteredData?.length !== undefined && filteredData?.length > 0 && filter && filter !== "near_me" && (
+                        <p>
+                            Showing {filter ? <span style={{ fontWeight: "bold" }}>{filter}s</span> : "Showing all restaurants"} in: {currentCity}
+                        </p>
+                    )}
+                    {data.length > 0 && !filteredData && <p>Showing all restaurants</p>}
+                    {filteredData?.length === 0 && <p>No restaurants matching current filter</p>}
+                    <RestaurantListItem coordinates={coordinates} displayOnMap={displayOnMap} restaurants={filteredData ?? data} />
+                </div>
+                <section className="map-page">
                     <Map
                         onMapLoadInstance={onMapLoadInstance}
                         onUnMount={onUnMount}
@@ -200,36 +228,10 @@ const MapPage = () => {
                         setSelectedRestaurant={setSelectedRestaurant}
                     />
                 </section>
-                <div className="filter-list my-3">
-                    {loading && <p>Loading data...</p>}
-                    <PlacesAutoComplete onSearch={onSearch} setCoordinates={setCoordinates} />
-                    <RestaurantsFilter
-                        filter={filter}
-                        togglePosition={() => {
-                            navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
-                                setCoordinates({ lat: latitude, lng: longitude })
-                                togglePosition({ lat: latitude, lng: longitude } ?? "")
-                            })
-                        }}
-                        toggleCategory={toggleCategory}
-                        toggleSupply={toggleSupply}
-                    />
-                    {filteredData?.length !== undefined && filteredData?.length > 0 && filter === "near_me" && (
-                        <p>Showing restaurants in your area!</p>
-                    )}
-                    {filteredData?.length !== undefined && filteredData?.length > 0 && filter && filter !== "near_me" && (
-                        <p>
-                            Showing {filter ? <span style={{ fontWeight: "bold" }}>{filter}</span> : "Showing all restaurants"} in: {currentCity}
-                        </p>
-                    )}
-                    {data.length > 0 && !filteredData && <p>Showing all restaurants</p>}
-                    {filteredData?.length === 0 && <p>No restaurants matching current filter</p>}
-                    <RestaurantListItem coordinates={coordinates} displayOnMap={displayOnMap} restaurants={filteredData ?? data} />
-                </div>
-
-                {dataError && <p>Something went wrong: {dataError}</p>}
-                {error && <p>{error}</p>}
             </div>
+
+            {dataError && <p>Something went wrong: {dataError}</p>}
+            {error && <p>{error}</p>}
         </>
     )
 }
