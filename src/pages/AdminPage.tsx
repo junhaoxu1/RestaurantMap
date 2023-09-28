@@ -6,13 +6,10 @@ import useGetCollection from "../hooks/useGetCollection"
 import { getDocs, collection, doc, updateDoc } from "firebase/firestore"
 import { useState, useEffect } from "react"
 import AdminTable from "../components/AdminTable"
-import { FirebaseError } from "firebase/app"
 
 const AdminPage = () => {
 	const { data: users, loading } = useGetCollection<UserFormData>(usersCol)
-	const { currentUser, reloadUser, setDisplayName } = useAuth()
-	const [error, setError] = useState<string | null>(null)
-	const [load, setLoad] = useState(Boolean)
+	const { currentUser } = useAuth()
 
 	const admins = users?.filter((user) => user.admin === true)
 
@@ -48,31 +45,6 @@ const AdminPage = () => {
 		}
 	}
 
-	const handleAdminNameChange = async (documentId: string, newName: string) => {
-		setError(null)
-
-		try {
-			setLoad(true)
-
-			setDocumentData((prevData) => prevData.map((user) => (user.documentId === documentId ? { ...user, name: newName } : user)))
-
-			const userRef = doc(db, "users", documentId)
-			await updateDoc(userRef, { name: newName })
-
-			await setDisplayName(newName)
-
-			await reloadUser()
-
-			setLoad(false)
-		} catch (error) {
-			if (error instanceof FirebaseError) {
-				setError(error.message)
-			} else {
-				setError("Failed")
-			}
-		}
-	}
-
 	useEffect(() => {
 		getData()
 	}, [])
@@ -83,12 +55,12 @@ const AdminPage = () => {
 				<p>Loading...</p>
 			) : users && currentUser ? (
 				admins?.some((admin) => admin.email === currentUser.email) ? (
-					<AdminTable data={documentData} onAdminStatusToggle={handleAdminStatusToggle} onAdminNameToggle={handleAdminNameChange} />
+					<AdminTable data={documentData} onAdminStatusToggle={handleAdminStatusToggle} />
 				) : (
 					<p>You do not have permission to view this page.</p>
 				)
 			) : (
-				<p>Error: {error ? `Error: ${error}` : "Loading..."}</p>
+				<p>Loading...</p>
 			)}
 		</Container>
 	)

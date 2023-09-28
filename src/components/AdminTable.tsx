@@ -17,11 +17,10 @@ interface RowData {
 interface AdminTableProps {
   data: RowData[];
   onAdminStatusToggle: (documentId: string, newAdminStatus: boolean) => void;
-  onAdminNameToggle: (documentId: string, newName: string) => void;
 }
 
 //Lägg till kolumner inne i table
-const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle, onAdminNameToggle }) => {
+const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle }) => {
 	const { currentUser } = useAuth()
 	const {
 	} = useForm<UpdateUserFormData>({
