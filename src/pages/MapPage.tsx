@@ -194,12 +194,12 @@ const MapPage = () => {
             return
         }
 
-        if (sort === "desc") {
+		if (sort === "desc") {
             const sortedData = dataToSort.sort(function (a, b) {
-                if (a.name < b.name) {
+                if (a.name[0].toUpperCase() + a.name.slice(1) < b.name[0].toUpperCase() + b.name.slice(1)) {
                     return -1
                 }
-                if (a.name > b.name) {
+                if (a.name[0].toUpperCase() + a.name.slice(1) > b.name[0].toUpperCase() + b.name.slice(1)) {
                     return 1
                 }
                 return 0
@@ -211,10 +211,10 @@ const MapPage = () => {
 
         if (sort === "asc") {
             const sortedData = dataToSort.sort(function (a, b) {
-                if (a.name > b.name) {
+                if (a.name[0].toUpperCase() + a.name.slice(1) > b.name[0].toUpperCase() + b.name.slice(1)) {
                     return -1
                 }
-                if (a.name < b.name) {
+                if (a.name[0].toUpperCase() + a.name.slice(1) < b.name[0].toUpperCase() + a.name.slice(1)) {
                     return 1
                 }
                 return 0
