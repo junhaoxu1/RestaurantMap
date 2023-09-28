@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 type AddPhotoProps = {
-  onPhotoUpload: (photo: string) => void;
+  onPhotoUpload: (photo: string) => Promise<void>;
 };
 
 const AddNewPhoto: React.FC<AddPhotoProps> = ({ onPhotoUpload }) => {
