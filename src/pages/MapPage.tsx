@@ -27,19 +27,17 @@ const MapPage = () => {
     const [filter, setFilter] = useState<string>("")
     const [sortBy, setSortBy] = useState<string>("")
     const [filteredData, setFilteredData] = useState<Restaurant[] | null>(null)
-    const [searchParams, setSearchParams] = useSearchParams({
-        lat: "",
-        lng: "",
-    })
+    const [searchParams, setSearchParams] = useSearchParams({})
+    const [currentData, setCurrentData] = useState<Restaurant[] | null>(null)
 
 	const lat = searchParams.get("lat")
 	const lng = searchParams.get("lng")
 
     // extract data from url
-    // const selectedLatlng = { lat: Number(searchParams.get("lat")), lng: Number(searchParams.get("lng")) }
-    // const selectedCity = searchParams.get("city")
-    // const selectedFilter = searchParams.get("filter")
-    // const selectedSort = searchParams.get("sort")
+    const selectedCoords = { lat: Number(searchParams.get("lat")), lng: Number(searchParams.get("lng")) }
+    const selectedCity = searchParams.get("city")
+    const selectedFilter = searchParams.get("filter")
+    const selectedSort = searchParams.get("sort")
 
     // Loading Google Maps by using useLoadScript hook and libary places,
     // it also used to determine when API is fully loaded.
@@ -145,12 +143,68 @@ const MapPage = () => {
         // filter only the restaurants that matches the selected filter
         const filteredRestaurants = data?.filter((restaurant) => restaurant.category.toLowerCase() === category.toLowerCase())
 
-        console.log("filtered Rest:", filteredRestaurants)
+        if (!filteredRestaurants) return setError("Could not filter restaurants")
+
+        if (sortBy === "distance") {
+            const updatedData = filteredRestaurants.map((restaurant) => {
+                return {
+                    ...restaurant,
+                    distance: getDistanceFromLatLngInKm(restaurant.geolocation.lat, restaurant.geolocation.lng, coordinates.lat, coordinates.lng),
+                }
+            })
+
+            const sortedData = updatedData.sort(function (a, b) {
+                if (a.distance < b.distance) {
+                    return -1
+                }
+                if (a.distance > b.distance) {
+                    return 1
+                }
+                return 0
+            })
+            setFilteredData(sortedData)
+            setFilter(category)
+            setCurrentData(sortedData)
+            return
+        }
+
+        if (sortBy === "name_asc") {
+            const sortedData = filteredRestaurants.sort(function (a, b) {
+                if (a.name < b.name) {
+                    return -1
+                }
+                if (a.name > b.name) {
+                    return 1
+                }
+                return 0
+            })
+            setFilteredData(sortedData)
+            setFilter(category)
+            setCurrentData(sortedData)
+            return
+        }
+
+        if (sortBy === "name_dsc") {
+            const sortedData = filteredRestaurants.sort(function (a, b) {
+                if (a.name > b.name) {
+                    return -1
+                }
+                if (a.name < b.name) {
+                    return 1
+                }
+                return 0
+            })
+            setFilteredData(sortedData)
+            setFilter(category)
+            setCurrentData(sortedData)
+            return
+        }
 
         // if no restautants matches filter, return
         if (!filteredRestaurants) return setError("Could not find restaurants for selected filter")
 
         setFilteredData(filteredRestaurants)
+        setCurrentData(filteredRestaurants)
         setFilter(category)
     }
 
@@ -241,15 +295,21 @@ const MapPage = () => {
         const updatedData = dataToSort.map((restaurant) => {
             return {
                 ...restaurant,
-                distance: getDistanceFromLatLngInKm(restaurant.geolocation.lat, restaurant.geolocation.lng, coordinates.lat, coordinates.lng),
+                distance: Number(
+                    getDistanceFromLatLngInKm(restaurant.geolocation.lat, restaurant.geolocation.lng, coordinates.lat, coordinates.lng)
+                ).toFixed(2),
             }
         })
 
         const sortedData = updatedData.sort(function (a, b) {
-            if (a.distance < b.distance) {
+            // convert strings to numbers before comparasion
+            const distanceA = parseFloat(a.distance)
+            const distanceB = parseFloat(b.distance)
+
+            if (distanceA < distanceB) {
                 return -1
             }
-            if (a.distance > b.distance) {
+            if (distanceA > distanceB) {
                 return 1
             }
             return 0
@@ -266,7 +326,11 @@ const MapPage = () => {
         navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
             setCoordinates({ lat: latitude, lng: longitude })
             setUrlParams({ lat: latitude, lng: longitude }, filter)
+            return
         })
+        // if user doesn't share position, default to school
+        setCoordinates({ lat: 55.606972, lng: 13.02106 })
+        setSearchParams({ lat: String(55.606972), lng: String(13.02106) })
     }, [])
 
     useEffect(() => {
@@ -275,8 +339,6 @@ const MapPage = () => {
         }
 
         mapReference.current.panTo(coordinates)
-
-        console.log("filtered data", filteredData)
 
         setUrlParams(coordinates, filter, sortBy)
     }, [filter, filteredData, sortBy])
@@ -296,6 +358,14 @@ const MapPage = () => {
 		}
 
 	}, [searchParams])
+
+    useEffect(() => {
+        if (!mapReference.current) return
+
+        mapReference.current.panTo(selectedCoords)
+        setFilteredData(currentData)
+        console.log("selected filter", selectedFilter)
+    }, [selectedCoords, selectedFilter, selectedSort, filteredData])
 
     if (!data) return
 
@@ -330,14 +400,14 @@ const MapPage = () => {
                     )}
                     {data.length > 0 && !filteredData && <p>Showing all restaurants</p>}
                     {filteredData?.length === 0 && <p>No restaurants matching current filter</p>}
-                    <RestaurantListItem coordinates={coordinates} displayOnMap={displayOnMap} restaurants={filteredData ?? data} />
+                    <RestaurantListItem coordinates={coordinates} displayOnMap={displayOnMap} restaurants={currentData ?? data} />
                 </div>
                 <section className="map-page">
                     <Map
                         onMapLoadInstance={onMapLoadInstance}
                         onUnMount={onUnMount}
                         center={center}
-                        coordinates={coordinates}
+                        coordinates={selectedCoords}
                         setCoordinates={setCoordinates}
                         restaurants={filteredData ?? data}
                         showRestaurantsInfo={showRestaurantsInfo}

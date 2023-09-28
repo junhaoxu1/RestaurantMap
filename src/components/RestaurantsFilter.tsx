@@ -15,6 +15,7 @@ const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, to
     const [searchParams, _setSearchParams] = useSearchParams()
     const selectedFilter = searchParams.get("filter")
     const selectedSort = searchParams.get("sort")
+    const coordinates = { lat: searchParams.get("lat"), lng: searchParams.get("lng") }
     return (
         <div className="filter-button-container d-flex gap-1 flex-wrap my-2">
             <div className="filter-position">
@@ -92,12 +93,14 @@ const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, to
                     >
                         Sort Ascending
                     </button>
-                    <button
-                        className={selectedSort === "distance" ? "button-selected" : "button-not-selected"}
-                        onClick={() => toggleSortByDistance("distance")}
-                    >
-                        Sort By Distance
-                    </button>
+                    {coordinates.lat !== null && (
+                        <button
+                            className={selectedSort === "distance" ? "button-selected" : "button-not-selected"}
+                            onClick={() => toggleSortByDistance("distance")}
+                        >
+                            Sort By Distance
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
