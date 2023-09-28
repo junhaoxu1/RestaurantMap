@@ -1,5 +1,5 @@
-import { CollectionReference, doc, getDoc } from 'firebase/firestore'
-import { useCallback, useEffect, useState } from 'react'
+import { CollectionReference, doc, getDoc } from "firebase/firestore"
+import { useCallback, useEffect, useState } from "react"
 
 const useGetDocument = <T>(colRef: CollectionReference<T>, documentId: string) => {
     const [data, setData] = useState<T | null>(null)
@@ -7,15 +7,15 @@ const useGetDocument = <T>(colRef: CollectionReference<T>, documentId: string) =
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    // Get todo
+    // Get data
     const getData = useCallback(async () => {
         setError(false)
         setLoading(true)
 
         if (!colRef || !documentId) {
-            setError(true);
-            setLoading(false);
-            return;
+            setError(true)
+            setLoading(false)
+            return
         }
 
         // get a ref to a single document in `restaurants` collection

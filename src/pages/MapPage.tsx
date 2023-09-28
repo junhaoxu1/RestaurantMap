@@ -12,11 +12,8 @@ import { getLocationWithLatLng } from "../services/Geocode"
 import { LatLng } from "use-places-autocomplete"
 import { getDistanceFromLatLngInKm } from "../helpers/getDistance"
 import useGetFilteredData from "../hooks/useGetFilteredData"
-
 import useLocalStorage from "../hooks/useGetLocalStorage"
 
-import { update } from "firebase/database"
-import useGetSortedData from "../hooks/useGetSortedData"
 const MYMAPSKEY = import.meta.env.VITE_APP_GOOGLE_KEY
 
 const MapPage = () => {
@@ -46,17 +43,12 @@ const MapPage = () => {
     const selectedCity = searchParams.get("city")
     const selectedFilter = searchParams.get("filter")
     const selectedFilterType = searchParams.get("filter_type")
-    const selectedSort = searchParams.get("sort")
     const {
         data: filteredRestaurants,
         getData: getFilteredRestaurants,
         setData: setFilteredRestaurants,
         loading: filteredRestaurantsLoading,
     } = useGetFilteredData<Restaurant>(restaurantsCol, selectedFilterType ?? "", selectedFilter ?? "")
-    const { data: sortedRestaurants, getData: getSortedRestaurants, setData: setSortedRestaurants } = useGetSortedData(restaurantsCol, "asc")
-
-    const lat = searchParams.get("lat")
-    const lng = searchParams.get("lng")
 
     // Loading Google Maps by using useLoadScript hook and libary places,
     // it also used to determine when API is fully loaded.
@@ -182,69 +174,10 @@ const MapPage = () => {
             setFilterType(field)
             setFilter(value)
             await getFilteredRestaurants(field ?? "", value ?? "")
-            console.log("field:", field)
-            console.log("value:", value)
 
             const newFilteredData = filteredRestaurants ?? restaurants
             setFilteredData(newFilteredData)
-            console.log("filtered data:", filteredData)
-        } catch (err: any) {
-            console.log("caught error", err.message)
-        }
-
-        // if (sortBy === "distance") {
-        //     const updatedData = filteredRestaurants.map((restaurant) => {
-        //         return {
-        //             ...restaurant,
-        //             distance: getDistanceFromLatLngInKm(restaurant.geolocation.lat, restaurant.geolocation.lng, coordinates.lat, coordinates.lng),
-        //         }
-        //     })
-
-        //     const sortedData = updatedData.sort(function (a, b) {
-        //         if (a.distance < b.distance) {
-        //             return -1
-        //         }
-        //         if (a.distance > b.distance) {
-        //             return 1
-        //         }
-        //         return 0
-        //     })
-        //     setFilteredData(sortedData)
-        //     setFilter(category)
-        //     return
-        // }
-
-        // if (sortBy === "name_asc") {
-        //     const sortedData = filteredRestaurants.sort(function (a, b) {
-        //         if (a.name < b.name) {
-        //             return -1
-        //         }
-        //         if (a.name > b.name) {
-        //             return 1
-        //         }
-        //         return 0
-        //     })
-        //     setFilteredData(sortedData)
-        //     setFilter(category)
-        //     setCurrentData(sortedData)
-        //     return
-        // }
-
-        // if (sortBy === "name_dsc") {
-        //     const sortedData = filteredRestaurants.sort(function (a, b) {
-        //         if (a.name > b.name) {
-        //             return -1
-        //         }
-        //         if (a.name < b.name) {
-        //             return 1
-        //         }
-        //         return 0
-        //     })
-        //     setFilteredData(sortedData)
-        //     setFilter(category)
-        //     setCurrentData(sortedData)
-        //     return
-        // }
+        } catch (err: any) {}
     }
 
     // sorts the data and returns it in the chosen order
@@ -257,7 +190,6 @@ const MapPage = () => {
 
         if (sortBy === sort) {
             setSortBy("")
-            console.log("supposed to set original array")
             setFilteredRestaurants(restaurants)
             return
         }
@@ -297,9 +229,6 @@ const MapPage = () => {
         setError(null)
 
         const dataToSort = filteredRestaurants ? filteredRestaurants : restaurants
-
-        console.log("sort:", sort)
-        console.log("sortBy:", sortBy)
 
         if (sortBy === sort) {
             setSortBy("")
@@ -421,7 +350,7 @@ const MapPage = () => {
         <>
             <div className="map-page-container">
                 <div className="mt-3 filter-list-container">
-                    {restaurantsLoading && <p>Loading data...</p>}
+                    {restaurantsLoading && !isLoaded && <p>Loading data...</p>}
                     <PlacesAutoComplete onSearch={onSearch} setCoordinates={setCoordinates} />
 
                     <RestaurantsFilter

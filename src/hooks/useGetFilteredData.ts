@@ -26,7 +26,6 @@ const useGetFilteredData = <T>(colRef: CollectionReference<T>, field: string, va
                     }
                 })
                 setData(data)
-                console.log("querying for:", field, value)
             } catch (err: any) {
                 setError(err.message)
             }
