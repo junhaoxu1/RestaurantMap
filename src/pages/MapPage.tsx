@@ -405,7 +405,6 @@ const MapPage = () => {
     }, [selectedCoords])
 
     useEffect(() => {
-        // Function to fetch data based on filter and filter type
         const fetchData = async () => {
             try {
                 if (selectedFilterType === "city") {
@@ -424,12 +423,10 @@ const MapPage = () => {
             }
         };
     
-        // Fetch data when selectedFilter and selectedFilterType change
         fetchData();
     }, [selectedFilter, selectedFilterType]);
 
     useEffect(() => {
-        // Update the filtered data once the fetching is complete
         setFilteredData(filteredRestaurants);
     }, [filteredRestaurants]);
 
