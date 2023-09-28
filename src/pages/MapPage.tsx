@@ -28,12 +28,13 @@ const MapPage = () => {
     const [sortBy, setSortBy] = useState<string>("")
     const [filteredData, setFilteredData] = useState<Restaurant[] | null>(null)
     const [searchParams, setSearchParams] = useSearchParams({})
+    const [currentData, setCurrentData] = useState<Restaurant[] | null>(null)
 
     // extract data from url
-    // const selectedLatlng = { lat: Number(searchParams.get("lat")), lng: Number(searchParams.get("lng")) }
-    // const selectedCity = searchParams.get("city")
-    // const selectedFilter = searchParams.get("filter")
-    // const selectedSort = searchParams.get("sort")
+    const selectedCoords = { lat: Number(searchParams.get("lat")), lng: Number(searchParams.get("lng")) }
+    const selectedCity = searchParams.get("city")
+    const selectedFilter = searchParams.get("filter")
+    const selectedSort = searchParams.get("sort")
 
     // Loading Google Maps by using useLoadScript hook and libary places,
     // it also used to determine when API is fully loaded.
@@ -160,6 +161,7 @@ const MapPage = () => {
             })
             setFilteredData(sortedData)
             setFilter(category)
+            setCurrentData(sortedData)
             return
         }
 
@@ -175,6 +177,7 @@ const MapPage = () => {
             })
             setFilteredData(sortedData)
             setFilter(category)
+            setCurrentData(sortedData)
             return
         }
 
@@ -190,17 +193,15 @@ const MapPage = () => {
             })
             setFilteredData(sortedData)
             setFilter(category)
+            setCurrentData(sortedData)
             return
         }
-
-        setFilteredData(filteredRestaurants)
-
-        console.log("filtered Rest:", filteredRestaurants)
 
         // if no restautants matches filter, return
         if (!filteredRestaurants) return setError("Could not find restaurants for selected filter")
 
         setFilteredData(filteredRestaurants)
+        setCurrentData(filteredRestaurants)
         setFilter(category)
     }
 
@@ -339,6 +340,14 @@ const MapPage = () => {
         setUrlParams(coordinates, filter, sortBy)
     }, [coordinates, filter, filteredData, sortBy])
 
+    useEffect(() => {
+        if (!mapReference.current) return
+
+        mapReference.current.panTo(selectedCoords)
+        setFilteredData(currentData)
+        console.log("selected filter", selectedFilter)
+    }, [selectedCoords, selectedFilter, selectedSort, filteredData])
+
     if (!data) return
 
     return (
@@ -372,14 +381,14 @@ const MapPage = () => {
                     )}
                     {data.length > 0 && !filteredData && <p>Showing all restaurants</p>}
                     {filteredData?.length === 0 && <p>No restaurants matching current filter</p>}
-                    <RestaurantListItem coordinates={coordinates} displayOnMap={displayOnMap} restaurants={filteredData ?? data} />
+                    <RestaurantListItem coordinates={coordinates} displayOnMap={displayOnMap} restaurants={currentData ?? data} />
                 </div>
                 <section className="map-page">
                     <Map
                         onMapLoadInstance={onMapLoadInstance}
                         onUnMount={onUnMount}
                         center={center}
-                        coordinates={coordinates}
+                        coordinates={selectedCoords}
                         setCoordinates={setCoordinates}
                         restaurants={filteredData ?? data}
                         showRestaurantsInfo={showRestaurantsInfo}
