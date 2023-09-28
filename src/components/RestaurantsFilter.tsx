@@ -14,12 +14,16 @@ const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, to
     //retrieve filter to toggle classnames for buttons dynamically
     const [searchParams, _setSearchParams] = useSearchParams()
     const selectedFilter = searchParams.get("filter")
+    const selectedCity = searchParams.get("city")
     const selectedSort = searchParams.get("sort")
     const coordinates = { lat: searchParams.get("lat"), lng: searchParams.get("lng") }
     return (
         <div className="filter-button-container d-flex gap-1 flex-wrap my-2">
             <div className="filter-position">
-                <button className={selectedFilter === "near_me" ? "button-selected" : "button-not-selected"} onClick={() => togglePosition(filter)}>
+                <button
+                    className={selectedFilter === selectedCity ? "button-selected" : "button-not-selected"}
+                    onClick={() => togglePosition(filter)}
+                >
                     Near Me
                 </button>
             </div>
