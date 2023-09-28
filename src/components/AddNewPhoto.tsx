@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 type AddPhotoProps = {
-  onPhotoUpload: (photo: string) => Promise<void>;
+  onPhotoUpload: (photo: string) => void;
 };
 
 const AddNewPhoto: React.FC<AddPhotoProps> = ({ onPhotoUpload }) => {
@@ -28,7 +28,11 @@ const AddNewPhoto: React.FC<AddPhotoProps> = ({ onPhotoUpload }) => {
         if (image) {
             onPhotoUpload(image);
             setImage(null);
-            navigate('/restaurants')
+
+            //Timeout to make sure data gets sent to collection
+            setTimeout(() => {
+                window.location.reload();
+              }, 500);
         } else {
             toast.error("Failed To Upload Image! Try again")
         }
