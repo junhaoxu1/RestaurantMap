@@ -16,6 +16,7 @@ import useGetFilteredData from "../hooks/useGetFilteredData"
 import useLocalStorage from "../hooks/useGetLocalStorage"
 
 import { update } from "firebase/database"
+import useGetSortedData from "../hooks/useGetSortedData"
 const MYMAPSKEY = import.meta.env.VITE_APP_GOOGLE_KEY
 
 const MapPage = () => {
@@ -30,7 +31,7 @@ const MapPage = () => {
         loading: restaurantsLoading,
         getData: getRestaurants,
     } = useGetCollection<Restaurant>(restaurantsCol)
-    const [filteredData, setFilteredData] = useLocalStorage<Restaurant[] | null>("filteredData", null);
+    const [filteredData, setFilteredData] = useLocalStorage<Restaurant[] | null>("filteredData", null)
     const [error, setError] = useState<string | null>(null)
     const [coordinates, setCoordinates] = useState({} as { lat: number; lng: number })
     const [currentCity, setCurrentCity] = useState<string | null>(null)
@@ -52,9 +53,10 @@ const MapPage = () => {
         setData: setFilteredRestaurants,
         loading: filteredRestaurantsLoading,
     } = useGetFilteredData<Restaurant>(restaurantsCol, selectedFilterType ?? "", selectedFilter ?? "")
+    const { data: sortedRestaurants, getData: getSortedRestaurants, setData: setSortedRestaurants } = useGetSortedData(restaurantsCol, "asc")
 
     const lat = searchParams.get("lat")
-	const lng = searchParams.get("lng")
+    const lng = searchParams.get("lng")
 
     // Loading Google Maps by using useLoadScript hook and libary places,
     // it also used to determine when API is fully loaded.
@@ -64,8 +66,8 @@ const MapPage = () => {
     })
 
     const updateFilteredData = (newData: Restaurant[] | null) => {
-        setFilteredData(newData);
-      };
+        setFilteredData(newData)
+    }
 
     // return updated reference with current map for interacting with google maps
     const onMapLoadInstance = (map: google.maps.Map): void => {
@@ -119,7 +121,7 @@ const MapPage = () => {
         try {
             // update states, get town name and look for restaurants in the same town
             setFilterType("city")
-            setFilter(city ?? "")
+            setFilter(city[0].toUpperCase() + city.slice(1) ?? "")
             setError(null)
             // call function to get data according to current filters
             await getFilteredRestaurants(selectedFilterType ?? "", selectedFilter ?? "")
@@ -160,6 +162,7 @@ const MapPage = () => {
     }
 
     const toggleCategory = async (field: string, value: string) => {
+        setSortBy("")
         setError(null)
         // if filter is already selected, unset filter and show all
         if (selectedFilter === value) {
@@ -182,7 +185,7 @@ const MapPage = () => {
             console.log("field:", field)
             console.log("value:", value)
 
-            const newFilteredData = filteredRestaurants ?? restaurants;
+            const newFilteredData = filteredRestaurants ?? restaurants
             setFilteredData(newFilteredData)
             console.log("filtered data:", filteredData)
         } catch (err: any) {
@@ -248,37 +251,18 @@ const MapPage = () => {
     const toggleSortByName = (sort: string) => {
         setError(null)
         // decide on which data to sort
-        const dataToSort = filteredData ? filteredData : data
+        const dataToSort = filteredRestaurants ? filteredRestaurants : restaurants
         // return if data is null
         if (!dataToSort) return setError("Could not sort restaurants by name...")
-
-        // create a deep copy of the array before being sorted, so when "undoing" the sorting
-        // we can set it back to right as it was
-        const deepCopy = JSON.parse(JSON.stringify(dataToSort))
 
         if (sortBy === sort) {
             setSortBy("")
             console.log("supposed to set original array")
-            setFilteredData(deepCopy)
+            setFilteredRestaurants(restaurants)
             return
         }
 
-        if (sort === "name_dsc") {
-            const sortedData = dataToSort.sort(function (a, b) {
-                if (a.name > b.name) {
-                    return -1
-                }
-                if (a.name < b.name) {
-                    return 1
-                }
-                return 0
-            })
-            setFilteredData(sortedData)
-            setSortBy("name_dsc")
-            return
-        }
-
-        if (sort === "name_asc") {
+        if (sort === "desc") {
             const sortedData = dataToSort.sort(function (a, b) {
                 if (a.name < b.name) {
                     return -1
@@ -289,7 +273,22 @@ const MapPage = () => {
                 return 0
             })
             setFilteredData(sortedData)
-            setSortBy("name_asc")
+            setSortBy("desc")
+            return
+        }
+
+        if (sort === "asc") {
+            const sortedData = dataToSort.sort(function (a, b) {
+                if (a.name > b.name) {
+                    return -1
+                }
+                if (a.name < b.name) {
+                    return 1
+                }
+                return 0
+            })
+            setFilteredData(sortedData)
+            setSortBy("asc")
             return
         }
     }
@@ -297,7 +296,7 @@ const MapPage = () => {
     const toggleSortByDistance = (sort: string) => {
         setError(null)
 
-        const dataToSort = filteredData ? filteredData : data
+        const dataToSort = filteredRestaurants ? filteredRestaurants : restaurants
 
         console.log("sort:", sort)
         console.log("sortBy:", sortBy)
@@ -336,50 +335,36 @@ const MapPage = () => {
         if (!sortedData) return setError("Could not filter by distance")
 
         setSortBy("distance")
-        setFilteredData(sortedData)
-    }
-
-    const updateData = async () => {
-        setFilteredData(null)
-        try {
-            setFilterType(selectedFilterType ?? "")
-            setFilter(selectedFilter ?? "")
-            await getFilteredRestaurants(filterType ?? "", filter ?? "")
-            setFilteredData(filteredRestaurants)
-        } catch (err: any) {
-            console.log("could not update data...")
-        }
+        setFilteredRestaurants(sortedData)
     }
 
     const getSelectedCategoryFromLocalStorage = (): string | null => {
-        return localStorage.getItem("selectedCategory");
-      };
+        return localStorage.getItem("selectedCategory")
+    }
 
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(
-        getSelectedCategoryFromLocalStorage()
-      );
-    
-      const storeSelectedCategoryInLocalStorage = (category: string | null) => {
-        localStorage.setItem("selectedCategory", category || "");
-      };
-    
-      const handleGoingBack = () => {
-        setSelectedCategory(null);
-        storeSelectedCategoryInLocalStorage(null);
-      };
-    
-      const handleCategoryClick = (category: string) => {
-        setSelectedCategory(category);
-        storeSelectedCategoryInLocalStorage(category);
-      };
-    
-      useEffect(() => {
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(getSelectedCategoryFromLocalStorage())
+
+    const storeSelectedCategoryInLocalStorage = (category: string | null) => {
+        localStorage.setItem("selectedCategory", category || "")
+    }
+
+    const handleGoingBack = () => {
+        setSelectedCategory(null)
+        storeSelectedCategoryInLocalStorage(null)
+    }
+
+    const handleCategoryClick = (category: string) => {
+        setSelectedCategory(category)
+        storeSelectedCategoryInLocalStorage(category)
+    }
+
+    useEffect(() => {
         if (!filter && selectedCategory) {
-          handleGoingBack();
+            handleGoingBack()
         } else if (filter) {
-          handleCategoryClick(filter);
+            handleCategoryClick(filter)
         }
-      }, [filter]);
+    }, [filter])
 
     // get the users location on render
     useEffect(() => {
@@ -396,7 +381,7 @@ const MapPage = () => {
     // sets updated states in search params
     useEffect(() => {
         setUrlParams(coordinates, filterType, filter, sortBy)
-    }, [ coordinates,filter, filterType, sortBy])
+    }, [coordinates, filter, filterType, sortBy])
 
     useEffect(() => {
         if (!mapReference.current) return
@@ -409,26 +394,26 @@ const MapPage = () => {
             try {
                 if (selectedFilterType === "city") {
                     if (selectedFilter !== null) {
-                        await getFilteredRestaurants("city", selectedFilter);
+                        await getFilteredRestaurants("city", selectedFilter)
                     }
                 } else if (selectedFilterType === "category") {
                     if (selectedFilter !== null) {
-                        await getFilteredRestaurants("category", selectedFilter);
+                        await getFilteredRestaurants("category", selectedFilter)
                     }
                 } else {
-                    await getRestaurants();
+                    await getRestaurants()
                 }
             } catch (err) {
-                console.error("Error fetching data:", err);
+                console.error("Error fetching data:", err)
             }
-        };
-    
-        fetchData();
-    }, [selectedFilter, selectedFilterType]);
+        }
+
+        fetchData()
+    }, [selectedFilter, selectedFilterType])
 
     useEffect(() => {
-        setFilteredData(filteredRestaurants);
-    }, [filteredRestaurants]);
+        setFilteredData(filteredRestaurants)
+    }, [filteredRestaurants])
 
     if (!restaurants) return
 
@@ -457,8 +442,7 @@ const MapPage = () => {
                     )}
                     {filteredData?.length !== undefined && filteredData?.length > 0 && filter && filter !== "near_me" && (
                         <p>
-                            Showing {filter ? <span style={{ fontWeight: "bold" }}>{selectedFilter}s</span> : "Showing all restaurants"} in:{" "}
-                            {currentCity}
+                            Showing {filter ? <span style={{ fontWeight: "bold" }}>food</span> : "Showing all restaurants"} in: {currentCity}
                         </p>
                     )}
                     {restaurants.length > 0 && !filteredData && <p>Showing all restaurants</p>}

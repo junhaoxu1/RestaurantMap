@@ -90,17 +90,11 @@ const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, to
             <div className="restaurants-sort">
                 <p className="mb-0">Sort</p>
                 <div className="button-wrapper d-flex gap-1 flex-wrap">
-                    <button
-                        className={selectedSort === "name_dsc" ? "button-selected" : "button-not-selected"}
-                        onClick={() => toggleSortByName("name_dsc")}
-                    >
-                        Sort Descending
-                    </button>
-                    <button
-                        className={selectedSort === "name_asc" ? "button-selected" : "button-not-selected"}
-                        onClick={() => toggleSortByName("name_asc")}
-                    >
+                    <button className={selectedSort === "desc" ? "button-selected" : "button-not-selected"} onClick={() => toggleSortByName("desc")}>
                         Sort Ascending
+                    </button>
+                    <button className={selectedSort === "asc" ? "button-selected" : "button-not-selected"} onClick={() => toggleSortByName("asc")}>
+                        Sort Descending
                     </button>
                     {coordinates.lat !== null && (
                         <button
