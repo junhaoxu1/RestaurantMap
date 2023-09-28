@@ -26,3 +26,6 @@ AdminCreds.json
 *.njsproj
 *.sln
 *.sw?
+
+# Local Netlify folder
+.netlify
