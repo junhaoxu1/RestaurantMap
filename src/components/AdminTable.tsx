@@ -4,7 +4,6 @@ import { useTable, Column } from "react-table";
 import useAuth from "../hooks/useAuth";
 import { UpdateUserFormData } from "../types/User.types";
 import { useForm } from "react-hook-form";
-import Button from 'react-bootstrap/Button'
 import Image from 'react-bootstrap/Image'
 
 interface RowData {
@@ -25,7 +24,6 @@ interface AdminTableProps {
 const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle, onAdminNameToggle }) => {
 	const { currentUser } = useAuth()
 	const {
-		formState: { errors },
 	} = useForm<UpdateUserFormData>({
 		defaultValues: {
 			email: currentUser?.email ?? "",
@@ -50,36 +48,14 @@ const AdminTable: React.FC<AdminTableProps> = ({ data, onAdminStatusToggle, onAd
 			Header: "Name & ProfileImg",
 			accessor: "name",
 			Cell: ({ row }) => (
-				<Form>
-					<Form.Group>
+				<div>
 					<div className="profile-photo-wrapper text-center my-2">
 						<div className="d-flex">
 							<Image src={row.original.photoFile || "https://via.placeholder.com/225"} fluid rounded className="img-square w-50" />
 						</div>
 					</div>
-					<Form.Label>{row.original.name ? `${row.original.name}` : "(no name)"}</Form.Label>
-						<Form.Control
-							style={{width: "50%"}}
-							placeholder={row.original.name ? `${row.original.name}`: "null"}
-							defaultValue={row.original.name || ""}
-							onChange={(e) => {
-								const newName = e.target.value
-								row.original.name = newName
-							}}
-						/>
-						{errors.name && <p className="invalid">{errors.name.message ?? "Invalid value"}</p>}
-					</Form.Group>
-					<Button
-						variant="primary"
-						onClick={() => {
-							const documentId = row.original.documentId;
-							const newUsername = row.original.name
-							onAdminNameToggle(documentId, newUsername)
-						}}
-						>
-							Update
-					</Button>
-				</Form>
+					<p>{row.original.name ? `${row.original.name}` : "Missing Name"}</p>
+				</div>
 			),
 		},
 		{
