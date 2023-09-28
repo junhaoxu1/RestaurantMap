@@ -15,7 +15,16 @@ const PlacesAutoComplete: React.FC<Props> = ({ setCoordinates, onSearch }) => {
     const [_searchParams, setSearchParams] = useSearchParams({
         lat: "",
         lng: "",
+		city: "",
+		filter: "",
+		sort: ""
     })
+
+	const [filter, _setFilter] = useState<string>("")
+	const [_currentCity, setCurrentCity] = useState<string | null>(null)
+
+	const sort: string = ""
+	const city: string = ""
 
     const { ready, value, setValue, clearSuggestions } = usePlaceAutoComplete()
 
@@ -30,11 +39,13 @@ const PlacesAutoComplete: React.FC<Props> = ({ setCoordinates, onSearch }) => {
             setSelected({ lat, lng })
             setCoordinates({ lat, lng })
             onSearch(value)
+            if (!city) return
 
-            setSearchParams({ lat: String(lat), lng: String(lng) })
+            setSearchParams({ lat: String(lat), lng: String(lng), city: city, filter: filter, sort })
+			setCurrentCity(city)
         } catch (err) {
             setNotFound(true)
-            setSearchParams({ lat: "", lng: "" })
+            setSearchParams({ lat: "", lng: "", city: city, filter: filter, sort  })
         }
         // clear list of suggestions once submitted
         clearSuggestions()

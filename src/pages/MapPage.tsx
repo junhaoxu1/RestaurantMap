@@ -359,13 +359,13 @@ const MapPage = () => {
 
 	}, [searchParams])
 
-    useEffect(() => {
-        if (!mapReference.current) return
+    // useEffect(() => {
+    //     if (!mapReference.current) return
 
-        mapReference.current.panTo(selectedCoords)
-        setFilteredData(currentData)
-        console.log("selected filter", selectedFilter)
-    }, [selectedCoords, selectedFilter, selectedSort, filteredData])
+    //     mapReference.current.panTo(selectedCoords)
+    //     setFilteredData(currentData)
+    //     console.log("selected filter", selectedFilter)
+    // }, [selectedCoords, selectedFilter, selectedSort, filteredData])
 
     if (!data) return
 
