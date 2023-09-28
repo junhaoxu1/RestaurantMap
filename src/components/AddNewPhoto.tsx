@@ -30,7 +30,7 @@ const AddNewPhoto: React.FC<AddPhotoProps> = ({ onPhotoUpload }) => {
 			//Timeout to make sure data gets sent to collection
 			setTimeout(() => {
 				window.location.reload()
-			}, 500)
+			}, 1000)
 		} else {
 			toast.error("Failed To Upload Image! Try again")
 		}

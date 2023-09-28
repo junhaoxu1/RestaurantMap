@@ -8,6 +8,7 @@ import { setDoc, doc, collection, getDocs, query, where, updateDoc } from "fireb
 import { useState, useEffect } from "react"
 import { v4 as uuidv4 } from 'uuid'
 import useAuth from "../hooks/useAuth"
+import { toast } from 'react-toastify'
 
 const RestaurantPage = () => {
     const { currentUser } = useAuth()
@@ -63,9 +64,11 @@ const RestaurantPage = () => {
             try {
                 if(isAdmin) {
                     const docRef = doc(newRestaurantCol, documentId)
+                    toast.success("Image Uploaded")
                     await updateDoc(docRef, updatedRestaurant)
                 } else {
                     const docRef = doc(photoRequestCol, documentId)
+                    toast.success("Upload Request Sent")
                     await setDoc(docRef, updatedRestaurant)
                 }
             } catch (error) {
