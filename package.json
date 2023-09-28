@@ -36,6 +36,7 @@
         "@types/uuid": "^9.0.4",
         "@vitejs/plugin-react": "^4.0.0",
         "bootstrap": "^5.2.3",
+        "netlify-cli": "^16.4.2",
         "sass": "^1.64.2",
         "typescript": "^5.0.2",
         "vite": "^4.3.2"
