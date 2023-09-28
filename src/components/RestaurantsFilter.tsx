@@ -3,14 +3,13 @@ import { useSearchParams } from "react-router-dom"
 
 type Props = {
     togglePosition: (city: string) => void
-    toggleCategory: (category: string) => void
-    toggleSupply: (supply: string) => void
+    toggleCategory: (field: string, value: string) => void
     toggleSortByName: (sortBy: string) => void
     toggleSortByDistance: (sortBy: string) => void
     filter: string
 }
 
-const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, toggleSupply, toggleSortByName, toggleSortByDistance, filter }) => {
+const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, toggleSortByName, toggleSortByDistance, filter }) => {
     //retrieve filter to toggle classnames for buttons dynamically
     const [searchParams, _setSearchParams] = useSearchParams()
     const selectedFilter = searchParams.get("filter")
@@ -31,30 +30,33 @@ const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, to
             <div className="filter-category">
                 <p className="mb-0">Choose Category</p>
                 <div className="button-wrapper d-flex gap-1 flex-wrap">
-                    <button className={selectedFilter === "café" ? "button-selected" : "button-not-selected"} onClick={() => toggleCategory("café")}>
+                    <button
+                        className={selectedFilter === "café" ? "button-selected" : "button-not-selected"}
+                        onClick={() => toggleCategory("category", "café")}
+                    >
                         Café
                     </button>
                     <button
                         className={selectedFilter === "restaurant" ? "button-selected" : "button-not-selected"}
-                        onClick={() => toggleCategory("restaurant")}
+                        onClick={() => toggleCategory("category", "restaurant")}
                     >
                         Restaurant
                     </button>
                     <button
                         className={selectedFilter === "fast food" ? "button-selected" : "button-not-selected"}
-                        onClick={() => toggleCategory("fast food")}
+                        onClick={() => toggleCategory("category", "fast food")}
                     >
                         Fast Food
                     </button>
                     <button
                         className={selectedFilter === "kiosk/grill" ? "button-selected" : "button-not-selected"}
-                        onClick={() => toggleCategory("kiosk/grill")}
+                        onClick={() => toggleCategory("category", "kiosk/grill")}
                     >
                         Kiosk/Grill
                     </button>
                     <button
                         className={selectedFilter === "foodtruck" ? "button-selected" : "button-not-selected"}
-                        onClick={() => toggleCategory("foodtruck")}
+                        onClick={() => toggleCategory("category", "foodtruck")}
                     >
                         Foodtruck
                     </button>
@@ -64,18 +66,21 @@ const RestaurantsFilter: React.FC<Props> = ({ toggleCategory, togglePosition, to
             <div className="filter-occation">
                 <p className="mb-0">Choose Occation</p>
                 <div className="button-wrapper d-flex gap-1 flex-wrap">
-                    <button className={selectedFilter === "lunch" ? "button-selected" : "button-not-selected"} onClick={() => toggleSupply("lunch")}>
+                    <button
+                        className={selectedFilter === "lunch" ? "button-selected" : "button-not-selected"}
+                        onClick={() => toggleCategory("supply", "lunch")}
+                    >
                         Lunch
                     </button>
                     <button
                         className={selectedFilter === "dinner" ? "button-selected" : "button-not-selected"}
-                        onClick={() => toggleSupply("dinner")}
+                        onClick={() => toggleCategory("supply", "dinner")}
                     >
                         Dinner/Á la carte
                     </button>
                     <button
                         className={selectedFilter === "after work" ? "button-selected" : "button-not-selected"}
-                        onClick={() => toggleSupply("after work")}
+                        onClick={() => toggleCategory("supply", "after work")}
                     >
                         After Work
                     </button>

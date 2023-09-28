@@ -12,6 +12,7 @@ import { getLocationWithLatLng } from "../services/Geocode"
 import { LatLng } from "use-places-autocomplete"
 import { getDistanceFromLatLngInKm } from "../helpers/getDistance"
 import useGetFilteredData from "../hooks/useGetFilteredData"
+import { update } from "firebase/database"
 const MYMAPSKEY = import.meta.env.VITE_APP_GOOGLE_KEY
 
 const MapPage = () => {
@@ -45,6 +46,7 @@ const MapPage = () => {
     const {
         data: filteredRestaurants,
         getData: getFilteredRestaurants,
+        setData: setFilteredRestaurants,
         loading: filteredRestaurantsLoading,
     } = useGetFilteredData<Restaurant>(restaurantsCol, selectedFilterType ?? "", selectedFilter ?? "")
 
@@ -102,48 +104,15 @@ const MapPage = () => {
         }
     }
 
-    const onSearch = (city: string) => {
+    const onSearch = async (city: string) => {
         setError(null)
-        setFilter("")
-        // filter only the restaurants that is located in the selected city
-        const restaurantsInArea = restaurants?.filter((restaurant) => restaurant.city.toLowerCase() === city.toLowerCase())
-        console.log("restaurants in area:", restaurantsInArea)
-
-        // if no restaurants matches filter, return
-        if (!restaurantsInArea) return setError("Could not find restaurants for searched location")
-
-        setFilteredData(restaurantsInArea)
-    }
-
-    // function for togglePosition
-    const togglePosition = async (coordinates: LatLng) => {
-        if (selectedFilter === selectedCity) {
-            console.log("should show all restaurants")
-            // reset states and return
-            setFilter("")
-            setFilterType("")
-            setError(null)
-            await getRestaurants()
-            setFilteredData(null)
-            return
-        }
-
-        // update states, get town name and look for restaurants in the same town
-        console.log("should restaurants in:", selectedCity)
-        setFilterType("city")
-        setFilter(selectedCity ?? "")
-        setError(null)
-
         try {
-            const city = await getTownName(coordinates)
-            if (!city) return
-
-            console.log("where:", selectedFilterType)
-            console.log("city===:", selectedFilter)
-
+            // update states, get town name and look for restaurants in the same town
+            setFilterType("city")
+            setFilter(city ?? "")
+            setError(null)
             // call function to get data according to current filters
-            await getFilteredRestaurants()
-            console.log("filtered rest", filteredRestaurants)
+            await getFilteredRestaurants(selectedFilterType ?? "", selectedFilter ?? "")
 
             // if (!restaurantsInArea) return
             setFilteredData(filteredRestaurants ?? restaurants)
@@ -152,25 +121,57 @@ const MapPage = () => {
         }
     }
 
-    const toggleCategory = async (value: string) => {
-        setError(null)
-        if (filter === value) {
-            // if filter is already selected, unset filter and show all
+    // function for togglePosition
+    const togglePosition = async (coordinates: LatLng) => {
+        setCoordinates(coordinates)
+        if (selectedFilter === selectedCity) {
+            // reset states and return
             setFilter("")
+            setFilterType("")
             setError(null)
             await getRestaurants()
-            setFilteredData(restaurants)
-            console.log("in return")
+            setFilteredRestaurants(null)
             return
         }
 
-        setFilterType("category")
-        setFilter(value)
-        console.log(`get doc where ${filterType} === ${filter}`)
+        try {
+            // update states, get town name and look for restaurants in the same town
+            setFilterType("city")
+            setFilter(selectedCity ?? "")
+            setError(null)
+            // call function to get data according to current filters
+            await getFilteredRestaurants(selectedFilterType ?? "", selectedFilter ?? "")
+
+            // if (!restaurantsInArea) return
+            setFilteredData(filteredRestaurants ?? restaurants)
+        } catch (err: any) {
+            setError(err.message)
+        }
+    }
+
+    const toggleCategory = async (field: string, value: string) => {
+        setError(null)
+        // if filter is already selected, unset filter and show all
+        if (selectedFilter === value) {
+            // reset filter and filter type
+            setFilter("")
+            setFilterType("")
+            // get all restaurants
+            await getRestaurants()
+            // set filtered data to null, since we don't have any
+            setFilteredRestaurants(null)
+            return
+        }
 
         try {
-            await getFilteredRestaurants()
+            setFilterType(field)
+            setFilter(value)
+            await getFilteredRestaurants(field ?? "", value ?? "")
+            console.log("field:", field)
+            console.log("value:", value)
+
             setFilteredData(filteredRestaurants)
+            console.log("filtered data:", filteredData)
         } catch (err: any) {
             console.log("caught error", err.message)
         }
@@ -228,24 +229,6 @@ const MapPage = () => {
         //     setCurrentData(sortedData)
         //     return
         // }
-    }
-
-    const toggleSupply = (supply: string) => {
-        setError(null)
-        if (filter === supply) {
-            // if filter is already selected, unset filter and show all
-            setFilter("")
-            setFilteredData(null)
-            return
-        }
-        // filter only the restaurants that matches the selected filter
-        const filteredRestaurants = data?.filter((restaurant) => restaurant.supply.toLowerCase() === supply.toLowerCase())
-
-        // if no restautants matches filter, return
-        if (!filteredRestaurants) return setError("Could not find restaurants for selected filter")
-
-        setFilter(supply)
-        setFilteredData(filteredRestaurants)
     }
 
     // sorts the data and returns it in the chosen order
@@ -343,6 +326,18 @@ const MapPage = () => {
         setFilteredData(sortedData)
     }
 
+    const updateData = async () => {
+        setFilteredData(null)
+        try {
+            setFilterType(selectedFilterType ?? "")
+            setFilter(selectedFilter ?? "")
+            await getFilteredRestaurants(filterType ?? "", filter ?? "")
+            setFilteredData(filteredRestaurants)
+        } catch (err: any) {
+            console.log("could not update data...")
+        }
+    }
+
     // get the users location on render
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
@@ -358,17 +353,22 @@ const MapPage = () => {
     // sets updated states in search params
     useEffect(() => {
         setUrlParams(coordinates, filterType, filter, sortBy)
-    }, [coordinates, filter, filterType, filteredData, sortBy])
+    }, [coordinates, filter, filterType, sortBy])
 
     // moves map according to latlng from search params
     useEffect(() => {
         if (!mapReference.current) return
 
         mapReference.current.panTo(selectedCoords)
-    }, [selectedCoords, selectedFilter, selectedSort, filteredData])
+    }, [selectedCoords])
 
     useEffect(() => {
-        getFilteredRestaurants()
+        if (selectedFilter !== "" && selectedFilterType !== "") {
+            updateData()
+        } else {
+            getRestaurants()
+            setFilteredData(null)
+        }
     }, [selectedFilter, selectedFilterType])
 
     if (!restaurants) return
@@ -391,7 +391,6 @@ const MapPage = () => {
                             })
                         }}
                         toggleCategory={toggleCategory}
-                        toggleSupply={toggleSupply}
                     />
 
                     {filteredData?.length !== undefined && filteredData?.length > 0 && filter === "near_me" && (
@@ -406,7 +405,7 @@ const MapPage = () => {
                     {restaurants.length > 0 && !filteredData && <p>Showing all restaurants</p>}
                     {filteredData?.length === 0 && <p>No restaurants matching current filter</p>}
                     {!restaurantsLoading && !filteredRestaurantsLoading && (
-                        <RestaurantListItem coordinates={coordinates} displayOnMap={displayOnMap} restaurants={filteredData ?? restaurants} />
+                        <RestaurantListItem coordinates={coordinates} displayOnMap={displayOnMap} restaurants={filteredRestaurants ?? restaurants} />
                     )}
                 </div>
                 <section className="map-page">
