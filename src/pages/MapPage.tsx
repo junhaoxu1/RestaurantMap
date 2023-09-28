@@ -321,6 +321,7 @@ const MapPage = () => {
         setFilteredData(sortedData)
     }
 
+    const avoidLoop = useRef(false);
     // get the users location on render
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {

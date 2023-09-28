@@ -2,7 +2,7 @@
 const NotFoundPage = () => {
 	return (
 		<>
-			<h1>Sorry, page does not exists</h1>
+			<h1>Sorry! This page does not exist</h1>
 		</>
 	)
 }

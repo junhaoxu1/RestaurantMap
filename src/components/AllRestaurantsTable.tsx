@@ -48,49 +48,6 @@ const AllRestaurantsTable: React.FC<RestaurantTableProps> = ({ data }) => {
 			Header: "City",
 			accessor: "city",
 		},
-		{
-			Header: "Description",
-			accessor: "description",
-		},
-		{
-			Header: "Email",
-			accessor: "email",
-		},
-		{
-			Header: "Facebook",
-			accessor: "facebook",
-		},
-		{
-			Header: "Instagram",
-			accessor: "instagram",
-		},
-		{
-			Header: "Phone",
-			accessor: "phone",
-		},
-		{
-			Header: "Supply",
-			accessor: "supply",
-		},
-		{
-			Header: "Webpage",
-			accessor: "webpage",
-		},
-		{
-			Header: "Geolocation",
-			accessor: "geolocation",
-			Cell: ({ cell }) => (
-			<div>
-				Latitude: {cell.row.original.geolocation.lat}
-				<br />
-				Longitude: {cell.row.original.geolocation.lng}
-			</div>
-			),
-		},
-		{
-			Header: "Cover Photo",
-			accessor: "cover_photo",
-		},
 		],
 		[]
 	)
@@ -158,9 +115,6 @@ const AllRestaurantsTable: React.FC<RestaurantTableProps> = ({ data }) => {
 						to={`/admin-restaurants/${row.original._id}`}
 					>
 					<Button
-					onClick={() => {
-						console.log("Button clicked for row")
-					}}
 					>
 					Edit
 					</Button>

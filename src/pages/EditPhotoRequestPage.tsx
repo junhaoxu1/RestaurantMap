@@ -5,10 +5,9 @@ import Container from "react-bootstrap/Container"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
 import Confirmation from "../components/Confirmation"
-import useGetRequest from "../hooks/useGetRequest"
-import { restaurantRequestCol, newRestaurantCol, photoRequestCol } from "../services/firebase"
+import { newRestaurantCol, photoRequestCol } from "../services/firebase"
 import useGetDocument from "../hooks/useGetDocument"
-import Image from 'react-bootstrap/Image'
+import Image from "react-bootstrap/Image"
 
 const EditPhotoRequestPage = () => {
 	const [showConfirmDelete, setShowConfirmDelete] = useState(false)
@@ -36,7 +35,7 @@ const EditPhotoRequestPage = () => {
 
 		toast.success(`${restaurant?.name} has been approved`)
 
-		navigate("/", {
+		navigate("/photos-request", {
 			replace: true,
 		})
 	}
@@ -48,7 +47,7 @@ const EditPhotoRequestPage = () => {
 
 		toast.success("Request deleted")
 
-		navigate("/", {
+		navigate("/photos-request", {
 			replace: true,
 		})
 	}
@@ -59,16 +58,21 @@ const EditPhotoRequestPage = () => {
 
 	return (
 		<Container className="py-3">
-			{restaurant.user_photos?.map((photo) => 
-			<Image 
-				src={photo.photo}
-			/>
-			)}
-			<div className="d-flex justify-content-between align-items-start">
+			<div className="d-flex justify-content-center">
 				<h1>{restaurant.name}</h1>
 			</div>
 
-			<div className="buttons mb-3">
+			{restaurant.user_photos?.map((photo) => (
+				<Image src={photo.photo} />
+			))}
+
+			<div className="d-flex justify-content-center">
+				<Link to="/">
+					<Button variant="secondary">&laquo; Go Back</Button>
+				</Link>
+				<Button variant="danger" onClick={() => setShowConfirmDelete(true)}>
+					Delete
+				</Button>
 				<Button variant="success" onClick={() => setShowConfirmApprove(true)}>
 					Approve
 				</Button>
@@ -78,19 +82,9 @@ const EditPhotoRequestPage = () => {
 				Do you want to approve this photo??
 			</Confirmation>
 
-			<div className="buttons mb-3">
-				<Button variant="danger" onClick={() => setShowConfirmDelete(true)}>
-					Delete
-				</Button>
-			</div>
-
 			<Confirmation show={showConfirmDelete} onCancel={() => setShowConfirmDelete(false)} onConfirm={deleteRequest}>
 				Do you want to delete this photo??
 			</Confirmation>
-
-			<Link to="/">
-				<Button variant="secondary">&laquo; Go Back</Button>
-			</Link>
 		</Container>
 	)
 }
