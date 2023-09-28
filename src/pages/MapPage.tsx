@@ -405,36 +405,33 @@ const MapPage = () => {
     }, [selectedCoords])
 
     useEffect(() => {
-        if (selectedFilter !== "" && selectedFilterType !== "") {
-            updateData()
-        } else {
-            getRestaurants()
-            setFilteredData(null)
-        }
-
+        // Function to fetch data based on filter and filter type
         const fetchData = async () => {
             try {
                 if (selectedFilterType === "city") {
-                    if(selectedFilter !== null ) {
+                    if (selectedFilter !== null) {
                         await getFilteredRestaurants("city", selectedFilter);
                     }
                 } else if (selectedFilterType === "category") {
-                    if(selectedFilter !== null ) {
+                    if (selectedFilter !== null) {
                         await getFilteredRestaurants("category", selectedFilter);
                     }
                 } else {
                     await getRestaurants();
                 }
-
-                // Update the filtered data
-                setFilteredData(filteredRestaurants);
             } catch (err) {
                 console.error("Error fetching data:", err);
             }
         };
-
+    
+        // Fetch data when selectedFilter and selectedFilterType change
         fetchData();
-    }, [selectedFilter, selectedFilterType])
+    }, [selectedFilter, selectedFilterType]);
+
+    useEffect(() => {
+        // Update the filtered data once the fetching is complete
+        setFilteredData(filteredRestaurants);
+    }, [filteredRestaurants]);
 
     if (!restaurants) return
 
