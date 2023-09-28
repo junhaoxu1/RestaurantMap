@@ -43,7 +43,6 @@ const EditRestaurantPage = () => {
 			}
 
 			await updateDoc(docRef, updatedData)
-			toast.success("Image deleted successfully")
 		}
 	}
 
