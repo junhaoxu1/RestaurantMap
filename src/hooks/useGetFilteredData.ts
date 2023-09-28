@@ -6,41 +6,46 @@ const useGetFilteredData = <T>(colRef: CollectionReference<T>, field: string, va
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
-    const getData = useCallback(async () => {
-        setLoading(true)
-        setError(null)
+    const getData = useCallback(
+        async (field: string, value: string) => {
+            setLoading(true)
+            setError(null)
 
-        try {
-            // query database
-            const q = query(colRef, where(field, "==", value))
+            try {
+                // query database
+                const q = query(colRef, where(field, "==", value))
 
-            // get query snapshot of collection
-            const snapshot = await getDocs(q)
+                // get query snapshot of collection
+                const snapshot = await getDocs(q)
 
-            // loop over all docs
-            const data: T[] = snapshot.docs.map((doc) => {
-                return {
-                    ...doc.data(),
-                    _id: doc.id,
-                }
-            })
-            setData(data)
-        } catch (err: any) {
-            setError(err.message)
-        }
+                // loop over all docs
+                const data: T[] = snapshot.docs.map((doc) => {
+                    return {
+                        ...doc.data(),
+                        _id: doc.id,
+                    }
+                })
+                setData(data)
+                console.log("querying for:", field, value)
+            } catch (err: any) {
+                setError(err.message)
+            }
 
-        setLoading(false)
-    }, [colRef])
+            setLoading(false)
+        },
+        [colRef]
+    )
 
     // Get data on component mount
     useEffect(() => {
-        getData()
+        getData(field, value)
     }, [getData])
 
     // return getData function and states
     return {
         getData,
         data,
+        setData,
         error,
         loading,
     }
