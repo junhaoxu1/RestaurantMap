@@ -4,12 +4,84 @@ import { Restaurant } from "../types/restaurants.types"
 import Card from "react-bootstrap/Card"
 import { FaFacebook, FaInstagram } from "react-icons/fa"
 import { Container } from "react-bootstrap"
+import AddNewPhoto from "./AddNewPhoto"
+import { photoRequestCol, newRestaurantCol, usersCol, db } from "../services/firebase"
+import { setDoc, doc, collection, getDocs, query, where, updateDoc } from "firebase/firestore"
+import { useState, useEffect } from "react"
+import { v4 as uuidv4 } from 'uuid'
+import useAuth from "../hooks/useAuth"
+import { toast } from 'react-toastify'
+import { useParams } from "react-router-dom"
+import useGetDocument from "../hooks/useGetDocument"
+
 
 type Props = {
 	restaurant: Restaurant
 }
 
 const RestaurantDetails: React.FC<Props> = ({ restaurant }) => {
+	const { id } = useParams();
+    const documentId = String(id);
+	const { currentUser } = useAuth()
+    const uuid = uuidv4()
+
+    if (!documentId) return <p>Restaurant doesn't exist</p>;
+
+    const [userDocumentId, setUserDocumentId] = useState<string | null>(null); 
+    const { data: userData } = useGetDocument(usersCol, userDocumentId || '');
+
+    const isAdmin = userData?.admin === true;
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (currentUser) {
+                try {
+                    const usersCollection = collection(db, "users");
+                    const checkId = query(usersCollection, where("uid", "==", currentUser.uid));
+                    const querySnapshot = await getDocs(checkId);
+                    
+                    if (querySnapshot.size === 1) {
+                        const userDoc = querySnapshot.docs[0];
+                        setUserDocumentId(userDoc.id);
+                    } else {
+                        console.error("User document not found.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                }
+            }
+        };
+        fetchData();
+    }, [currentUser]);
+
+    const handleUpload = async (photoUrl: string) => {
+        if (restaurant && photoUrl) {
+            const updatedRestaurant = {
+                ...restaurant,
+                user_photos: [
+                    ...(restaurant.user_photos || []),
+                    {
+                        id: uuid,
+                        photo: photoUrl,
+                    },
+                ],
+            };
+    
+            try {
+                if(isAdmin) {
+                    const docRef = doc(newRestaurantCol, documentId)
+                    toast.success("Image Uploaded")
+                    await updateDoc(docRef, updatedRestaurant)
+                } else {
+                    const docRef = doc(photoRequestCol, documentId)
+                    toast.success("Upload Request Sent")
+                    await setDoc(docRef, updatedRestaurant)
+                }
+            } catch (error) {
+                console.error("Error updating restaurant document:", error);
+            }
+        }
+    };
 	return (
 		<>
 			<div className="banner d-flex">
@@ -38,6 +110,7 @@ const RestaurantDetails: React.FC<Props> = ({ restaurant }) => {
 										/>
 									))}
 								</div>
+								<AddNewPhoto onPhotoUpload={handleUpload}/>
 							</Card>
 						</Card.Body>
 					</Card>

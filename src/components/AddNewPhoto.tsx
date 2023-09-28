@@ -37,7 +37,7 @@ const AddNewPhoto: React.FC<AddPhotoProps> = ({ onPhotoUpload }) => {
 	}
 
 	return (
-		<div>
+		<div className='d-flex'>
 			<input type="file" accept="image/*" onChange={handleImageChange} />
 			<Button variant="danger" onClick={handleUpload}>
 				Upload
