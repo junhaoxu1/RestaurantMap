@@ -12,7 +12,7 @@ const firebaseConfig = {
     storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
-    baseURL: import.meta.env.VITE_FIREBASE_DATABASEURL
+    baseURL: import.meta.env.VITE_FIREBASE_DATABASEURL,
 }
 
 // Initialize Firebase App
@@ -38,4 +38,3 @@ export const restaurantRequestCol = createCollection<RestaurantFormData>("reques
 export const usersCol = createCollection<UserInformation>("users")
 
 export default app
-
