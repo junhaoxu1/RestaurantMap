@@ -35,9 +35,9 @@ const EditPhotoRequestPage = () => {
 
 		toast.success(`${restaurant?.name} has been approved`)
 
-			navigate("/photos-request", {
-				replace: true,
-			})
+		navigate("/photos-request", {
+			replace: true,
+		})
 	}
 
 	const deleteRequest = async () => {

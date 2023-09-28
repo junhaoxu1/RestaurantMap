@@ -4,17 +4,10 @@ import NavDropdown from "react-bootstrap/NavDropdown"
 import Nav from "react-bootstrap/Nav"
 import { NavLink, Link } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
-import useGetCollection from "../../hooks/useGetCollection"
-import { UserFormData } from "../../types/User.types"
-import { usersCol } from "../../services/firebase"
 import Image from "react-bootstrap/Image"
 
 const Navigation = () => {
 	const { currentUser, userEmail, userName, userPhotoUrl } = useAuth()
-	const { data: users, loading } = useGetCollection<UserFormData>(usersCol)
-
-	const admins = users?.filter((user) => user.admin === true)
-
 
 	return (
 		<Navbar>
@@ -29,21 +22,25 @@ const Navigation = () => {
 						{currentUser ? (
 							<>
 								<Nav.Link as={NavLink} end to="/restaurants">
-                            		All Restaurants
-                        		</Nav.Link>
+									All Restaurants
+								</Nav.Link>
 								<NavDropdown
 									title={
-									userPhotoUrl
-									? <Image
-										src={userPhotoUrl}
-										height={30}
-										width={30}
-										title={(userName || userEmail) ?? ""}
-										className="img-square"
-										fluid
-										roundedCircle />
-									: userName || userEmail
-								}>
+										userPhotoUrl ? (
+											<Image
+												src={userPhotoUrl}
+												height={30}
+												width={30}
+												title={(userName || userEmail) ?? ""}
+												className="img-square"
+												fluid
+												roundedCircle
+											/>
+										) : (
+											userName || userEmail
+										)
+									}
+								>
 									<NavDropdown.Item as={NavLink} to="/admin">
 										Admin
 									</NavDropdown.Item>
@@ -83,4 +80,3 @@ const Navigation = () => {
 }
 
 export default Navigation
-
